@@ -1,0 +1,667 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "roboto";
+    /* color: var(--home-text-color-); */
+}
+
+body, html {
+    height: 100%;
+    width: 100%;
+}
+
+/* =========================COMMON-HEADINGS====================== */
+
+:root {
+    --main-color--: #003EDE;
+    --second--main-color: #F45D08;
+    --low-intensity-bg-color--: #F5FFF8;
+    --border--color--: #0D9E00;
+    --tabs-bg--color--: #FF00000D;
+    --home-text-color-: #515C6F;
+    --border--color-: #D9D9D9;
+    --process--bg--color: #F45D081A;
+    --process--text-color: #F45D08;
+    --popup--bg--main--color: #FF9494;
+}
+
+h1 {
+    font-size: 35px;
+    font-weight: 400;
+    font-family: "amarante";
+}
+
+span {
+    font-weight: 300;
+}
+
+button {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+label {
+    font-size: 12px;
+}
+
+.form-select {
+    font-size: 12px;
+}
+
+/* ============================LOGIN-FORM-PAGE========================= */
+
+header {
+    position: relative;
+    z-index: -1;
+}
+
+header>img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* width: 136px; */
+}
+
+.login-form {
+    padding: 5rem 0 0 0;
+}
+
+.form-heading {
+    padding-left: 80px;
+    margin-top: -60px;
+}
+
+#user_password {
+    position: relative;
+}
+
+.showPassword {
+    position: absolute;
+    top: 50%;
+    right: 1%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+
+.forget a {
+    color: #000;
+    text-decoration: underline;
+    text-transform: capitalize;
+    font-weight: 700;
+}
+
+.login-btn {
+    background-color: var(--main-color--);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+.reg-btn {
+    color: var(--main-color--);
+    text-decoration: underline;
+    border: 1.5px solid #0000003b;
+    background-color: transparent;
+}
+
+.login-btn-hidden {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0px -7px 7.9px 0px #0000001A;
+}
+
+.login-btn-hidden button {
+    background-color: var(--main-color--);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+
+/* ============================REGISTRATION-FORM-PAGE========================= */
+
+.register-heading {
+    padding-left: 80px;
+    margin-top: -30px;
+}
+
+
+@media (max-width: 776px) {
+    .register-heading {
+        margin-top: 0;
+        padding-left: 0;
+    }
+}
+
+.upload {
+    font-size: 12px;
+    border: 1px solid #00000042;
+    border-radius: 5px;
+    padding: 18px 0;
+    border: 1px solid var(--home-text-color-);
+}
+
+#retailer {
+    background-color: #F6F6F6;
+    border-radius: 5px;
+}
+
+.terms {
+    color: var(--main-color--);
+}
+
+.privacy {
+    color: var(--main-color--);
+    text-decoration: underline;
+}
+
+
+/* ============================PAYMENT-CONFIRMATION-PAGE========================= */
+
+.payment-top {
+    border: 2px solid var(--border--color--);
+    border-radius: 10px;
+    background-color: var(--low-intensity-bg-color--);
+}
+
+.payment-bottom {
+    border: 2px solid #D9D9D9;
+    border-radius: 10px;
+}
+
+.your-detail span {
+    font-weight: 400;
+}
+
+.payment-detail span {
+    font-weight: 400;
+}
+
+.payment-btn {
+    text-align: center;
+    text-decoration: none;
+    background-color: var(--main-color--);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+.payment-btn:hover {
+    color: #cec9c9;
+}
+
+
+/* ============================PASSWORD-RESET-PAGE========================= */
+
+#user-Otp {
+    position: relative;
+}
+
+.otp-code {
+    position: absolute;
+    right: 2.5%;
+    top: 50%;
+    transform: translate(0%, -50%);
+}
+
+#verify-Otp {
+    position: relative;
+}
+
+.verify-otp {
+    position: absolute;
+    right: 2.5%;
+    top: 50%;
+    transform: translate(0%, -50%);
+}
+
+
+/* ============================HOME-TAB-SECTION======================= */
+
+.nav {
+    box-shadow: 0px 2px 25px -3px #0000004d;
+    /* box-shadow: 0px -7px 7.9px 0px #0000001A; */
+    position: relative;
+    color: var(--home-text-color-);
+}
+
+/* .nav-item {
+    text-decoration: none;
+    color: var(--home-text-color-);
+} */
+
+.nav-link {
+    color: var(--home-text-color-);
+}
+
+.nav-link.active {
+    background-color: var(--tabs-bg--color--) !important;
+    color: var(--second--main-color) !important;
+}
+
+.nav-link:hover {
+    color: var(--second--main-color);
+}
+
+.nav-link:hover svg path {
+    fill: var(--second--main-color);
+}
+
+.nav-link.active svg path {
+    fill: var(--second--main-color);
+}
+
+.nav-pills .nav-link {
+    border-radius: 0 !important;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+.nav-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(-50%, 65%);
+}
+
+.nav-right span {
+    background-color: #0066FF1A;
+    font-size: 22px;
+    font-weight: 500;
+    color: #0066FF;
+}
+
+#pills-home,#pills-order, #pills-wallet {
+    color: var(--home-text-color-);
+    /* padding: 0 10rem; */
+    overflow-y: auto;
+    height: calc(100vh - 100px);
+}
+
+.make-new-btn {
+    width: clamp(320px, 60vw, 456px);
+    background-color: var(--second--main-color);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.view-btn {
+    background-color: var(--main-color--);
+    color: #fff;
+    font-size: 12px;
+    border: none;
+    border-radius: 2px;
+}
+
+.diff-bg {
+    background-color: #F6F6F6;
+    width: 100%;
+}
+
+.home-card {
+    border:1px solid #D7D7D7;
+    border-radius: 10px;
+}
+
+.home-card h5{
+    color: #0066FF;
+}
+
+.home-card span {
+    font-weight: 400;
+    line-height: 19.06px;
+    font-size: clamp(12px, 2vw, 16px);
+}
+
+.home-card svg {
+    width: clamp(41px, 10vw, 72px) !important;
+}
+
+.bg-r {
+    background-color: #FF00000D;
+    color: #EC1C34;
+}
+
+.bg-o {
+    background-color: var(--process--bg--color);
+    color: var(--process--text-color);
+}
+
+#edit-vehicle-details {
+    cursor: pointer;
+    transition: all ease .4s;
+}
+
+#edit-vehicle-details:hover {
+    border: 1px solid #000;
+}
+
+.main-home-page {
+    padding: 0 14rem;
+}
+
+@media (max-width: 992px) {
+    .main-home-page {
+        padding: 0 7rem;
+    }
+}
+
+@media (max-width: 776px) {
+    .main-home-page {
+        padding: 0 1rem;
+    }
+}
+
+
+/* ===================================VEHICLE-DETAILS-CONTAINER============================ */
+
+.vehicle-details-container {
+    padding: 0 14rem;
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .vehicle-details-container {
+        padding: 0 7rem;
+    }
+}
+
+@media (max-width: 776px) {
+    .vehicle-details-container {
+        padding: 0 1rem;
+    }
+}
+
+.challan {
+    border: 1px solid var(--home-text-color-);
+    border-radius: 5px;
+}
+
+#Challan-form {
+    height: fit-content !important;
+    min-height: fit-content !important;
+    border: 1px solid var(--main-color--) !important;
+    color: var(--main-color--);
+}
+
+.form-floating>.form-select {
+    padding: .3rem .5rem !important;
+    border: 1px solid var(--home-text-color-);
+}
+
+.form-control {
+    border: 1px solid var(--home-text-color-);
+}
+
+.vehicle-info-btn {
+    background-color: var(--second--main-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+/* ====================================ORDER-SECTION-TAB======================== */
+
+#nav-order-tab {
+    box-shadow: none !important;
+}
+
+#tab-bg-color {
+    border: 1px solid var(--border--color-) !important;
+    border-radius: 5px !important;
+    font-size: 12px;
+}
+
+ #tab-bg-color.active {
+    background-color: var(--main-color--) !important;
+    border-radius: 5px !important;
+    color: #fff !important;
+}
+
+.order-search-bar {
+    position: relative;
+}
+
+.order-search-btn {
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(-50%, 15%);
+}
+
+.order-tab-container {
+    padding: 0 14rem;
+}
+
+@media (max-width: 1024px) {
+    .order-tab-container {
+        padding: 0 3rem;
+    }
+}
+
+@media (max-width: 776px) {
+    .order-tab-container {
+        padding: 0 1rem;
+    }
+}
+
+.modal-btn {
+    background-color: transparent;
+    border: none;
+}
+
+.vehicle-photo {
+    background-color: var(--popup--bg--main--color);
+    border-radius: 10px;
+}
+
+.challan-photo {
+    background-color: var(--popup--bg--main--color);
+    border-radius: 10px;
+}
+
+/* ================================WALLET-SECTION-TAB=============================== */
+
+.avail-balance {
+    background-color: #F6F6F6;
+}
+
+#nav-wallet-tab {
+    box-shadow: none !important;
+}
+
+#wallet-tab-bg-color {
+    border: 1px solid #000 !important;
+    border-radius: 5px !important;
+    font-size: 14px;
+}
+
+ #wallet-tab-bg-color.active {
+    background-color: var(--process--bg--color) !important;
+    border-radius: 5px !important;
+    color: var(--process--text-color) !important;
+    border: 1px solid var(--process--text-color) !important;
+}
+
+.wallet-tab-container {
+    padding: 0 16rem;
+}
+
+.wallet-tab-container p {
+    font-size: clamp(10px, 2vw, 14px);
+}
+
+@media (max-width: 1024px) {
+    .wallet-tab-container {
+        padding: 0 8rem;
+    }
+}
+
+@media (max-width: 776px) {
+    .wallet-tab-container {
+        padding: 0 1rem;
+    }
+}
+
+.pay-detail {
+    line-height: 18px;
+}
+
+.edit-pay-detail {
+    line-height: 2;
+}
+
+/* =======================================USER-PROFILE-TAB================================== */
+
+.user-profile-tab {
+    padding: 0 16rem;
+}
+
+.user-profile-tab p {
+    font-size: clamp(10px, 2vw, 14px);
+}
+
+@media (max-width: 1024px) {
+    .user-profile-tab {
+        padding: 0 8rem;
+    }
+}
+
+@media (max-width: 776px) {
+    .user-profile-tab {
+        padding: 0 1rem;
+    }
+}
+
+.svg-bg-color {
+    background-color: #FBFBFB;
+}
+
+#profile-modal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+    max-width: none;
+    z-index: 1050;
+}
+
+.modal-content {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+}
+
+
+#userPassword {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+    max-width: none;
+    z-index: 1050;
+}
+
+#supportPopup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+    max-width: none;
+    z-index: 1050;
+}
+
+.tutorial {
+    display: none;
+}
+
+/* Add this CSS to define the animation */
+.bottom-to-top {
+    animation: bottomToTop 0.5s ease forwards;
+    transform-origin: bottom;
+}
+
+@keyframes bottomToTop {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+#profile-modal {
+    padding: 0 16rem;
+}
+
+@media (max-width: 1024px) {
+    #profile-modal {
+        padding: 0 8rem;
+    }
+}
+
+@media (max-width: 776px) {
+    #profile-modal {
+        padding: 0;
+        margin: 0;
+    }
+}
+
+
+#userPassword {
+    padding: 0 16rem;
+}
+
+@media (max-width: 1024px) {
+    #userPassword {
+        padding: 0 8rem;
+    }
+}
+
+@media (max-width: 776px) {
+    #userPassword {
+        padding: 0;
+        margin: 0;
+    }
+}
+
+#supportPopup {
+    padding: 0 16rem;
+}
+
+@media (max-width: 1024px) {
+    #supportPopup {
+        padding: 0 8rem;
+    }
+}
+
+@media (max-width: 776px) {
+    #supportPopup {
+        padding: 0;
+        margin: 0;
+    }
+}
+
+
+.form-select.is-invalid, .was-validated .form-select:invalid{
+    border-color:#dc3545 !important;
+}
+
