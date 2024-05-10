@@ -493,7 +493,7 @@ label {
 .months-dropdown {
     border-radius: 5px;
     height: 35px;
-    width: 12vw;
+    width: 10vw;
 }
 
 @media screen and (max-width: 600px) {
@@ -642,6 +642,15 @@ label {
 }
 
 #Challan-form {
+    height: 23px !important;
+    min-height: 23px !important;
+    border: 1px solid var(--main-color--) !important;
+    color: var(--main-color--);
+    min-width: 69px;
+    background-color: #f6f6f6;
+}
+
+.custom-select {
     height: 23px !important;
     min-height: 23px !important;
     border: 1px solid var(--main-color--) !important;

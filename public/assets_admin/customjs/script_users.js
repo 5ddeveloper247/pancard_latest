@@ -29,7 +29,7 @@ function updatePendingUsersList(pending_users){
             html += `<div class="home-card py-1 px-2 mb-2 my-2">
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
-                                <span class="fw-bold text-dark d-flex">
+                                <span class="fw-bold text-dark d-flex edit_user_btn" data-id="${value.id}" style="cursor:pointer;" title="Edit User">
                                     ${value.name} <p class="fw-normal m-0">,${value.username}</p>
                                 </span>
                                 <span class="text-dark d-flex ">${value.company_name}, ${value.pin_code}</span>
@@ -52,7 +52,7 @@ function updatePendingUsersList(pending_users){
                                                 fill="#515C6F" />
                                         </svg>
                                     </a>
-                                    <button type="button" class="modal-btn-neutral py-1 px-2 ms-2">
+                                    <a href="${value.aadhar}" target="_blank" class="modal-btn-neutral py-1 px-2 ms-2">
                                         <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path opacity="0.5" d="M18.8571 11.3333H13.619" stroke="#515C6F" stroke-width="1.5"
@@ -64,7 +64,7 @@ function updatePendingUsersList(pending_users){
                                                 d="M2.09521 8.13808C2.09521 7.21303 2.09521 6.75103 2.16855 6.3655C2.32488 5.53772 2.72707 4.77627 3.32266 4.18049C3.91825 3.58472 4.67957 3.18228 5.50731 3.0257C5.89388 2.95236 6.35693 2.95236 7.28093 2.95236C7.68531 2.95236 7.88855 2.95236 8.08341 2.97017C8.9226 3.04898 9.71852 3.37904 10.3672 3.91722C10.5181 4.04189 10.6605 4.18436 10.9476 4.47141L11.5238 5.0476C12.3786 5.90246 12.8061 6.32989 13.3173 6.61379C13.5983 6.7704 13.8964 6.89414 14.2057 6.98255C14.7693 7.14284 15.3738 7.14284 16.5817 7.14284H16.9735C19.7308 7.14284 21.1105 7.14284 22.0063 7.94951C22.089 8.02284 22.1676 8.10141 22.2409 8.18417C23.0476 9.07989 23.0476 10.4596 23.0476 13.2169V15.5238C23.0476 19.4744 23.0476 21.4502 21.8198 22.6769C20.593 23.9047 18.6172 23.9047 14.6666 23.9047H10.4762C6.5256 23.9047 4.54979 23.9047 3.32302 22.6769C2.09521 21.4502 2.09521 19.4744 2.09521 15.5238V8.13808Z"
                                                 stroke="#515C6F" stroke-width="1.5" />
                                         </svg>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,7 @@ function updateActiveUsersList(active_users){
             html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4">
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
-                                <span class="fw-bold text-dark text-nowrap">
+                                <span class="fw-bold text-dark text-nowrap edit_user_btn" data-id="${value.id}" style="cursor:pointer;" title="Edit User">
                                     ${value.username} (${value.company_name})
                                 </span>
                                 <span class="text-dark">
@@ -154,6 +154,7 @@ function creditAmountUser(userId){
     }
     updateUserBalance(userId,flag);
 }
+
 function debitAmountUser(userId){
 
     var flag = 'debit';
@@ -216,70 +217,321 @@ function updateUserBalanceResponse(response){
     
 }
 
-// $(document).on('click', '#general_form_submit', function (e) {
 
-// 	e.preventDefault();
-// 	let type = 'POST';
-// 	let url = '/admin/storeGeneralSettings';
-// 	let message = '';
-// 	let form = $('#general_settings_form');
-// 	let data = new FormData(form[0]);
+
+function getCitiesLovData () {
+
+    var state_id = $("#user_state").val();
+    if(state_id != ''){
+        let type = 'POST';
+        let url = '/getCitiesLovData';
+        let message = '';
+        let form = '';
+        let data = new FormData();
+        data.append("state_id", state_id);
+        // PASSING DATA TO FUNCTION
+        SendAjaxRequestToServer(type, url, data, '', getCitiesLovDataResponse, '', 'submit_button');
+    }else{
+        $("#user_city").val('').html('<option value="">Choose City</option>');
+        $("#user_area").val('').html('<option value="">Choose Area</option>');
+    }
+}
+
+function getCitiesLovDataResponse(response){
+
+    var data = response.data;
+    var cities = data.cities;
+    
+    var cityOptions = `<option value="">Choose City</option>`;
+    if(cities.length > 0){
+        $.each(cities, function(index, value) {
+            cityOptions += `<option value="${value.id}">${value.name}</option>`;
+        });
+    }
+    $("#user_city").html(cityOptions);
+    $("#user_area").val('').html('<option value="">Choose Area</option>');
+}
+
+function getAreasLovData () {
+
+    var city_id = $("#user_city").val();
+    if(city_id != ''){
+        let type = 'POST';
+        let url = '/getAreasLovData';
+        let message = '';
+        let form = '';
+        let data = new FormData();
+        data.append("city_id", city_id);
+        // PASSING DATA TO FUNCTION
+        SendAjaxRequestToServer(type, url, data, '', getAreasLovDataResponse, '', 'submit_button');
+    }else{
+        $("#user_area").val('').html('<option value="">Choose Area</option>');
+    }
+}
+
+function getAreasLovDataResponse(response){
+
+    var data = response.data;
+    var areas = data.areas;
+    
+    var areasOptions = `<option value="">Choose Area</option>`;
+    if(areas.length > 0){
+        $.each(areas, function(index, value) {
+            areasOptions += `<option value="${value.id}">${value.name}</option>`;
+        });
+    }
+    $("#user_area").html(areasOptions);
+}
+
+
+$(document).on('click', '.register_form_submit', function (e) {
+
+	e.preventDefault();
+	let type = 'POST';
+	let url = '/admin/registerUser';
+	let message = '';
+	let form = $('#registration_form');
+	let data = new FormData(form[0]);
 	    
-// 	// PASSING DATA TO FUNCTION
-// 	$('[name]').removeClass('is-invalid');
-// 	SendAjaxRequestToServer(type, url, data, '', addGeneralSettingsResponse, '', '#general_form_submit');
+	// PASSING DATA TO FUNCTION
+	$('[name]').removeClass('is-invalid');
+	SendAjaxRequestToServer(type, url, data, '', registerUserResponse, '', '#register_form_submit');
 	
-// });
+});
 
-// function addGeneralSettingsResponse(response) {
+function registerUserResponse(response) {
 
-//     // SHOWING MESSAGE ACCORDING TO RESPONSE
-//     if (response.status == 200 || response.status == '200') {
+    // SHOWING MESSAGE ACCORDING TO RESPONSE
+    if (response.status == 200 || response.status == '200') {
       
-//         toastr.success(response.message, '', {
-//             timeOut: 3000
-//         });
-//         // success response action 
+        toastr.success(response.message, '', {
+            timeOut: 3000
+        });
 
-//     } else {
+        let form = $('#registration_form');
+        form.trigger("reset");
+
+        var data = response.data;
+        username_auto = data.username_auto;
+        $("#username_auto").val(username_auto);
         
-//     	error = response.responseJSON.message;
-//         var is_invalid = response.responseJSON.errors;
+
+        $("#picturename").text('Upload Picture');
+        $("#filename").text('Upload Aadhar');
+        // success response action 
+        getUsersPageData();
+
+    } else {
         
-//         $.each(is_invalid, function(key) {
-//             // Assuming 'key' corresponds to the form field name
-//             var inputField = $('[name="' + key + '"]');
-//             // Add the 'is-invalid' class to the input field's parent or any desired container
-//             inputField.closest('.form-control').addClass('is-invalid');
-//         });
-//         toastr.error(error, '', {
-//             timeOut: 3000
-//         });
-//     }
-// }
+    	error = response.responseJSON.message;
+        var is_invalid = response.responseJSON.errors;
+        
+        $.each(is_invalid, function(key) {
+            // Assuming 'key' corresponds to the form field name
+            var inputField = $('[name="' + key + '"]');
+            var selectField = $('[name="' + key + '"]');
+            // Add the 'is-invalid' class to the input field's parent or any desired container
+            inputField.closest('.form-control').addClass('is-invalid');
+            selectField.closest('.form-select').addClass('is-invalid');
+        });
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+    }
+}
 
 
+
+$(document).on('click', '.create-user', function (e) {
+
+    let form = $('#registration_form');
+    form.trigger("reset");
+    $("#username_auto").val(username_auto);
+    $("#picturename").text('Upload Picture');
+    $("#filename").text('Upload Aadhar');
+    $("#user_type").val('retailer');
+	
+});
+
+$(document).on('click', '.edit_user_btn', function (e) {
+
+    var user_id = $(this).attr('data-id');
+    
+	e.preventDefault();
+	let type = 'POST';
+	let url = '/admin/editUser';
+	let message = '';
+	let data = new FormData();
+    data.append("id", user_id);
+	    
+	// PASSING DATA TO FUNCTION
+	SendAjaxRequestToServer(type, url, data, '', editUserResponse, '', '#register_form_submit');
+	
+});
+
+function editUserResponse(response) {
+
+    var data = response.data;
+    var user_detail = data['user_detail'];
+    var cities = data['cities'];
+    var areas = data['areas'];
+    
+    getCitiesLovDataResponse(response);
+    getAreasLovDataResponse(response);
+    
+    if(user_detail != null){
+        $("#user_id").val(user_detail['id']);
+        $("#user_name").val(user_detail['name']);
+        $("#username_auto").val(user_detail['username']);
+        $("#company_name").val(user_detail['company_name']);
+        $("#user_phone").val(user_detail['phone_number']);
+        $("#user_email").val(user_detail['email']);
+        $("#user_pin").val(user_detail['pin_code']);
+        $("#user_state").val(user_detail['state_id']);
+        $("#user_city").val(user_detail['city_id']);
+        $("#user_area").val(user_detail['area_id']);
+        $("#user_landmark").val(user_detail['landmark']);
+        $("#picturename").text(user_detail['profile_picture']);
+        $("#filename").text(user_detail['aadhar']);
+        $("#user_type").val(user_detail['user_type']);
+        $("#upload_option").val(user_detail['upload_option']);
+        
+        var puc_rates = user_detail['puc_rates'];
+        if(puc_rates.length > 0){
+            $.each(puc_rates, function(index, value) {
+                $("#puc_type_"+value['puc_type_id']).val(value['puc_rate']);
+            });
+        }
+        $(".sub-tabs-user").removeClass('active');
+        $(".create-user").addClass('active');
+        $(".sub-tabs").hide();
+        $("#user-approve-block").show();
+
+    }
+}
+
+$(document).on('click', '.filter_today', function (e) {
+    
+    $(".filter-btns").removeClass('active');
+    $(".filter_today").addClass('active');
+    $("#filter_month").val('');
+
+    var param1 = moment().format('YYYY-MM-DD');
+    var param2 = '';
+    var filterflag = '1';
+    getUserFilteredData (filterflag, param1, param2);
+});
+
+$(document).on('click', '.filter_yesterday', function (e) {
+    
+    $(".filter-btns").removeClass('active');
+    $(".filter_yesterday").addClass('active');
+    $("#filter_month").val('');
+
+    var param1 = moment().subtract(1, 'days').format('YYYY-MM-DD');
+    var param2 = '';
+    var filterflag = '2';
+    getUserFilteredData (filterflag, param1, param2);
+});
+
+$(document).on('change', '#filter_month', function (e) {
+
+    $(".filter-btns").removeClass('active');
+    var param1 = $(this).val();
+    var param2 = '';
+    var filterflag = '3';
+    getUserFilteredData (filterflag, param1, param2);
+    
+});
+
+var flag = false;
+$(document).on('change', '#filter_dateRange', function (e) {
+    if(flag){
+        var dateString = $(this).val();
+        var dateArray = dateString.split(" - ");
+        // Extract start and end dates from the array
+        var startDateFormatted = moment(dateArray[0], 'DD-MM-YYYY').format('YYYY-MM-DD');
+        var endDateFormatted = moment(dateArray[1], 'DD-MM-YYYY').format('YYYY-MM-DD');
+        
+        $(".filter-btns").removeClass('active');
+        $("#filter_month").val('');
+        
+        var param1 = startDateFormatted;
+        var param2 = endDateFormatted;
+        var filterflag = '4';
+        getUserFilteredData (filterflag, param1, param2);
+    }
+    flag = true;
+});
+
+function getUserFilteredData (filterFlag, param1='', param2='' ) {
+    
+    let type = 'POST';
+    let url = '/admin/getUserFilteredData';
+    let message = '';
+    let form = '';
+    let data = new FormData();
+    data.append("filterFlag", filterFlag);
+    data.append("param1", param1);
+    data.append("param2", param2);
+    // PASSING DATA TO FUNCTION
+    SendAjaxRequestToServer(type, url, data, '', getUserFilteredDataResponse, '', 'submit_button');
+    
+}
+
+function getUserFilteredDataResponse(response){
+
+    var data = response.data;
+    var active_users = data.active_users;
+    updateActiveUsersList(active_users);
+    
+}
 
 
 
 $(document).ready(function () {
     getUsersPageData();
 
-    
+    $('#filter_dateRange').daterangepicker({
+        startDate: moment().startOf('month'),
+        endDate: moment().endOf('month'),
+        locale: {
+            format: 'DD-MM-YYYY' // Set the date format
+        }
+    });
+  
 });
 
-// document.getElementById('cameraIcon').addEventListener('click', function() {
-//     // Trigger click event on the input field
-//     document.getElementById('uploadThumbnail').click();
-// });
-// document.getElementById('uploadThumbnail').addEventListener('change', function() {
-//     if (this.files.length > 0) {
-//         // Get the filename of the selected file
-//         var filename = this.files[0].name;
-//         // Update the content of the <span> element with the filename
-//         document.getElementById('filename').innerText = filename;
-//     } else {
-//         // No file selected, reset the content of the <span> element
-//         document.getElementById('filename').innerText = 'Upload Thumbnail';
-//     }
-// });
+document.getElementById('cameraIcon').addEventListener('click', function() {
+    // Trigger click event on the input field
+    document.getElementById('upload_picture').click();
+});
+
+document.getElementById('upload_picture').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        // Get the filename of the selected file
+        var filename = this.files[0].name;
+        // Update the content of the <span> element with the filename
+        document.getElementById('picturename').innerText = filename;
+    } else {
+        // No file selected, reset the content of the <span> element
+        document.getElementById('picturename').innerText = 'Upload Picture';
+    }
+});
+
+document.getElementById('aadharUploadIcon').addEventListener('click', function() {
+    // Trigger click event on the input field
+    document.getElementById('upload_aadhar').click();
+});
+
+document.getElementById('upload_aadhar').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        // Get the filename of the selected file
+        var filename = this.files[0].name;
+        // Update the content of the <span> element with the filename
+        document.getElementById('filename').innerText = filename;
+    } else {
+        // No file selected, reset the content of the <span> element
+        document.getElementById('filename').innerText = 'Upload Aadhar';
+    }
+});

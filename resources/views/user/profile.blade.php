@@ -5,16 +5,17 @@
 
 @section('content')
     <section>
+        
         <div class="container-fluid user-profile-tab">
-            <div class="profile-tab">
+            <div class="profile-tab" id="profile_section">
                 <div class="d-flex gap-3">
-                    <img src="images/Rectangle 214.png" alt="">
+                    <img src="{{$user->profile_picture != null ? $user->profile_picture : asset('assets_user/images/Rectangle 214.png') }}" alt="" style="width: 8vw;height: 7vw;border-radius: 10px;">
                     <div class="d-flex flex-column">
                         <h6 class="m-0">
-                            Abul Kalam
+                            {{$user->name}}
                         </h6>
                         <small>
-                            demo@gmail.com
+                            {{$user->email}}
                         </small>
                         <a href="javascript:;" class="btn btn-danger" onclick="confirmLogout();">
                             Log Out
@@ -23,8 +24,7 @@
                 </div>
 
 
-                <div class="border rounded-2 d-flex align-items-center justify-content-between p-3 mt-3"
-                    data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <div class="border rounded-2 d-flex align-items-center justify-content-between p-3 mt-3" onclick="getUserProfilePageData();"><!-- data-bs-toggle="modal" data-bs-target="#profileDetailModal" -->
                     <div class="d-flex gap-2 align-items-center">
                         <svg class="svg-bg-color" xmlns="http://www.w3.org/2000/svg" width="25" height="25"
                             viewBox="0 0 24 24">
@@ -37,7 +37,7 @@
                         <div>
                             <h6 class="m-0">Profile Details</h6>
                             <small>
-                                Shop address, Name, Phone, Email, etc...
+                            {{$user->name}}, {{$user->company_name}}, {{$user->phone_number}}, {{$user->email}}, etc...
                             </small>
                         </div>
                     </div>
@@ -110,8 +110,7 @@
                 </div>
 
 
-                <div class="hide-tutorial border rounded-2 d-flex align-items-center
-                     justify-content-between p-3 mt-3">
+                <div class="hide-tutorial border rounded-2 d-flex align-items-center justify-content-between p-3 mt-3" id="tutorials_btn">
                     <div class="d-flex gap-2 align-items-center">
                         <svg width="25" height="25" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -135,25 +134,102 @@
                             fill="#D7D7D7" />
                     </svg>
                 </div>
+
+                <div class="hide-tutorial border rounded-2 d-flex align-items-center justify-content-between p-3 mt-3" id="notifications_btn">
+                    <div class="d-flex gap-2 align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bell-ringing" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
+                            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+                            <path d="M21 6.727a11.05 11.05 0 0 0 -2.794 -3.727" />
+                            <path d="M3 6.727a11.05 11.05 0 0 1 2.792 -3.727" />
+                        </svg>
+
+                        <div>
+                            <h6 class="m-0">Notifications</h6>
+                            <small>
+                                Information
+                            </small>
+                        </div>
+                    </div>
+                    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path opacity="0.2"
+                            d="M9.40298 18.5207C14.5961 18.5207 18.806 14.3747 18.806 9.26033C18.806 4.14599 14.5961 0 9.40298 0C4.20986 0 0 4.14599 0 9.26033C0 14.3747 4.20986 18.5207 9.40298 18.5207Z"
+                            fill="#D7D7D7" />
+                        <path
+                            d="M11.3135 9.26021L11.3135 9.26037L8.35747 6.3503L10.5736 8.53276L11.3123 9.26032L10.5736 9.98788L8.35804 12.1708L11.3135 9.26021ZM12.0522 9.98777L9.09681 12.8984C8.68919 13.2998 8.02701 13.2997 7.61943 12.8983C7.21119 12.4963 7.21113 11.8442 7.61875 11.4427L9.83479 9.26032L7.6187 7.07786C7.21046 6.67581 7.21116 6.02424 7.61941 5.62219C8.02703 5.22075 8.68854 5.22015 9.09678 5.6222L12.0522 8.53281C12.4598 8.9342 12.4599 9.58633 12.0522 9.98777Z"
+                            fill="#D7D7D7" />
+                    </svg>
+                </div>
             </div>
 
-            <div class="tutorial">
+            <div class="tutorial" id="tutorials_section">
+                <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4 px-md-5">
+                    <span class="fw-bold">
+                        <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M16.25 7.20833C17.7688 7.20833 19 5.87452 19 4.22917C19 2.58382 17.7688 1.25 16.25 1.25C14.7312 1.25 13.5 2.58382 13.5 4.22917C13.5 5.87452 14.7312 7.20833 16.25 7.20833Z"
+                                stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M9.5 1.25H7.4C5.16 1.25 4.04 1.25 3.184 1.72233C2.43139 2.13778 1.81949 2.80067 1.436 3.616C1 4.54333 1 5.75667 1 8.18333V13.8167C1 16.2433 1 17.4567 1.436 18.384C1.81949 19.1993 2.43139 19.8622 3.184 20.2777C4.04 20.75 5.16 20.75 7.4 20.75H12.6C14.84 20.75 15.96 20.75 16.816 20.2777C17.5686 19.8622 18.1805 19.1993 18.564 18.384C19 17.4567 19 16.2433 19 13.8167V11.5417"
+                                stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Tutorials
+                    </span>
+                    <button type="button" class="view-btn py-1 px-3" id="backToMainPage">
+                        Back to profile
+                    </button>
+                </div>
+                @foreach($tutorials as $value)
                 <div class="border rounded-3 my-3">
-                    <img src="images/Rectangle 443.png" width="100%" alt="">
-                    <h5>How to apply new Puc</h5>
+                    <img src="{{ $value->thumbnail != null ? $value->thumbnail : asset('assets_user/images/Rectangle 443.png') }}" width="100%" alt="" style="border-radius:10px;">
+                    <h5>
+                        <a href="{{ $value->url}}" target="_blank">{{ $value->title}}</a>
+                    </h5>
                 </div>
+                @endforeach
+                
+                
+            </div>
 
-                <div class="border rounded-3">
-                    <img src="images/Rectangle 443.png" width="100%" alt="">
-                    <h5>How to apply new Puc</h5>
+            <div class="notifications" id="notifications_section" style="display:none;">
+                <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4 px-md-5">
+                    <span class="fw-bold">
+                        <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M16.25 7.20833C17.7688 7.20833 19 5.87452 19 4.22917C19 2.58382 17.7688 1.25 16.25 1.25C14.7312 1.25 13.5 2.58382 13.5 4.22917C13.5 5.87452 14.7312 7.20833 16.25 7.20833Z"
+                                stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M9.5 1.25H7.4C5.16 1.25 4.04 1.25 3.184 1.72233C2.43139 2.13778 1.81949 2.80067 1.436 3.616C1 4.54333 1 5.75667 1 8.18333V13.8167C1 16.2433 1 17.4567 1.436 18.384C1.81949 19.1993 2.43139 19.8622 3.184 20.2777C4.04 20.75 5.16 20.75 7.4 20.75H12.6C14.84 20.75 15.96 20.75 16.816 20.2777C17.5686 19.8622 18.1805 19.1993 18.564 18.384C19 17.4567 19 16.2433 19 13.8167V11.5417"
+                                stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Notifications
+                    </span>
+                    <button type="button" class="view-btn py-1 px-3" id="backToMainPage">
+                        Back to profile
+                    </button>
                 </div>
+                @foreach($notifications as $value)
+                <div class="home-card py-3 px-3 mb-4 mx-3 mx-md-5 px-md-4">
+                    @if($value->url != null)
+                        <h5><a href="{{$value->url}}" target="_blank">{{$value->title}}</a></h5>
+                    @else
+                        <h5>{{$value->title}}</h5>
+                    @endif
+                    <p>
+                    {{$value->message}}
+                    </p>
+                </div>
+                @endforeach
+                
+                
             </div>
         </div>
     </section>
 
 
     <!-- ===================================USER-PROFILE-EDIT-POPUP=============================== -->
-    <div class="modal fade bottom-to-top" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    <div class="modal fade bottom-to-top" id="profileDetailModal" tabindex="-1" aria-labelledby="profileDetailModalLabel"
         aria-hidden="true">
         <div id="profile-modal" class="modal-dialog modal-md modal-lg modal-xl">
             <div class="modal-content">
@@ -163,86 +239,79 @@
                     </svg>
                 </div>
                 <div class="modal-body">
-                    <form class="row g-3 register pt-4" novalidate>
+                    <form class="row g-3 register pt-4" id="registration_form" novalidate>
                         <div class="form-floating col-6 col-md-4">
-                            <input type="email" class="form-control" id="InputUsername"
-                                placeholder="name@example.com" />
-                            <label class="ps-4" for="InputUsername">Name</label>
+                            <input type="email" class="form-control" id="user_name" name="user_name"
+                                placeholder="Name" maxlength="50"/>
+                            <label class="ps-4" for="user_name">Name</label>
                         </div>
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <input type="text" class="form-control" id="UserName_AutoGen" placeholder="DG5S8FU" />
-                            <label class="ps-4" for="UserName_AutoGen">Username (Auto generated)</label>
+                            <input type="text" class="form-control" id="username_auto" name="username_auto" readonly placeholder="DG5S8FU" />
+                            <label class="ps-4" for="username_auto">Username (Auto generated)</label>
                         </div>
 
                         <div class="form-floating col-6 col-md-4">
-                            <input type="email" class="form-control" id="shop_center" placeholder="name@example.com" />
-                            <label class="ps-4" for="floatingInputUsername">Shop/Center Name</label>
-                        </div>
-
-
-                        <div class="form-floating col-6 col-md-4">
-                            <input type="number" class="form-control" id="userPhoneNum" placeholder="123" />
-                            <label class="ps-4" for="userPhoneNum">Mobile No</label>
-                        </div>
-
-                        <div class="form-floating col-6 col-md-4">
-                            <input type="email" class="form-control" id="Username_email"
-                                placeholder="name@example.com" />
-                            <label class="ps-4" for="Username_email">Email</label>
+                            <input type="email" class="form-control" id="company_name" name="company_name" placeholder="name@example.com" maxlength="50"/>
+                            <label class="ps-4" for="company_name">Shop/Center Name</label>
                         </div>
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <input type="password" class="form-control" id="UserName_shopPin" placeholder="Password" />
-                            <label class="ps-4" for="UserName_shopPin">Shop Pin Code</label>
+                            <input type="number" class="form-control" id="user_phone" name="user_phone" placeholder="123" maxlength="15"/>
+                            <label class="ps-4" for="user_phone">Mobile No</label>
                         </div>
 
                         <div class="form-floating col-6 col-md-4">
-                            <label class="visually-hidden" for="userState"></label>
-                            <select class="form-select" id="userState">
-                                <option selected>State</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                            <input type="email" class="form-control" id="user_email" name="user_email" placeholder="name@example.com" maxlength="50"/>
+                            <label class="ps-4" for="user_email">Email</label>
+                        </div>
+
+
+                        <div class="form-floating col-6 col-md-4">
+                            <input type="text" class="form-control" id="user_pin" name="user_pin" placeholder="Password" maxlength="10"/>
+                            <label class="ps-4" for="user_pin">Shop Pin Code</label>
+                        </div>
+
+                        <div class="form-floating col-6 col-md-4">
+                            <label class="visually-hidden" for="user_state"></label>
+                            <select class="form-select" id="user_state" name="user_state" onchange="getCitiesLovData();">
+                                <option value="">Choose State</option>
+                                @foreach($states as $value)
+                                    <option value="{{$value->id}}">{{$value->name}}</option>
+                                @endforeach
                             </select>
                         </div>
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <label class="visually-hidden" for="userCity"></label>
-                            <select class="form-select" id="userCity">
-                                <option selected>City</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                            <label class="visually-hidden" for="user_city"></label>
+                            <select class="form-select" id="user_city" name="user_city" onchange="getAreasLovData();">
+                                <option selected>Choose City</option>
                             </select>
                         </div>
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <label class="visually-hidden" for="userArea"></label>
-                            <select class="form-select" id="userArea">
+                            <label class="visually-hidden" for="user_area"></label>
+                            <select class="form-select" id="user_area" name="user_area">
                                 <option selected>Area</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
                             </select>
                         </div>
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <input type="number" class="form-control" id="landmark" placeholder="123" />
-                            <label class="ps-4" for="landmark">Landmark</label>
+                            <input type="text" class="form-control" id="user_landmark" name="user_landmark" placeholder="123" maxlength="50"/>
+                            <label class="ps-4" for="user_landmark">Landmark</label>
                         </div>
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <div class="upload px-4 d-flex align-items-center justify-content-between">Upload
-                                Aadhar
-                                <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
+                            <div id="cameraIcon" class="upload px-4 d-flex align-items-center justify-content-between">
+                                <span id="picturename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Picture</span>
+                                <input type="file" accept="image/*" capture="camera" id="upload_picture" name="upload_picture" multiple="false" style="display: none;">
+                                <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z"
                                         stroke="#727C8E" stroke-width="1.5" />
@@ -255,10 +324,10 @@
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <div class="upload px-4 d-flex align-items-center justify-content-between">Upload
-                                Aadhar
-                                <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
+                            <div id="aadharUploadIcon" class="upload px-4 d-flex align-items-center justify-content-between">
+                                <span id="filename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Aadhar</span>
+                                <input type="file" id="upload_aadhar" name="upload_aadhar" multiple="false" style="display: none;">
+                                <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z"
                                         stroke="#727C8E" stroke-width="1.5" />
@@ -271,16 +340,15 @@
 
 
                         <div class="row g-0 gap-3 px-2">
-                            <div id="retailer" class="form-floating col-12 mt-3">
-                                <input type="email" readonly class="form-control-plaintext fw-bolder"
-                                    id="floatingPlaintextInput" placeholder="Retailer (₹499)" value="Retailer (₹499)">
+                            <div id="" class="form-floating col-12 mt-3">
+                                <input type="text" class="form-control-plaintext fw-bolder" id="user_type"  readonly  value="">
                                 <label class="ps-4" for="floatingPlaintextInput">User Type</label>
                             </div>
 
                             <div class="col">
-                                <a href="payment-confirmation.html" type="submit" class="payment-btn w-100 py-3">
+                                <button type="button" class="payment-btn w-100 py-3 update_form_submit">
                                     Update
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -301,15 +369,30 @@
                     </svg>
                 </div>
                 <div class="modal-body">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="UserName_AutoGen" placeholder="DG5S8FU" />
-                        <label class="ps-4" for="UserName_AutoGen">Username ID</label>
-                    </div>
-                    <div class="py-3">
-                        <a href="payment-confirmation.html" type="submit" class="payment-btn w-100 py-3">
-                            Reset Now
-                        </a>
-                    </div>
+                    <form id="reset_password_form">
+                        <input type="hidden" class="" id="username" name="username" value="{{$user->username}}" readonly/>
+                        <div class="form-floating mt-2">
+                            <input type="text" class="form-control" id="password" name="password" placeholder="Old Password" />
+                            <label class="ps-4" for="password">Old Password</label>
+                        </div>
+                        <div class="form-floating mt-2">
+                            <input type="text" class="form-control" id="new_password" name="new_password" placeholder="New Password" />
+                            <label class="ps-4" for="new_password">New Password</label>
+                        </div>
+                        <div class="form-floating mt-2">
+                            <input type="text" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm New Password" />
+                            <label class="ps-4" for="confirm_password">Confirm New Password</label>
+                        </div>
+                       
+                        <div class="py-3">
+                            <button type="button" class="payment-btn w-100 py-3" id="reset_pass_submit">
+                                Reset Now
+                            </button>
+                        </div>
+                    </form>
+                    
+                    
+                    
                 </div>
             </div>
         </div>
@@ -327,7 +410,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="py-2">
-                        <a href="payment-confirmation.html" type="submit" class="payment-btn w-100 py-3">
+                        <a href="mailto:{{@$settings->helpline_email}}" type="button" class="payment-btn w-100 py-3">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_791_447)">
@@ -346,7 +429,7 @@
                     </div>
 
                     <div class="py-2">
-                        <a href="payment-confirmation.html" type="submit" class="btn btn-success w-100 py-3">
+                        <a href="https://wa.me/{{@$settings->helpline_phone}}" target="_blank" class="btn btn-success w-100 py-3">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -366,7 +449,9 @@
 @endsection
 
 @push('script')
-    
+
+    <script src="{{ asset('assets_user/customjs/script_profile.js') }}"></script>
+
     <script>
         function confirmLogout() {
             if (confirm("Are you sure you want to log out?")) {

@@ -26,7 +26,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/login', [AdminController::class, 'login'])->name('admin.login');
     Route::post('/loginSubmit', [AdminController::class, 'loginSubmit'])->name('admin.loginSubmit');
     Route::get('/logout', [AdminController::class, 'logout'])->name('admin.logout');
-
+    
+    
     Route::group(['middleware' => ['AdminAuth']], function(){
 
         /************** PAGE ROUTES ******************/
@@ -50,6 +51,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/getUsersPageData', [AdminController::class, 'getUsersPageData'])->name('admin.getUsersPageData');
         Route::post('/updateUserBalance', [AdminController::class, 'updateUserBalance'])->name('admin.updateUserBalance');
         
+        Route::post('/registerUser', [AdminController::class, 'registerUser'])->name('admin.registerUser');
+        Route::post('/editUser', [AdminController::class, 'editUser'])->name('admin.editUser');
+        Route::post('/getUserFilteredData', [AdminController::class, 'getUserFilteredData'])->name('admin.getUserFilteredData');
+
 
     });
     
@@ -89,7 +94,16 @@ Route::group(['prefix' => '/'], function () {
         Route::get('/profile', [FrontEndController::class, 'profile'])->name('profile');
 
 
+        Route::post('/getUserProfileData', [FrontEndController::class, 'getUserProfileData'])->name('getUserProfileData');
+        Route::post('/updateUserProfile', [FrontEndController::class, 'updateUserProfile'])->name('updateUserProfile');
+        Route::post('/resetPasswordProfile', [FrontEndController::class, 'resetPasswordProfile'])->name('resetPasswordProfile');
+        Route::post('/getPucTypeRate', [FrontEndController::class, 'getPucTypeRate'])->name('getPucTypeRate');
+        Route::post('/createPucUser', [FrontEndController::class, 'createPucUser'])->name('createPucUser');
         
+        Route::post('/getPucPageData', [FrontEndController::class, 'getPucPageData'])->name('getPucPageData');
+        
+
+
         
     });
     

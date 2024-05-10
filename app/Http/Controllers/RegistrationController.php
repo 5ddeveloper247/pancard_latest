@@ -57,7 +57,7 @@ class RegistrationController extends Controller
             'user_state' => 'required',
             'user_city' => 'required',
             'user_area' => 'required',
-            'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
             'upload_aadhar' => 'required|max:4096',
         ]);
    
@@ -66,8 +66,6 @@ class RegistrationController extends Controller
         
         if(isset($existing->id)){
             return response()->json(['status' => 401,'message' => "Username is already exist, try another time!"]);
-        }else{
-
         }
 
         $Users = new User();
@@ -78,7 +76,7 @@ class RegistrationController extends Controller
         $Users->username = $request->username_auto;
         $Users->email = $request->user_email;
         $Users->phone_number = $request->user_phone;
-        $Users->user_type = 'Retailer';
+        $Users->user_type = 'retailer';
         $Users->company_name = $request->company_name;
         $Users->pin_code = $request->user_pin;
         $Users->state_id = $request->user_state;
@@ -184,7 +182,7 @@ class RegistrationController extends Controller
             if(!$valid){
                 return response()->json(['status' => 402,'message' => "The new password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character."]);
             }else{
-
+                
                 User::where('id', $userId)->update([
                     'otp' => null,
                     'password' => bcrypt($request->new_password),

@@ -105,10 +105,9 @@
             <div class="form-floating col-4 col-md-4 my-2">
                 <select class="form-select users-details-inputs pb-2" id="pucType" name="pucType" required value="">
                     <option value="">Choose</option>
-                    <option value="1">1w+ with fine</option>
-                    <option value="2">2w+ with fine</option>
-                    <option value="3">3w+ with fine</option>
-                    <option value="4">4w+ with fine</option>
+                    @foreach($puc_types as $value)
+                        <option value="{{$value->id}}">{{$value->name}}</option>
+                    @endforeach
                 </select>
                 <label class="ms-2 d-flex align-items-center" for="pucType">PUC Type</label>
             </div>
@@ -196,7 +195,7 @@
 
             <!-- Notification HTML Section -->
         
-        </div>
+        </div> 
     </div>
     <div id="tutorial" style="display: none;">
         <h5>Add Video</h5>

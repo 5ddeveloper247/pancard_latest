@@ -13,7 +13,11 @@ use App\Models\Settings;
 use App\Models\ApiSettings;
 use App\Models\Notifications;
 use App\Models\Tutorials;
-
+use App\Models\States;
+use App\Models\Cities;
+use App\Models\Areas;
+use App\Models\PucTypes;
+use App\Models\PucUserRates;
 
 
 class AdminController extends Controller
@@ -37,7 +41,17 @@ class AdminController extends Controller
 
     public function users(Request $request)
     {   
+        $data['states'] = States::where('status', '1')->get();
+        $data['puc_types'] = PucTypes::where('status', '1')->get();
+        
+        do {
+            $username_auto = 'PUCZ'.mt_rand(100000, 999999);
+            $existing_number = User::where('username', $username_auto)->first();
+        } while ($existing_number);
+
+        $data['username_auto'] = $username_auto;
         $data['page'] = 'Users';
+        
         return view('admin/users')->with($data);
     }
 
@@ -45,6 +59,7 @@ class AdminController extends Controller
     {   
         $data['page'] = 'Settings';
         $data['users'] = User::where('status', 'Active')->whereIn('type', ['user'])->get();
+        $data['puc_types'] = PucTypes::where('status', '1')->get();
         return view('admin/settings')->with($data);
     }
 
@@ -168,7 +183,6 @@ class AdminController extends Controller
 
     public function storeNotifSettings(Request $request)
     {   
-        
         $validatedData = $request->validate([
             'notification_title' => 'required|max:100',
             'notification_url' => 'sometimes|nullable|url',
@@ -176,11 +190,13 @@ class AdminController extends Controller
         ]);
    
         // Process form submission if validation passes
-        $Notifications = Notifications::find($request->notification_id);
         
         if($request->notification_id == null){
             $Notifications = new Notifications();
+        }else{
+            $Notifications = Notifications::find($request->notification_id);
         }
+
         // Update the settings with the new values
         $Notifications->title = $request->notification_title;
         $Notifications->url = $request->notification_url;
@@ -233,22 +249,24 @@ class AdminController extends Controller
             $validatedData = $request->validate([
                 'tutorial_title' => 'required|max:100',
                 'tutorial_url' => 'required|url',
-                'uploadThumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'uploadThumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048'
             ]);
         }else{
             $validatedData = $request->validate([
                 'tutorial_title' => 'required|max:100',
                 'tutorial_url' => 'required|url',
-                'uploadThumbnail' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+                'uploadThumbnail' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048'
             ]);
         }
         
         // Process form submission if validation passes
-        $Tutorials = Tutorials::find($request->tutorial_id);
         
         if($request->tutorial_id == null){
             $Tutorials = new Tutorials();
+        }else{
+            $Tutorials = Tutorials::find($request->tutorial_id);
         }
+
         // Update the settings with the new values
         $Tutorials->title = $request->tutorial_title;
         $Tutorials->url = $request->tutorial_url;
@@ -261,7 +279,6 @@ class AdminController extends Controller
         }else{
             $Tutorials->updated_at = date('Y-m-d H:i:s');
         }
-
         
         $previous_image = Tutorials::where('id', $request->tutorial_id)->value('thumbnail');
 
@@ -310,7 +327,7 @@ class AdminController extends Controller
     public function getUsersPageData(Request $request)
     {
         $data['pending_users'] = User::where('status', 'inactive')->where('type', 'user')->with(['state', 'city', 'area'])->get();
-        $data['active_users'] = User::where('status', 'active')->where('type', 'user')->with(['state', 'city', 'area'])->get();
+        $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->get();
 
         return response()->json(['status' => 200,'data' => $data]);
     }
@@ -336,7 +353,7 @@ class AdminController extends Controller
                 'balance' => $new_amount,
             ]);
 
-            $data['active_users'] = User::where('status', 'active')->where('type', 'user')->with(['state', 'city', 'area'])->get();
+            $data['active_users'] = User::whereIn('status', ['active','approved'])->where('type', 'user')->with(['state', 'city', 'area'])->get();
             
             return response()->json(['status' => 200,'message' => 'Balance updated successfully!', 'data' => $data]);
         
@@ -349,5 +366,205 @@ class AdminController extends Controller
         return response()->json(['status' => 200,'data' => $data]);
     }
     
+    
+    public function registerUser(Request $request)
+    {   
+        if($request->user_id == null){ // create user validation
+            $validatedData = $request->validate([
+                'user_name' => 'required|max:100',
+                'username_auto' => 'required|max:100',
+                'company_name' => 'required|max:100',
+                'user_phone' => 'required|numeric',
+                'user_email' => 'required|email|unique:users,email',
+                'user_pin' => 'required|max:100',
+                'user_state' => 'required',
+                'user_city' => 'required',
+                'user_area' => 'required',
+                'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+                'upload_aadhar' => 'required|max:4096',
+                'user_type' => 'required',
+                'puc_type_rate' => ['nullable', 'array', function ($attribute, $value, $fail) {
+                    // Check if at least one value exists in the array
+                    if (!collect($value)->filter()->count()) {
+                        $fail('At least one PUC Type Rate must have a value.');
+                    }
+                }],
+            ]);
+
+            $Users = new User();
+            
+        }else{ // update user validation
+
+            $validatedData = $request->validate([
+                'user_name' => 'required|max:100',
+                'username_auto' => 'required|max:100',
+                'company_name' => 'required|max:100',
+                'user_phone' => 'required|numeric',
+                'user_email' => 'required|email',
+                'user_pin' => 'required|max:100',
+                'user_state' => 'required',
+                'user_city' => 'required',
+                'user_area' => 'required',
+                'upload_picture' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+                'upload_aadhar' => 'max:4096',
+                'user_type' => 'required',
+                'puc_type_rate' => ['nullable', 'array', function ($attribute, $value, $fail) {
+                    // Check if at least one value exists in the array
+                    if (!collect($value)->filter()->count()) {
+                        $fail('At least one PUC Type Rate must have a value.');
+                    }
+                }],
+            ]);
+
+            // Process form submission if validation passes
+            $existing = User::where('user_type', $request->username_auto)->first();
+            
+            if(isset($existing->id)){
+                return response()->json(['status' => 401,'message' => "Username is already exist, try another time!"]);
+            }
+            $Users = User::find($request->user_id);
+        }
+
+        // Update the settings with the new values
+        $Users->type = 'user';
+        $Users->name = $request->user_name;
+        $Users->username = $request->username_auto;
+        $Users->email = $request->user_email;
+        $Users->phone_number = $request->user_phone;
+        $Users->user_type = isset($request->user_type) ? $request->user_type : 'retailer';
+        $Users->company_name = $request->company_name;
+        $Users->pin_code = $request->user_pin;
+        $Users->state_id = $request->user_state;
+        $Users->city_id = $request->user_city;
+        $Users->area_id = $request->user_area;
+        $Users->landmark = $request->user_landmark;
+        $Users->upload_option = $request->upload_option;
+        
+        $req_file = 'upload_picture';
+        $path = '/images/uploads/profile';
+        $previous_image = User::where('id', $request->user_id)->value('profile_picture');
+
+        if ($request->hasFile($req_file)) {
+            if($request->user_id != null){
+                deleteImage($previous_image);
+            }
+            $uploadedFile = $request->file($req_file);
+
+            $savedImage = saveSingleImage($uploadedFile, $path);
+            $Users->profile_picture = url('/').$savedImage;
+        }else{  // if file is not update on edit case then assign previous file
+            $Users->profile_picture = $previous_image;
+        }
+        
+        $req_file1 = 'upload_aadhar';
+        $path1 = '/images/uploads/aadhar';
+        $previous_image1 = User::where('id', $request->user_id)->value('aadhar');
+
+        if ($request->hasFile($req_file1)) {
+            if($request->user_id != null){
+                deleteImage($previous_image1);
+            }
+            $uploadedFile = $request->file($req_file1);
+
+            $savedFile = saveSingleImage($uploadedFile, $path1);
+            $Users->aadhar = url('/').$savedFile;
+        }else{  // if file is not update on edit case then assign previous file
+            $Users->aadhar = $previous_image1;
+        }
+
+        $Users->status = 'approved';
+        if($request->user_id == null){
+            $Users->created_at = date('Y-m-d H:i:s');
+            $Users->updated_at = date('Y-m-d H:i:s');
+        }else{
+            $Users->updated_at = date('Y-m-d H:i:s');
+        }
+        
+        // Save the changes
+        $Users->save();
+
+        // save PUC Type Rates against user
+        $pucTypeIds = $request->input('puc_type_ids');
+        $pucTypeRates = $request->input('puc_type_rate');
+
+        if(count($pucTypeRates) > 0){
+            PucUserRates::where('user_id', $Users->id)->delete(); //  delete previous entries and save new
+            foreach($pucTypeRates as $key => $pucTypeRate){
+
+                if($pucTypeRate != null){
+                    
+                    $PucUserRates = new PucUserRates();
+                    $PucUserRates->user_id = $Users->id;
+                    $PucUserRates->puc_type_id = $pucTypeIds[$key];
+                    $PucUserRates->puc_rate = $pucTypeRate;
+                    $PucUserRates->date = date('Y-m-d H:i:s');
+                    $PucUserRates->save();
+                }
+            }
+        }
+        
+        do {
+            $username_auto = 'PUCZ'.mt_rand(100000, 999999);
+            $existing_number = User::where('username', $username_auto)->first();
+        } while ($existing_number);
+
+        $data['username_auto'] = $username_auto;
+
+        if($request->user_id == null){
+            return response()->json(['status' => 200,'message' => "User Created Successfully!", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 200,'message' => "User Updated Successfully!", 'data' => $data]);
+        }
+    }
+
+    public function editUser(Request $request)
+    {   
+        
+        $user_id = $request->id;
+        $user_detail = User::where('id', $user_id)->with(['state', 'city', 'area', 'pucRates'])->first();
+        $data['user_detail'] = $user_detail;
+        $data['cities'] = Cities::where('state_id', $user_detail->state_id)->get();
+        $data['areas'] = Areas::where('city_id', $user_detail->city_id)->get();
+        // dd($data);
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
+    public function getUserFilteredData(Request $request)
+    {   
+        
+        $filterFlag = $request->filterFlag;
+        $param1 = $request->param1; 
+        $param2 = $request->param2;
+
+        if($filterFlag == '1' || $filterFlag == '2'){
+            $Users = User::whereIn('status', ['active', 'approved'])
+                        ->where('type', 'user')
+                        ->whereDate('created_at', '=', $param1)         // for today  & yesterday
+                        ->with(['state', 'city', 'area'])
+                        ->get();
+        
+        }else if($filterFlag == '3'){
+            
+            $Users = User::whereIn('status', ['active', 'approved'])
+                        ->where('type', 'user')
+                        ->whereYear('created_at', date('Y'))
+                        ->whereMonth('created_at', $param1)             // for month
+                        ->with(['state', 'city', 'area'])
+                        ->get();
+        }else if($filterFlag == '4'){
+            
+            $Users = User::whereIn('status', ['active', 'approved'])
+                            ->where('type', 'user')
+                            ->whereDate('created_at', '>=', $param1)    // for start date
+                            ->whereDate('created_at', '<=', $param2)    // for end date
+                            ->with(['state', 'city', 'area'])
+                            ->get();
+        }
+       
+        $data['active_users'] = $Users;
+        // dd($data);
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
     
 }

@@ -5,6 +5,13 @@ $(function() {
         }
     });
 });
+
+$(document).on('keyup', "[type=number], [type=email]", function (e) {
+    if (this.value.length > this.maxLength) {
+        this.value = this.value.slice(0, this.maxLength);
+    }
+});
+
 $(document).ready(function(){
     toastr.options = {
         timeOut : 0,
@@ -59,6 +66,7 @@ function SendAjaxRequestToServer(
         },
     });
 }
+
 
 // $(document).on('click', '#guest_form_submit', function (e) {
 //     console.log('hamza');

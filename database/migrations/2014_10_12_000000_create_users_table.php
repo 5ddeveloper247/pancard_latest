@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->nullable();
             $table->string('email')->unique();
-            $table->integer('phone_number')->nullable();
+            $table->string('phone_number')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->integer('otp')->nullable();
@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('landmark')->nullable();
             $table->string('profile_picture')->nullable();
             $table->string('aadhar')->nullable();
+            $table->smallInteger('upload_option')->default('1');
             $table->double('balance', 8, 2)->default(0);
             $table->string('status', 20);
             $table->rememberToken();

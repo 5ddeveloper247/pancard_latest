@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('helpline_email')->nullable();
             $table->string('helpline_phone', 20)->nullable();
             $table->integer('state')->nullable();
+            $table->integer('puc_type')->nullable();
             $table->integer('disable_user_id')->nullable();
             $table->timestamps();
         });

@@ -329,6 +329,9 @@ function addTutorialSettingsResponse(response) {
         });
         let form = $('#tutorial_settings_form');
         form.trigger("reset");
+
+        $("#filename").text('Upload Thumbnail');
+
         var data = response.data;
         updateTutorialsList(data['tutorials']);
         // success response action 
@@ -445,7 +448,12 @@ function editTutorialResponse(response){
         $("#tutorial_title").val(tutorial['title']);
         $("#tutorial_url").val(tutorial['url']);
         $("#filename").text(tutorial['thumbnail']);
-        $("#filename").text(tutorial['thumbnail']);
+        if(tutorial['status'] == 'on'){
+            $("#tutorial_status").prop('checked', true);
+        }else{
+            $("#tutorial_status").prop('checked', false);
+        }
+        
         
         $('html, body').animate({ scrollTop: 0 }, 'slow');
 
@@ -459,7 +467,7 @@ $(document).ready(function () {
 
     
 });
-
+ 
 document.getElementById('cameraIcon').addEventListener('click', function() {
     // Trigger click event on the input field
     document.getElementById('uploadThumbnail').click();

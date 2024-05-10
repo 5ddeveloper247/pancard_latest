@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>LOGIN</title>
-    <link rel="stylesheet" href="{{ asset('assets_admin/plugins/bootstrap/bootstrap.min.css') }}" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('assets_admin/plugins/fonts/fonts.google.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/bootstrap.min.css') }}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/fonts/fonts.google.css') }}"/>
     <link rel="stylesheet" href="{{ asset('assets_user/css/style.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets_admin/plugins/toastr/toastr.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}"/>
 </head>
 
 <body>
@@ -31,36 +31,36 @@
 
             <form class="row g-3 register pt-4" id="registration_form" novalidate="">
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Name" />
-                    <label class="ps-4" for="InputUsername">Name</label>
+                    <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Name" maxlength="50"/>
+                    <label class="ps-4" for="user_name">Name</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
                     <input type="text" class="form-control" id="username_auto" name="username_auto" value="{{$username_auto}}" readonly/>
-                    <label class="ps-4" for="UserName_AutoGen">Username (Auto generated)</label>
+                    <label class="ps-4" for="username_auto">Username (Auto generated)</label>
                 </div>
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Company Name" />
-                    <label class="ps-4" for="floatingInputUsername">Company Name</label>
-                </div>
-
-
-                <div class="form-floating col-6 col-md-4">
-                    <input type="number" class="form-control" id="user_phone" name="user_phone" placeholder="123" />
-                    <label class="ps-4" for="userPhoneNum">Mobile No</label>
-                </div>
-
-                <div class="form-floating col-6 col-md-4">
-                    <input type="email" class="form-control" id="user_email" name="user_email" placeholder="name@example.com" />
-                    <label class="ps-4" for="Username_email">Email</label>
+                    <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Company Name" maxlength="50"/>
+                    <label class="ps-4" for="company_name">Company Name</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="user_pin" name="user_pin" placeholder="Password" />
-                    <label class="ps-4" for="UserName_shopPin">Shop Pin Code</label>
+                    <input type="number" class="form-control" id="user_phone" name="user_phone" placeholder="123" maxlength="15"/>
+                    <label class="ps-4" for="user_phone">Mobile No</label>
+                </div>
+
+                <div class="form-floating col-6 col-md-4">
+                    <input type="email" class="form-control" id="user_email" name="user_email" placeholder="name@example.com" maxlength="50"/>
+                    <label class="ps-4" for="user_email">Email</label>
+                </div>
+
+
+                <div class="form-floating col-6 col-md-4">
+                    <input type="text" class="form-control" id="user_pin" name="user_pin" placeholder="Pin Code" maxlength="10"/>
+                    <label class="ps-4" for="user_pin">Shop Pin Code</label>
                 </div>
 
                 <div class="form-floating col-6 col-md-4">
@@ -91,7 +91,7 @@
 
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="user_landmark" name="user_landmark" placeholder="123" />
+                    <input type="text" class="form-control" id="user_landmark" name="user_landmark" placeholder="123" maxlength="50"/>
                     <label class="ps-4" for="user_landmark">Landmark</label>
                 </div>
 
@@ -158,11 +158,11 @@
 
 	
 
-    <script src="{{ asset('assets_user/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets_user/plugins/popper/popper.min.js') }}" crossorigin="anonymous"></script>
-	<script src="{{ asset('assets_user/plugins/bootstrap/bootstrap.min.js') }}" crossorigin="anonymous"></script>
-	<script src="{{ asset('assets_user/plugins/toastr/toastr.min.js') }}"></script>
-	<script src="{{ asset('assets_user/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/popper/popper.min.js') }}" crossorigin="anonymous"></script>
+	<script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}" crossorigin="anonymous"></script>
+	<script src="{{ asset('assets/plugins/toastr/toastr.min.js') }}"></script>
+	<script src="{{ asset('assets/plugins/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets_user/js/main.js') }}"></script>
     <script src="{{ asset('assets_user/customjs/common.js') }}"></script>
     <script src="{{ asset('assets_user/customjs/script_registration.js') }}"></script>

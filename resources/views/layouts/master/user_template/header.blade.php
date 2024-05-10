@@ -44,7 +44,7 @@
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a href="{{route('profile')}}" class="nav-link d-flex flex-column align-items-center justify-content-center">
+            <a href="{{route('profile')}}" class="nav-link d-flex flex-column align-items-center justify-content-center {{$page=='profile' ? 'active' : ''}}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="24" viewBox="0 0 23 24">
                     <path fill="currentColor" fill-rule="evenodd"
                         d="M8 7a4 4 0 1 1 8 0a4 4 0 0 1-8 0m0 6a5 5 0 0 0-5 5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3a5 5 0 0 0-5-5z"

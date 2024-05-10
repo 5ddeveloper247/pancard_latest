@@ -8,50 +8,45 @@
         <div class="container-fluid order-tab-container">
             <ul id="nav-order-tab" class="nav nav-pills d-flex align-items-center justify-content-between
                  flex-nowrap gap-2 px-0 px-md-5 mb-3" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button id="tab-bg-color" class="nav-link active" id="pills-all-tab" data-bs-toggle="pill"
+                <li class="nav-item">
+                    <button id="tab-bg-color" class="nav-link filter_orders active" data-filter="all">All</button><!--  data-bs-toggle="pill"
                         data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all"
-                        aria-selected="true">All</button>
+                        aria-selected="true" -->
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button id="tab-bg-color" class="nav-link" id="pills-pending-tab" data-bs-toggle="pill"
+                <li class="nav-item">
+                    <button id="tab-bg-color" class="nav-link filter_orders" data-filter="pending" >Pending</button><!-- data-bs-toggle="pill"
                         data-bs-target="#pills-pending" type="button" role="tab" aria-controls="pills-pending"
-                        aria-selected="false">Pending</button>
+                        aria-selected="false" -->
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button id="tab-bg-color" class="nav-link" id="pills-completed-tab" data-bs-toggle="pill"
+                <li class="nav-item">
+                    <button id="tab-bg-color" class="nav-link filter_orders" data-filter="completed">Completed</button><!--  data-bs-toggle="pill"
                         data-bs-target="#pills-completed" type="button" role="tab" aria-controls="pills-completed"
-                        aria-selected="false">Completed</button>
+                        aria-selected="false" -->
                 </li>
-                <form class="d-flex order-search-bar" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="order-search-btn p-0" type="submit">
+                <form class="d-flex order-search-bar" action="javascript:;">
+                    <input class="form-control me-2" type="search" placeholder="Search" style="width:220px;">
+                    <button class="order-search-btn p-0 filter_search" type="button">
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="30" height="30" rx="5" fill="#F7F7F7" />
                             <path
                                 d="M21 21L18.1047 18.1047M18.1047 18.1047C18.6 17.6094 18.9928 17.0215 19.2608 16.3744C19.5289 15.7273 19.6668 15.0338 19.6668 14.3334C19.6668 13.633 19.5289 12.9395 19.2608 12.2924C18.9928 11.6453 18.6 11.0574 18.1047 10.5621C17.6094 10.0669 17.0215 9.67401 16.3744 9.40598C15.7273 9.13795 15.0338 9 14.3334 9C13.633 9 12.9395 9.13795 12.2924 9.40598C11.6453 9.67401 11.0574 10.0669 10.5621 10.5621C9.56191 11.5623 9 12.9189 9 14.3334C9 15.7479 9.56191 17.1045 10.5621 18.1047C11.5623 19.1049 12.9189 19.6668 14.3334 19.6668C15.7479 19.6668 17.1045 19.1049 18.1047 18.1047Z"
                                 stroke="#515C6F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-
                     </button>
                 </form>
             </ul>
             <ul id="nav-order-tab" class="nav nav-pills d-flex align-items-center justify-content-between
-                 flex-nowrap gap-2 px-0 px-md-5 mb-3" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button id="tab-bg-color" class="nav-link" id="pills-today-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-today" type="button" role="tab" aria-controls="pills-today"
-                        aria-selected="true">Today</button>
+                 flex-nowrap gap-2 px-0 px-md-5 mb-3" role="tablist">
+                
+                 <li class="nav-item" role="presentation">
+                    <button type="button" id="tab-bg-color" class="nav-link filter1_orders" data-filter="today">Today</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button id="tab-bg-color" class="nav-link" id="pills-yesterday-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-yesterday" type="button" role="tab" aria-controls="pills-yesterday"
-                        aria-selected="false">Yesterday</button>
+                    <button type="button" id="tab-bg-color" class="nav-link filter1_orders" data-filter="yesterday">Yesterday</button>
                 </li>
-                <form class="d-flex order-search-bar" role="search">
-                    <input class="form-control me-2" type="search" placeholder="05/03/2023 to 24/03/2023"
-                        aria-label="Search">
-                    <button class="order-search-btn p-0" type="submit">
+                <form action="javascript:;">
+                    <input class="form-control me-2" data-filter="3" id="filter_dateRange" type="text" placeholder="Choose Range" readonly style="width:220px;">
+                    <!-- <button class="order-search-btn p-0" type="button">
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="30" height="30" rx="5" fill="#F7F7F7" />
                             <path
@@ -59,14 +54,12 @@
                                 stroke="#515C6F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
 
-                    </button>
+                    </button> -->
                 </form>
             </ul>
             <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab"
-                    tabindex="0">
-                    <div class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4
-                        mx-md-5 px-md-4">
+                <div class="tab-pane fade show active" id="pucOrders_container" tabindex="0"><!--  role="tabpanel" aria-labelledby="pills-all-tab" -->
+                    <!-- <div class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4 mx-md-5 px-md-4">
                         <div class="d-flex flex-column">
                             <span class="fw-bold text-dark">
                                 Abul Hussain Mazumder
@@ -85,7 +78,7 @@
 
                         <div class="d-flex flex-column">
                             <div class="d-flex align-items-center justify-content-end">
-                                <!-- Button trigger modal -->
+                                
                                 <button type="button" class="modal-btn" data-bs-toggle="modal"
                                     data-bs-target="#staticBackdrop">
                                     <svg width="74" height="71" viewBox="0 0 74 71" fill="none"
@@ -561,7 +554,7 @@
                                 . 10 days remaining
                             </span>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="tab-pane fade" id="pills-pending" role="tabpanel" aria-labelledby="pills-pending-tab"
                     tabindex="0">...</div>
@@ -600,7 +593,7 @@
 @endsection
 
 @push('script')
-    <!-- <script src="{{ asset('customjs/web/register/common.js') }}?v={{time()}}"></script> -->
     
+    <script src="{{ asset('assets_user/customjs/script_orders.js') }}"></script>
 	
 @endpush

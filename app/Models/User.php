@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
     	return $this->belongsTo(Areas::class, 'area_id');
     }
+
+    public function pucRates()
+    {
+        return $this->hasMany(PucUserRates::class, 'user_id');
+    }
 }

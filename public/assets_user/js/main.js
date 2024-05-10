@@ -30,13 +30,13 @@ window.onload = function () {
 
 
 
-let editVehicleDetail = document.querySelector('#edit-vehicle-details');
+// let editVehicleDetail = document.querySelector('#edit-vehicle-details');
 let showVehicleDetailsContainer = document.querySelector('.vehicle-details-container');
 let hideMainHomePage = document.querySelector('.main-home-page');
-editVehicleDetail.addEventListener("click", () => {
-    hideMainHomePage.style.display = "none";
-    showVehicleDetailsContainer.style.display = 'block';
-})
+// editVehicleDetail.addEventListener("click", () => {
+//     hideMainHomePage.style.display = "none";
+//     showVehicleDetailsContainer.style.display = 'block';
+// })
 
 
 

@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>LOGIN</title>
-    <link rel="stylesheet" href="{{ asset('assets_admin/plugins/bootstrap/bootstrap.min.css') }}" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('assets_admin/plugins/fonts/fonts.google.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/bootstrap.min.css') }}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/fonts/fonts.google.css') }}"/>
 	<link rel="stylesheet" href="{{ asset('assets_user/css/style.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets_admin/plugins/toastr/toastr.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}"/>
     
 </head>
 <body>
@@ -61,11 +61,11 @@
         </div>
     </div>
 
-    <script src="{{ asset('assets_user/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets_user/plugins/popper/popper.min.js') }}" crossorigin="anonymous"></script>
-	<script src="{{ asset('assets_user/plugins/bootstrap/bootstrap.min.js') }}" crossorigin="anonymous"></script>
-	<script src="{{ asset('assets_user/plugins/toastr/toastr.min.js') }}"></script>
-	<script src="{{ asset('assets_user/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/popper/popper.min.js') }}" crossorigin="anonymous"></script>
+	<script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}" crossorigin="anonymous"></script>
+	<script src="{{ asset('assets/plugins/toastr/toastr.min.js') }}"></script>
+	<script src="{{ asset('assets/plugins/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets_user/js/main.js') }}"></script>
     <script src="{{ asset('assets_user/customjs/common.js') }}"></script>
     <script src="{{ asset('assets_user/customjs/script_forgetpassword.js') }}"></script>

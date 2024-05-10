@@ -7,9 +7,9 @@
     <div class="tab-content" id="pills-tabContent">
         <!-- =================================HOME-SECTION-TAB========================= -->
         <section>
-            <div class="container-fluid main-home-page g-0">
+            <div class="container-fluid main-home-page g-0" id="main_section">
                 <div class="d-flex align-items-center justify-content-center">
-                    <button type="button"
+                    <button type="button" id="makeNewPuc_btn"
                         class="make-new-btn d-flex align-items-center justify-content-center gap-3 py-2 mb-4">
                         <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -19,7 +19,7 @@
                                 d="M17.3071 6.99638L12.0488 12.2571L10.3156 10.524L13.4829 7.35429H6.12857C5.15333 7.35429 4.21804 7.7417 3.52844 8.4313C2.83884 9.1209 2.45143 10.0562 2.45143 11.0314C2.45143 12.0067 2.83884 12.942 3.52844 13.6316C4.21804 14.3212 5.15333 14.7086 6.12857 14.7086H7.35429V17.16H6.12857C4.50317 17.16 2.94435 16.5143 1.79502 15.365C0.645687 14.2157 0 12.6568 0 11.0314C0 9.40603 0.645687 7.84721 1.79502 6.69788C2.94435 5.54855 4.50317 4.90286 6.12857 4.90286H13.4829L10.3132 1.73316L12.0463 0L17.3095 5.26077V6.99638H17.3071Z"
                                 fill="white" />
                         </svg>
-                        Make new
+                        Make new PUC
                     </button>
                 </div>
 
@@ -35,25 +35,23 @@
                         </svg>
                         Notifications
                     </span>
-                    <button type="button" class="view-btn py-1 px-3">
+                    <button type="button" class="view-btn py-1 px-3" id="viewAllNotif_btn">
                         View All
                     </button>
                 </div>
 
-                <div class="home-card py-3 px-3 mb-4 mx-3 mx-md-5 px-md-4">
-                    <h5>
-                        Important! news about PUC fine
-                    </h5>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur. In vel tellus cras in. Parturient tempus ultricies
-                        integer
-                        nec. Quam nunc pellentesque nec convallis aliquam varius duis. Risus eget non dictum urna
-                        lacinia
-                        morbi pharetra. Quam sit consectetur at elementum dapibus. Eget enim molestie felis sagittis
-                        sagittis turpis tortor.
-                        Vestibulum eget cras in.
-                    </p>
-                </div>
+                @foreach($notifications_limited as $value)
+                    <div class="home-card py-3 px-3 mb-4 mx-3 mx-md-5 px-md-4">
+                        @if($value->url != null)
+                            <h5><a href="{{$value->url}}" target="_blank">{{$value->title}}</a></h5>
+                        @else
+                            <h5>{{$value->title}}</h5>
+                        @endif
+                        <p>
+                        {{$value->message}}
+                        </p>
+                    </div>
+                @endforeach
 
                 <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4 px-md-5">
                     <span class="fw-bold">
@@ -209,49 +207,81 @@
                     </div>
                 </div>
             </div>
-            <div class="container-fluid vehicle-details-container g-0">
-                <form class="row g-3 register pt-4" novalidate>
+            <div class="main-home-page" id="notification_section" style="display:none;">
+                <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4 px-md-5">
+                    <span class="fw-bold">
+                        <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M16.25 7.20833C17.7688 7.20833 19 5.87452 19 4.22917C19 2.58382 17.7688 1.25 16.25 1.25C14.7312 1.25 13.5 2.58382 13.5 4.22917C13.5 5.87452 14.7312 7.20833 16.25 7.20833Z"
+                                stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M9.5 1.25H7.4C5.16 1.25 4.04 1.25 3.184 1.72233C2.43139 2.13778 1.81949 2.80067 1.436 3.616C1 4.54333 1 5.75667 1 8.18333V13.8167C1 16.2433 1 17.4567 1.436 18.384C1.81949 19.1993 2.43139 19.8622 3.184 20.2777C4.04 20.75 5.16 20.75 7.4 20.75H12.6C14.84 20.75 15.96 20.75 16.816 20.2777C17.5686 19.8622 18.1805 19.1993 18.564 18.384C19 17.4567 19 16.2433 19 13.8167V11.5417"
+                                stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Notifications
+                    </span>
+                    <button type="button" class="view-btn py-1 px-3" id="backToMainPage">
+                        Back to profile
+                    </button>
+                </div>
+                @foreach($notifications_all as $value)
+                <div class="home-card py-3 px-3 mb-4 mx-3 mx-md-5 px-md-4">
+                    @if($value->url != null)
+                        <h5><a href="{{$value->url}}" target="_blank">{{$value->title}}</a></h5>
+                    @else
+                        <h5>{{$value->title}}</h5>
+                    @endif
+                    <p>
+                    {{$value->message}}
+                    </p>
+                </div>
+                @endforeach
+                
+                
+            </div>
+            <div class="container-fluid vehicle-details-container g-0" id="makePuc_section">
+                <button type="button" class="view-btn py-1 px-3" id="backToMainPage">
+                    <&nbsp;Back to profile
+                </button>
+                <form class="row g-3 register pt-4" id="puc_create_form" novalidate>
                     <div class="form-floating col-6 col-md-4">
-                        <label class="visually-hidden" for="PUC-type"></label>
-                        <select class="form-select" id="PUC-type">
-                            <option selected>PUC Type</option>
-                            <option value="1">2 wheller</option>
-                            <option value="2">2 wheller with fine</option>
-                            <option value="3">3 wheller+</option>
-                            <option value="4">3+ wheller+ with fine</option>
-                            <option value="5">4 wheller+</option>
-                            <option value="6">4+ wheller+ with fine</option>
+                        <label class="visually-hidden" for="puc_type"></label>
+                        <select class="form-select" id="puc_type" name="puc_type" onchange="getPucTypeRate()">
+                            <option value="">PUC Type</option>
+                            @foreach($userPucTypes as $rate)
+                                <option value="{{$rate->puc_type_id}}">{{$rate->pucType->name}}</option>
+                            @endforeach
                         </select>
                     </div>
 
 
                     <div class="form-floating col-6 col-md-4">
-                        <input type="number" class="form-control" id="registration-number" placeholder="DG5S8FU" />
-                        <label class="ps-4" for="registration-number">Registeration No</label>
+                        <input type="text" class="form-control" id="registration_number" name="registration_number" maxlength="10" placeholder="DG5S8FU"/>
+                        <label class="ps-4" for="registration_number">Registeration No</label>
                     </div>
 
                     <div class="form-floating col-6 col-md-4">
-                        <input type="email" class="form-control" id="vehicle-model" placeholder="name@example.com" />
-                        <label class="ps-4" for="vehicle-model">Vehicle model</label>
-                    </div>
-
-
-                    <div class="form-floating col-6 col-md-4">
-                        <input type="number" class="form-control" id="vehicle-name" placeholder="123" />
-                        <label class="ps-4" for="vehicle-name">Name</label>
-                    </div>
-
-                    <div class="form-floating col-6 col-md-4">
-                        <input type="number" class="form-control" id="mobile-no" placeholder="name@example.com" />
-                        <label class="ps-4" for="mobile-no">Mobile No</label>
+                        <input type="text" class="form-control" id="vehicle_model" name="vehicle_model" maxlength="20" placeholder="name@example.com" />
+                        <label class="ps-4" for="vehicle_model">Vehicle model</label>
                     </div>
 
 
                     <div class="form-floating col-6 col-md-4">
-                        <div class="upload px-4 d-flex align-items-center justify-content-between">
-                            Capture vehicle photo
-                            <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
+                        <input type="text" class="form-control" id="puc_name" name="puc_name" maxlength="50" placeholder="123"/>
+                        <label class="ps-4" for="puc_name">Name</label>
+                    </div>
+
+                    <div class="form-floating col-6 col-md-4">
+                        <input type="number" class="form-control" id="mobile_number" name="mobile_number" maxlength="15" placeholder="name@example.com" />
+                        <label class="ps-4" for="mobile_number">Mobile No</label>
+                    </div>
+
+
+                    <div class="form-floating col-6 col-md-4">
+                        <div id="cameraIcon" class="upload px-4 d-flex align-items-center justify-content-between">
+                            <span id="picturename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Vehicle Photo</span>
+                            <input type="file" accept="image/*" capture="camera" id="upload_vehicle" name="upload_vehicle" multiple="false" style="display: none;">
+                            <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z"
                                     stroke="#727C8E" stroke-width="1.5" />
@@ -264,36 +294,38 @@
 
                     <div class="row gy-2 gx-0 gap-2 pe-2">
                         <div class="col-2 challan ms-2 px-2">
-                            <label for="userState">
+                            <label for="challan">
                                 Challan
                             </label>
                             <div class="form-floating">
-                                <select id="Challan-form" class="form-select" id="userState">
-                                    <option selected>1</option>
-                                    <option value="1">2</option>
-                                    <option value="2">3</option>
-                                    <option value="3">4</option>
+                                <select id="Challan-form" class="form-select" id="challan" name="challan">
+                                    <option value="">choose</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
                                 </select>
                             </div>
                         </div>
 
 
                         <div class="form-floating col">
-                            <input type="number" class="form-control" id="chassis-no" placeholder="name@example.com" />
-                            <label class="ps-4" for="chassis-no">Chasis last 5 digits</label>
+                            <input type="number" class="form-control" id="chassis_number" name="chassis_number" maxlength="5" placeholder="name@example.com" />
+                            <label class="ps-4" for="chassis_number">Chasis last 5 digits</label>
                         </div>
 
 
                         <div class="form-floating col">
-                            <input type="number" class="form-control" id="engine-no" placeholder="name@example.com" />
-                            <label class="ps-4" for="engine-no">Engine last 5 digits</label>
+                            <input type="number" class="form-control" id="engine_number" name="engine_number" maxlength="20" placeholder="name@example.com" />
+                            <label class="ps-4" for="engine_number">Engine last 5 digits</label>
                         </div>
                     </div>
 
 
                     <div class="form-floating col-8">
-                        <div class="upload px-4 d-flex align-items-center justify-content-between">
-                            Upload challan SS
+                        <div id="challanIcon" class="upload px-4 d-flex align-items-center justify-content-between">
+                        <span id="challanName" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload challan Screenshot</span>
+                            <input type="file" accept="image/*" capture="camera" id="upload_challan" name="upload_challan" multiple="false" style="display: none;">
                             <svg width="19" height="18" viewBox="0 0 19 18" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9.49995 11.4V1M9.49995 1L12.05 3.8M9.49995 1L6.94995 3.8" stroke="#515C6F"
@@ -308,14 +340,15 @@
                     <div class="form-floating col-4">
                         <div class="upload py-1 px-4">
                             Charges <br>
-                            <b class="text-dark fs-5">₹ 80</b>
+                            <b class="text-dark fs-5" id="puc_charges"></b>
                         </div>
+                        <input type="hidden" id="puc_type_rate" name="puc_type_rate" value="0">
                     </div>
 
                     <div class="py-3 text-center">
-                        <a href="payment-confirmation.html" type="submit" class="vehicle-info-btn w-100 py-3">
+                        <button type="button" id="puc_create_submit" class="vehicle-info-btn w-100 py-3">
                             Submit
-                        </a>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -324,7 +357,7 @@
 @endsection
 
 @push('script')
-    <!-- <script src="{{ asset('customjs/web/register/common.js') }}?v={{time()}}"></script> -->
-    
+
+    <script src="{{ asset('assets_user/customjs/script_home.js') }}"></script>
 	
 @endpush
