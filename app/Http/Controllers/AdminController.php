@@ -67,6 +67,11 @@ class AdminController extends Controller
         return view('admin/settings')->with($data);
     }
 
+    public function wallet(){
+        $data['page'] = 'Wallet';
+        return view('admin/wallet')->with($data);
+    }
+
     public function login(Request $request)
     {   
         $request->session()->forget('user');

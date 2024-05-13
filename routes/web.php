@@ -34,6 +34,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/orders', [AdminController::class, 'index'])->name('admin.orders');
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
         Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+        Route::get('/wallet', [AdminController::class, 'wallet'])->name('admin.wallet');
+
         
 
         /************** AJAX ROUTES ******************/

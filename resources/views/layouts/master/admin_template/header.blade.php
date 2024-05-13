@@ -34,7 +34,7 @@
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a href="admin-wallet.html" class="nav-link d-flex flex-column align-items-center justify-content-center">
+            <a href="{{route('admin.wallet')}}" class="nav-link d-flex flex-column {{$page == 'Wallet' ? 'active' : ''}} align-items-center justify-content-center">
                 <svg width="25" height="23" viewBox="0 0 25 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M4.46415 5.09717C4.22735 5.09717 4.00024 5.19786 3.8328 5.37709C3.66536 5.55632 3.57129 5.79941 3.57129 6.05288C3.57129 6.30635 3.66536 6.54944 3.8328 6.72867C4.00024 6.9079 4.22735 7.0086 4.46415 7.0086H9.22605C9.46285 7.0086 9.68995 6.9079 9.8574 6.72867C10.0248 6.54944 10.1189 6.30635 10.1189 6.05288C10.1189 5.79941 10.0248 5.55632 9.8574 5.37709C9.68995 5.19786 9.46285 5.09717 9.22605 5.09717H4.46415Z"
