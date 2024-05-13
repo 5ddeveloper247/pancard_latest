@@ -7,8 +7,10 @@ $(function() {
 });
 
 $(document).on('keyup', "[type=number], [type=email]", function (e) {
-    if (this.value.length > this.maxLength) {
-        this.value = this.value.slice(0, this.maxLength);
+    if ($(this).attr('maxlength')) {
+        if (this.value.length > this.maxLength) {
+            this.value = this.value.slice(0, this.maxLength);
+        }
     }
 });
 

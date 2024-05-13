@@ -553,8 +553,6 @@ $(document).on('click', '.uploadPdf_btn', function (e) {
             timeOut: 3000
         });
     }
-    
-    
 });
 
 $(document).on('click', '#uploadPdf_submit', function (e) {
