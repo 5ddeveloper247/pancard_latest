@@ -30,7 +30,7 @@
         <div class="container px-4 pt-0">
             <form class="row g-3 login-form pt-md-0" id="forgetpassword_form" novalidate="">
                 <div class="form-floating">
-                    <input type="email" class="form-control" id="registered_email" name="registered_email" placeholder="name@example.com" />
+                    <input type="email" class="form-control" id="registered_email" name="registered_email" placeholder="name@example.com" maxlength="50"/>
                     <label class="ps-4" for="registered_email">Registered Email</label>
                 </div>
 

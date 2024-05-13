@@ -549,7 +549,9 @@ $(document).on('click', '.uploadPdf_btn', function (e) {
         
         $("#uploadPdfModal").modal('show');
     }else{
-        
+        toastr.error('File already uploaded!', '', {
+            timeOut: 3000
+        });
     }
     
     
