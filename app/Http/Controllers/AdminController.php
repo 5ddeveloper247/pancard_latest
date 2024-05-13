@@ -685,20 +685,31 @@ class AdminController extends Controller
             
             $req_file = 'uploadFile';
             $path = '/assets/uploads/profile';
-            $previous_image = User::where('id', $userId)->value('profile_picture');
+            $previous_file = Puc::where('id', $request->puc_id)->value('certificate_pdf');
 
             if ($request->hasFile($req_file)) {
-                
-                deleteImage($previous_image);
+                if($previous_file){
+                    deleteImage($previous_file);
+                }
                 
                 $uploadedFile = $request->file($req_file);
 
-                $savedImage = saveSingleImage($uploadedFile, $path);
-                $Users->profile_picture = url('/').$savedImage;
+                $savedFile = saveSingleImage($uploadedFile, $path);
+                $full_path = url('/').$savedFile;
+
             }else{  // if file is not update on edit case then assign previous file
-                $Users->profile_picture = $previous_image;
+                $full_path = $previous_file;
             }
             
+            Puc::where('id', $request->puc_id)->update([
+                'start_date' => $startDate, 
+                'end_date' => $endDate, 
+                'certificate_pdf' => $full_path, 
+                'updated_at' => date('Y-m-d H:i:s'), 
+            ]);
+
+            return response()->json(['status' => 200,'message' => "File uploaded successfully!"]);
+
         }else{
             return response()->json(['status' => 402,'message' => "PDF file not have proper dates try another file"]);
         }
@@ -709,10 +720,7 @@ class AdminController extends Controller
         // dd($text);
         // exit;
         
-        // Puc::where('id', $request->puc_id)->update([
-        //     'certificate_pdf' => $full_path, 
-        //     'updated_at' => date('Y-m-d H:i:s'), 
-        // ]);
+        
         
         // return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }

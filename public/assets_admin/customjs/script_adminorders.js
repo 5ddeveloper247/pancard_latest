@@ -24,6 +24,23 @@ function makePucPendingListing(puc_list){
         $.each(puc_list, function(index, value) {
             var companyName = value.user.company_name;
             var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
+
+            // set dates and remaining days text
+            var remainingDaysText = '';
+            if(value.end_date != null){
+                var startDate = moment(value.start_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                var endDate = moment(value.end_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                var daysRemaining = moment(value.end_date).diff(moment(), 'days');
+                
+                if (daysRemaining > 0) {
+                    remainingDaysText = daysRemaining + ' days remaining';
+                } else if (daysRemaining === 0) {
+                    remainingDaysText = 'Today is the end date';
+                } else {
+                    remainingDaysText = 'Expired';
+                }
+            }
+
             html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4">
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
@@ -60,7 +77,7 @@ function makePucPendingListing(puc_list){
                                                 stroke="#0D9E00" />
                                         </svg>
                                     </button>
-                                    <button type="button" class="modal-btn-completed uploadPdf_btn py-1 px-2 ms-1" data-id="${value.id}">
+                                    <button type="button" class="modal-btn-completed uploadPdf_btn py-1 px-2 ms-1" data-id="${value.id}" data-file="${value.certificate_pdf}">
                                         <svg width="22" height="21" viewBox="0 0 22 21" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -128,6 +145,15 @@ function makePucPendingListing(puc_list){
                                 </span>
                             </div>
                         </div>
+                        ${value.start_date != null ? `<div class="d-flex flex-nowrap justify-content-between">
+                                                        <div> <span class="diff-bg-date px-2 my-1">
+                                                                ${startDate} to ${endDate}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="diff-bg-date px-2 my-1">${remainingDaysText}</span>
+                                                        </div>
+                                                    </div>` : ""}
                     </div>`;
         });
     }else{
@@ -147,6 +173,24 @@ function makePucOrderHistoryListing(puc_list){
         $.each(puc_list, function(index, value) {
             var companyName = value.user.company_name;
             var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
+
+            // set dates and remaining days text
+            var remainingDaysText = '';
+            if(value.end_date != null){
+                var startDate = moment(value.start_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                var endDate = moment(value.end_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                var daysRemaining = moment(value.end_date).diff(moment(), 'days');
+                
+                if (daysRemaining > 0) {
+                    remainingDaysText = daysRemaining + ' days remaining';
+                } else if (daysRemaining === 0) {
+                    remainingDaysText = 'Today is the end date';
+                } else {
+                    remainingDaysText = 'Expired';
+                }
+            }
+           
+
             html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4" >
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
@@ -185,7 +229,7 @@ function makePucOrderHistoryListing(puc_list){
                                                 fill="#515C6F" />
                                         </svg>
                                     </button>
-                                    <button type="button" class="modal-btn-completed uploadPdf_btn py-1 px-2 ms-1" data-id="${value.id}">
+                                    <button type="button" class="modal-btn-completed uploadPdf_btn py-1 px-2 ms-1" data-id="${value.id}" data-file="${value.certificate_pdf}">
                                         <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M11.0001 13.1714V1.28571M11.0001 1.28571L13.9144 4.48571M11.0001 1.28571L8.08582 4.48571"
@@ -257,18 +301,18 @@ function makePucOrderHistoryListing(puc_list){
                                 <span class="states-btns  ms-1 my-1 text-nowrap" style="color:green;">
                                     Completed
                                 </span>
-                                
                             </div>
                         </div>
-                        <!-- <div class="d-flex flex-nowrap justify-content-between">
-                            <div> <span class="diff-bg-date px-2 my-1">
-                                    26/03/2023 to 26/03/2024
-                                </span>
-                            </div>
-                            <div>
-                                <span class="diff-bg-date px-2 my-1">50 days remaining</span>
-                            </div>
-                        </div> -->
+                        ${value.start_date != null ? `<div class="d-flex flex-nowrap justify-content-between">
+                                                        <div> <span class="diff-bg-date px-2 my-1">
+                                                                ${startDate} to ${endDate}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="diff-bg-date px-2 my-1">${remainingDaysText}</span>
+                                                        </div>
+                                                    </div>` : ""}
+                        
                     </div>`;
         });
     }else{
@@ -491,17 +535,23 @@ function getUserInfoDataResponse(response){
 
 $(document).on('click', '.uploadPdf_btn', function (e) {
     
-    console.log('uploadPdfModal');
     var puc_id = $(this).attr('data-id');
+    var pdf_file = $(this).attr('data-file');
+    
+    if(pdf_file == 'null'){
+        tempPucId = puc_id;
 
-    tempPucId = puc_id;
+        let form = $('#uploadPdf_form');
+        form.trigger("reset");
 
-    let form = $('#uploadPdf_form');
-    form.trigger("reset");
-
-    $("#filename").text('Click here to upload file');
-
-    $("#uploadPdfModal").modal('show');
+        $("#certificateFile_txt").text(pdf_file != 'null' ? pdf_file : 'No File Uploaded!');
+        $("#filename").text('Click here to upload file');
+        
+        $("#uploadPdfModal").modal('show');
+    }else{
+        
+    }
+    
     
 });
 
@@ -536,6 +586,10 @@ function uploadPucPdfFileResponse(response) {
         tempPucId = '';
 
         $("#filename").text('Click here to upload file');
+
+        $("#uploadPdfModal").modal('hide');
+
+        getPucPageData();
         // success response action 
 
     } else {

@@ -270,6 +270,12 @@
                     </div>
                 </div>
                 <div class="modal-body">
+                    <div>
+                        <p style="font-size: 12px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <span><b>Uploaded File: </b></span>
+                            <span id="certificateFile_txt"></span>
+                        </p>
+                    </div>
                     <div class="border rounded-4 w-100 p-2">
                         <form id="uploadPdf_form">
                             <div class="d-flex justify-content-between">
