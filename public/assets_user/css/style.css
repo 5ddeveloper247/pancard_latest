@@ -465,10 +465,16 @@ header>img {
     border-radius: 10px;
 }
 
-.challan-photo {
-    background-color: var(--popup--bg--main--color);
+.challan-photo, .vehicle-photo, .challan-photo img,.vehicle-photo img {
+    background-color: unset;  /*var(--popup--bg--main--color)*/
     border-radius: 10px;
 }
+
+.challan-photo img, .vehicle-photo img{
+    width: 200px;
+    height: 130px;
+} 
+
 
 /* ================================WALLET-SECTION-TAB=============================== */
 

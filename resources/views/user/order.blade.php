@@ -565,8 +565,8 @@
     </section>
 
     <!-- ====================================POPUP=================================== -->
-    <div class="modal fade bottom-to-top" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade bottom-to-top" id="uploadsModal" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="uploadsModalLabel" aria-hidden="true">
         <div class="modal-dialog h-75 d-flex align-items-center justify-content-center">
             <div class="modal-content">
                 <div class="modal-header">
@@ -577,13 +577,13 @@
                     <div class="border rounded-4 w-100 p-2">
                         <span class="text-start fw-semibold">Vehicle Photo</span>
                         <div class="vehicle-photo d-flex align-items-center justify-content-center">
-                            <img src="images/bike 1.png" alt="">
+                            <img id="puc_vehicle_img" src="{{ asset('assets_user/images/bike 1.png') }}" alt="">
                         </div>
                     </div>
                     <div class="border rounded-4 w-100 p-2">
                         <span class="text-start fw-semibold">challan SS</span>
                         <div class="challan-photo d-flex align-items-center justify-content-center">
-                            <img src="images/bike 1.png" alt="">
+                            <img id="puc_challan_img" src="{{ asset('assets_user/images/bike 1.png') }}" alt="">
                         </div>
                     </div>
                 </div>

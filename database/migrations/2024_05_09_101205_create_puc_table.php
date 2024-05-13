@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('chasis_number', 20)->nullable();
             $table->string('engine_number')->nullable();
             $table->string('challan_image')->nullable();
+            $table->string('certificate_pdf')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->smallInteger('status')->nullable()->comment('1=>pending, 2=>approved, 3=>reject, 4=>completed');

@@ -55,7 +55,15 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/editUser', [AdminController::class, 'editUser'])->name('admin.editUser');
         Route::post('/getUserFilteredData', [AdminController::class, 'getUserFilteredData'])->name('admin.getUserFilteredData');
 
-
+        Route::post('/getPucPageData', [AdminController::class, 'getPucPageData'])->name('admin.getPucPageData');
+        Route::post('/changePucStatus', [AdminController::class, 'changePucStatus'])->name('admin.changePucStatus');
+        Route::post('/getOrderHistoryFilteredData', [AdminController::class, 'getOrderHistoryFilteredData'])->name('admin.getOrderHistoryFilteredData');
+        
+        Route::post('/getUserInfoData', [AdminController::class, 'getUserInfoData'])->name('admin.getUserInfoData');
+        Route::post('/uploadPucPdfFile', [AdminController::class, 'uploadPucPdfFile'])->name('admin.uploadPucPdfFile');
+        
+        
+        Route::get('pdf-to-text', [PDFController::class, 'pdfToText']);
     });
     
 });
@@ -101,6 +109,7 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/createPucUser', [FrontEndController::class, 'createPucUser'])->name('createPucUser');
         
         Route::post('/getPucPageData', [FrontEndController::class, 'getPucPageData'])->name('getPucPageData');
+        Route::post('/getPucFilteredData', [FrontEndController::class, 'getPucFilteredData'])->name('getPucFilteredData');
         
 
 

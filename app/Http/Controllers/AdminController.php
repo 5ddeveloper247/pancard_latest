@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Spatie\PdfToText\Pdf;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Settings;
 use App\Models\ApiSettings;
@@ -18,6 +20,8 @@ use App\Models\Cities;
 use App\Models\Areas;
 use App\Models\PucTypes;
 use App\Models\PucUserRates;
+use App\Models\Puc;
+
 
 
 class AdminController extends Controller
@@ -441,7 +445,7 @@ class AdminController extends Controller
         $Users->upload_option = $request->upload_option;
         
         $req_file = 'upload_picture';
-        $path = '/images/uploads/profile';
+        $path = '/assets/uploads/profile';
         $previous_image = User::where('id', $request->user_id)->value('profile_picture');
 
         if ($request->hasFile($req_file)) {
@@ -457,7 +461,7 @@ class AdminController extends Controller
         }
         
         $req_file1 = 'upload_aadhar';
-        $path1 = '/images/uploads/aadhar';
+        $path1 = '/assets/uploads/aadhar';
         $previous_image1 = User::where('id', $request->user_id)->value('aadhar');
 
         if ($request->hasFile($req_file1)) {
@@ -566,5 +570,151 @@ class AdminController extends Controller
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
 
+    public function getPucPageData(Request $request)
+    {   
+        $puc_type_id = $request->puc_type_id;
+
+        $data['pending_puc_list'] = Puc::where('status', '1')->with(['pucType','user'])->get();
+        $data['all_puc_list'] = Puc::with(['pucType','user'])->get();
+       
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
+    public function changePucStatus(Request $request)
+    {   
+        $puc_id = $request->pucId;
+        $status_flag = $request->statusFlag;
+        $rejection_reason = $request->param1;
+        if($status_flag == '4'){
+            Puc::where('id', $puc_id)->update([
+                'status' => '4', // completed status
+            ]);
+        }else if($status_flag == '3'){
+            Puc::where('id', $puc_id)->update([
+                'status' => '3', // completed status
+                'rejection_reason' => $rejection_reason, // rejected status
+            ]);
+        }
+        
+        return response()->json(['status' => 200,'message' => ""]);
+    }
+
+    public function getOrderHistoryFilteredData(Request $request)
+    {   
+        
+        $filterFlag = $request->filterFlag;
+        $param1 = $request->param1; 
+        $param2 = $request->param2;
+
+        if($filterFlag == '1' || $filterFlag == '2'){
+            $puc_list = Puc::whereDate('date', '=', $param1)         // for today  & yesterday
+                            ->with(['pucType','user'])
+                            ->get();
+        
+        }else if($filterFlag == '3'){
+            
+            $puc_list = Puc::whereYear('date', date('Y'))
+                            ->whereMonth('date', $param1)             // for month
+                            ->with(['pucType','user'])
+                            ->get();
+        }else if($filterFlag == '4'){
+            
+            $puc_list = Puc::whereDate('date', '>=', $param1)    // for start date
+                            ->whereDate('date', '<=', $param2)    // for end date
+                            ->with(['pucType','user'])
+                            ->get();
+        }
+       
+        $data['all_puc_list'] = isset($puc_list) ? $puc_list : array();
+        // dd($data);
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
+    
+    public function getUserInfoData(Request $request)
+    {   
+        
+        $user_id = $request->user_id;
+        
+        $data['user_info'] = User::where('id', $user_id)->with(['state', 'city', 'area'])->first();
+        // dd($data);
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
+    public function uploadPucPdfFile(Request $request)
+    {   
+        $validatedData = $request->validate([
+            'uploadFile' => 'required|mimes:pdf,PDF|max:2048'
+        ]);
+
+
+        // extract start and end date from pdf file 
+
+        $uploadedFile = $request->file('uploadFile');
+        // Save the uploaded file to a temporary location
+        $pdfFilePath = $uploadedFile->storeAs('temp', $uploadedFile->getClientOriginalName());
+
+        // Extract text from the PDF file
+        $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
+        if (config('app.env')=='local') {
+            $text = Pdf::getText($request->file('uploadFile'),$binpath);
+        }else{ // on dev or prod
+            $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
+        }
+        // Delete the temporary PDF file
+        unlink(storage_path('app/' . $pdfFilePath));
+
+        $pattern = '/\b(\d{2})\/(\d{2})\/(\d{4})\b/'; // Regex pattern for DD/MM/YYYY format
+        preg_match_all($pattern, $text, $matches);
+
+        // Extracted dates
+        $dates = $matches[0];
+        
+        foreach ($dates as $key => $date) {
+            $dateString = Carbon::createFromFormat('d/m/Y', $date);
+            // Extract the time portion
+            $dateFormated = $dateString->format('Y-m-d');
+            if($key == 0){
+                $startDate = $dateFormated;
+            }elseif($key == 1){
+                $endDate = $dateFormated;
+            }
+        }
+
+        if((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != ''){
+            
+            $req_file = 'uploadFile';
+            $path = '/assets/uploads/profile';
+            $previous_image = User::where('id', $userId)->value('profile_picture');
+
+            if ($request->hasFile($req_file)) {
+                
+                deleteImage($previous_image);
+                
+                $uploadedFile = $request->file($req_file);
+
+                $savedImage = saveSingleImage($uploadedFile, $path);
+                $Users->profile_picture = url('/').$savedImage;
+            }else{  // if file is not update on edit case then assign previous file
+                $Users->profile_picture = $previous_image;
+            }
+            
+        }else{
+            return response()->json(['status' => 402,'message' => "PDF file not have proper dates try another file"]);
+        }
+        // print("<pre>");
+        // print_r($startDate);
+        // print("<pre>");
+        // print_r($endDate);
+        // dd($text);
+        // exit;
+        
+        // Puc::where('id', $request->puc_id)->update([
+        //     'certificate_pdf' => $full_path, 
+        //     'updated_at' => date('Y-m-d H:i:s'), 
+        // ]);
+        
+        // return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
     
 }

@@ -17,7 +17,39 @@ function getPucPageDataResponse(response){
     var html = '';
     if(puc_list.length > 0){
         $.each(puc_list, function(index, value) {
-            
+            var status_txt = '';
+            if(value.status == '1'){
+                status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-2">
+                                <svg width="12" height="11" viewBox="0 0 12 11" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.5"
+                                        d="M6 10.25C8.76142 10.25 11 8.17932 11 5.625C11 3.07068 8.76142 1 6 1C3.23858 1 1 3.07068 1 5.625C1 8.17932 3.23858 10.25 6 10.25Z"
+                                        stroke="#F45D08" stroke-width="1.5" />
+                                    <path d="M6 3.77502V5.62502L7.25 6.78127" stroke="#F45D08" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                Processing
+                            </span>`;
+            }else if(value.status == '3'){
+                status_txt = `<span class="text-end bg-r ms-2 ms-sm-5 pe-2">
+                                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_887_44)">
+                                        <path opacity="0.5" d="M9.56963 1.08337H3.43038C3.26246 1.08337 3.17904 1.08337 3.10862 1.08987C2.32321 1.16192 1.70029 1.81571 1.63096 2.63958C1.625 2.71379 1.625 2.80208 1.625 2.97758V10.9742C1.625 11.4465 2.19863 11.6475 2.46892 11.2689C2.51082 11.2082 2.56682 11.1586 2.6321 11.1244C2.69739 11.0901 2.77002 11.0722 2.84375 11.0722C2.91748 11.0722 2.99011 11.0901 3.0554 11.1244C3.12069 11.1586 3.17668 11.2082 3.21858 11.2689L3.45313 11.5971C3.52122 11.6958 3.61226 11.7764 3.7184 11.8321C3.82454 11.8878 3.94263 11.9169 4.0625 11.9169C4.18237 11.9169 4.30046 11.8878 4.4066 11.8321C4.51274 11.7764 4.60378 11.6958 4.67188 11.5971C4.73997 11.4985 4.83101 11.4178 4.93715 11.3621C5.04329 11.3064 5.16138 11.2773 5.28125 11.2773C5.40112 11.2773 5.51921 11.3064 5.62535 11.3621C5.73149 11.4178 5.82253 11.4985 5.89063 11.5971C5.95872 11.6958 6.04976 11.7764 6.1559 11.8321C6.26204 11.8878 6.38013 11.9169 6.5 11.9169C6.61987 11.9169 6.73796 11.8878 6.8441 11.8321C6.95024 11.7764 7.04128 11.6958 7.10938 11.5971C7.17747 11.4985 7.26851 11.4178 7.37465 11.3621C7.48079 11.3064 7.59888 11.2773 7.71875 11.2773C7.83862 11.2773 7.95671 11.3064 8.06285 11.3621C8.16899 11.4178 8.26003 11.4985 8.32813 11.5971C8.39622 11.6958 8.48726 11.7764 8.5934 11.8321C8.69954 11.8878 8.81763 11.9169 8.9375 11.9169C9.05737 11.9169 9.17546 11.8878 9.2816 11.8321C9.38774 11.7764 9.47878 11.6958 9.54688 11.5971L9.78142 11.2694C9.82332 11.2087 9.87932 11.1592 9.9446 11.1249C10.0099 11.0906 10.0825 11.0728 10.1563 11.0728C10.23 11.0728 10.3026 11.0906 10.3679 11.1249C10.4332 11.1592 10.4892 11.2087 10.5311 11.2694C10.8019 11.6475 11.375 11.4465 11.375 10.9742V2.97758C11.375 2.80208 11.375 2.71379 11.369 2.63958C11.3003 1.81571 10.6773 1.16192 9.89192 1.08987C9.82042 1.08337 9.737 1.08337 9.56963 1.08337Z" stroke="#FF0000" stroke-width="1.5"></path>
+                                        <path d="M4.0625 8.39587H8.9375M7.58333 4.33337L5.41667 6.50004M5.41667 4.33337L7.58333 6.50004" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round"></path>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_887_44">
+                                            <rect width="13" height="13" fill="white"></rect>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                                Reason: ${value.rejection_reason}
+                            </span>`;
+            }else if(value.status == '4'){
+                status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-3">
+                                    Completed
+                                </span>`;
+            }
             html += `<div class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4 mx-md-5 px-md-4">
                         <div class="d-flex flex-column">
                             <span class="fw-bold text-dark">
@@ -25,23 +57,62 @@ function getPucPageDataResponse(response){
                             </span>
                             <span class="text-dark d-flex ">${value.puc_type.name}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
                             <span class="text-dark">
-                                Pulsar 150 - 8720954378
+                                ${value.model}&nbsp;-&nbsp;${value.phone_number}
                             </span>
                             <span class="text-dark">
-                                Challan (2) - 50924, 23645
+                                Challan (${value.challan}) - ${value.engine_number}, ${value.chasis_number}
                             </span>
                             <span class="diff-bg px-2 my-1">
-                                26/03/2023 to 26/03/2024
+                                ${value.start_date != null ? value.start_date + ' to ' : ''}${value.end_date != null ? value.end_date : ''}   
                             </span>
                         </div>
 
                         <div class="d-flex flex-column">
                             <div class="d-flex align-items-center justify-content-end">
-                                <!-- Button trigger modal -->
-                                <button type="button" class="modal-btn" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop">
-                                    <svg width="74" height="71" viewBox="0 0 74 71" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
+                                
+                                <button type="button" class="modal-btn ${value.status != '4' ? 'd-none' : ''}">
+                                    <svg width="74" height="71" viewBox="0 0 74 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g filter="url(#filter0_d_954_149)">
+                                            <rect x="5" y="3" width="63.0769" height="61" rx="5" fill="white"></rect>
+                                        </g>
+                                        <path d="M42.3185 38.2812L51.5034 29.4713L51.6198 29.3419C51.7922 29.1162 51.8753 28.8374 51.8539 28.5568C51.8325 28.2762 51.7081 28.0125 51.5034 27.8141L42.3185 19.0082L42.1918 18.9026C41.4565 18.3648 40.374 18.8827 40.374 19.8368V24.0794L39.9145 24.1093C32.6372 24.671 28.3746 29.1626 27.3574 37.3092C27.2267 38.3549 28.4563 39.0102 29.2528 38.3171C32.1756 35.7715 35.1964 34.19 38.3316 33.5566C38.834 33.455 39.3385 33.3773 39.8471 33.3235L40.374 33.2777V37.4526L40.3842 37.616C40.5068 38.5183 41.6281 38.9425 42.3185 38.2812ZM40.0636 26.0952L42.4165 25.9418V21.8924L49.4548 28.6407L42.4165 35.3931V31.0967L39.6469 31.3397H39.6306C36.1523 31.7042 32.87 33.0626 29.7716 35.3273C30.3803 32.6603 31.4199 30.6545 32.7863 29.2184C34.4815 27.4357 36.8508 26.3461 40.0636 26.0952ZM26.326 20.6773C24.9718 20.6773 23.673 21.202 22.7154 22.1358C21.7578 23.0697 21.2198 24.3363 21.2198 25.6569V41.5917C21.2198 42.9123 21.7578 44.1789 22.7154 45.1128C23.673 46.0466 24.9718 46.5713 26.326 46.5713H42.6657C44.0199 46.5713 45.3187 46.0466 46.2763 45.1128C47.2339 44.1789 47.7718 42.9123 47.7718 41.5917V39.5998C47.7718 39.3357 47.6642 39.0824 47.4727 38.8956C47.2812 38.7088 47.0214 38.6039 46.7506 38.6039C46.4797 38.6039 46.22 38.7088 46.0285 38.8956C45.837 39.0824 45.7294 39.3357 45.7294 39.5998V41.5917C45.7294 42.3841 45.4066 43.144 44.832 43.7043C44.2575 44.2646 43.4782 44.5794 42.6657 44.5794H26.326C25.5135 44.5794 24.7342 44.2646 24.1596 43.7043C23.5851 43.144 23.2623 42.3841 23.2623 41.5917V25.6569C23.2623 24.8645 23.5851 24.1046 24.1596 23.5443C24.7342 22.984 25.5135 22.6692 26.326 22.6692H32.4534C32.7242 22.6692 32.984 22.5643 33.1755 22.3775C33.367 22.1907 33.4746 21.9374 33.4746 21.6733C33.4746 21.4091 33.367 21.1558 33.1755 20.969C32.984 20.7823 32.7242 20.6773 32.4534 20.6773H26.326Z" fill="#515C6F"></path>
+                                        <defs>
+                                            <filter id="filter0_d_954_149" x="0" y="0" width="73.0769" height="71" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                                <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+                                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix>
+                                                <feOffset dy="2"></feOffset>
+                                                <feGaussianBlur stdDeviation="2.5"></feGaussianBlur>
+                                                <feComposite in2="hardAlpha" operator="out"></feComposite>
+                                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"></feColorMatrix>
+                                                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_954_149"></feBlend>
+                                                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_954_149" result="shape"></feBlend>
+                                            </filter>
+                                        </defs>
+                                    </svg>
+                                </button>
+                                <button type="button" class="modal-btn ${value.status != '4' ? 'd-none' : ''}">
+                                    <svg width="74" height="71" viewBox="0 0 74 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g filter="url(#filter0_d_954_141)">
+                                            <rect x="5.69232" y="3" width="63.0769" height="61" rx="5" fill="white"></rect>
+                                        </g>
+                                        <path d="M37.2309 28.4456L37.2309 46.5713M37.2309 46.5713L32.6353 41.6913M37.2309 46.5713L41.8265 41.6913" stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M43.3583 18.6854L31.1033 18.6854C26.7712 18.6854 24.6036 18.6854 23.2586 19.9096C21.9121 21.1366 21.9121 23.1067 21.9121 27.0511L21.9121 28.4454C21.9121 32.3885 21.9121 34.36 23.2586 35.5856C24.4351 36.6564 26.2397 36.7916 29.5715 36.8084M44.8902 36.8084C48.222 36.7916 50.0265 36.6564 51.203 35.5856C52.5495 34.36 52.5495 32.3885 52.5495 28.4454L52.5495 27.0511C52.5495 23.1067 52.5495 21.1352 51.203 19.9096C50.7434 19.4913 50.1889 19.2166 49.4858 19.0354" stroke="#515C6F" stroke-width="1.5" stroke-linecap="round"></path>
+                                        <defs>
+                                            <filter id="filter0_d_954_141" x="0.692322" y="0" width="73.0769" height="71" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                                <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+                                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix>
+                                                <feOffset dy="2"></feOffset>
+                                                <feGaussianBlur stdDeviation="2.5"></feGaussianBlur>
+                                                <feComposite in2="hardAlpha" operator="out"></feComposite>
+                                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"></feColorMatrix>
+                                                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_954_141"></feBlend>
+                                                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_954_141" result="shape"></feBlend>
+                                            </filter>
+                                        </defs>
+                                    </svg>
+                                </button>
+                                <button type="button" class="modal-btn showUploadsModal_btn" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}">
+                                    <svg width="74" height="71" viewBox="0 0 74 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g filter="url(#filter0_d_954_152)">
                                             <rect x="5.38458" y="3" width="63.0769" height="61" rx="5" fill="white" />
                                         </g>
@@ -75,7 +146,7 @@ function getPucPageDataResponse(response){
                                     </svg>
                                 </button>
 
-                                <svg width="74" height="71" viewBox="0 0 74 71" fill="none"
+                                <a href="tel:${value.phone_number}"><svg width="74" height="71" viewBox="0 0 74 71" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <g filter="url(#filter0_d_954_146)">
                                         <rect x="5.07697" y="3" width="63.0769" height="61" rx="5" fill="white" />
@@ -100,20 +171,10 @@ function getPucPageDataResponse(response){
                                                 result="shape" />
                                         </filter>
                                     </defs>
-                                </svg>
+                                </svg></a>
                             </div>
 
-                            <span class="text-end bg-o ms-2 ms-sm-5 pe-2">
-                                <svg width="12" height="11" viewBox="0 0 12 11" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path opacity="0.5"
-                                        d="M6 10.25C8.76142 10.25 11 8.17932 11 5.625C11 3.07068 8.76142 1 6 1C3.23858 1 1 3.07068 1 5.625C1 8.17932 3.23858 10.25 6 10.25Z"
-                                        stroke="#F45D08" stroke-width="1.5" />
-                                    <path d="M6 3.77502V5.62502L7.25 6.78127" stroke="#F45D08" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                Processing
-                            </span>
+                            ${status_txt}
                         </div>
                     </div>`;
         });
@@ -124,9 +185,23 @@ function getPucPageDataResponse(response){
     }
 
     $("#pucOrders_container").html(html);
-
     
 }
+
+
+
+$(document).on('click', '.showUploadsModal_btn', function (e) {
+    
+    var puc_id = $(this).attr('data-puc-id');
+    var vehicleImg = $(this).attr('data-vehicle-img');
+    var challanImg = $(this).attr('data-challan-ss');
+    
+    
+    $("#puc_vehicle_img").attr('src', vehicleImg)
+    $("#puc_challan_img").attr('src', challanImg)
+
+    $("#uploadsModal").modal('show');
+});
 
 $(document).on('click', '.filter_orders', function (e) {
     
@@ -147,13 +222,23 @@ $(document).on('click', '.filter_orders', function (e) {
     
         param2 = moment().subtract(1, 'days').format('YYYY-MM-DD');
     
-    }
+    }else{
+        var dateRange = $("#filter_dateRange").val();
 
-    console.log(param1);
-    console.log(param2);
+        if(dateRange != ''){
+            filterFlag = '2';
+            var dateArray = dateRange.split(" - ");
+            // Extract start and end dates from the array
+            var startDateFormatted = moment(dateArray[0], 'DD-MM-YYYY').format('YYYY-MM-DD');
+            var endDateFormatted = moment(dateArray[1], 'DD-MM-YYYY').format('YYYY-MM-DD');
+            
+            param2 = startDateFormatted;
+            param3 = endDateFormatted;
+        }
+
+    }
     
-    
-    // getUserFilteredData (filterflag, param1, param2);
+    getPucFilteredData (filterFlag, param1, param2, param3);
 });
 
 $(document).on('click', '.filter1_orders', function (e) {
@@ -176,8 +261,9 @@ $(document).on('click', '.filter1_orders', function (e) {
         param2 = moment().subtract(1, 'days').format('YYYY-MM-DD');
     
     }
+    $("#filter_dateRange").val('');
     
-    // getOrderFilteredData (filterflag, param1, param2);
+    getPucFilteredData (filterFlag, param1, param2, param3);
 });
 
 var flag = false;
@@ -190,92 +276,35 @@ $(document).on('change', '#filter_dateRange', function (e) {
 
         param1 = $(".filter_orders.active").attr('data-filter');
         
-        
         var dateString = $(this).val();
         var dateArray = dateString.split(" - ");
         // Extract start and end dates from the array
         var startDateFormatted = moment(dateArray[0], 'DD-MM-YYYY').format('YYYY-MM-DD');
         var endDateFormatted = moment(dateArray[1], 'DD-MM-YYYY').format('YYYY-MM-DD');
         
-        $(".filter-btns").removeClass('active');
-        $("#filter_month").val('');
-        
         param2 = startDateFormatted;
         param3 = endDateFormatted;
-        
-        console.log(param1);
-        console.log(param2);
-        console.log(param3);
-        // getUserFilteredData (filterflag, param1, param2, param3);
+      
+        getPucFilteredData (filterFlag, param1, param2, param3);
     }
     flag = true;
 });
 
 
+function getPucFilteredData(filterFlag, param1='', param2='', param3=''){
 
-
-
-
-
-// $(document).on('click', '#puc_create_submit', function (e) {
-
-// 	e.preventDefault();
-// 	let type = 'POST';
-// 	let url = '/createPucUser';
-// 	let message = '';
-// 	let form = $('#puc_create_form');
-// 	let data = new FormData(form[0]);
-	    
-// 	// PASSING DATA TO FUNCTION
-// 	$('[name]').removeClass('is-invalid');
-// 	SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '.reset_pass_submit');
-	
-// });
-
-// function resetPasswordProfileResponse(response) {
-
-//     // SHOWING MESSAGE ACCORDING TO RESPONSE
-//     if (response.status == 200 || response.status == '200') {
-      
-//         toastr.success(response.message, '', {
-//             timeOut: 3000
-//         });
-
-//         let form = $('#puc_create_form');
-//         form.trigger("reset");
-
-//         $("#main_section").show();
-//         $("#makePuc_section, #notification_section").hide(); 
-
-//     } else {
-        
-//         if(response.status == 402){
-            
-//             error = response.message;
-
-//         }else{
-            
-//             error = response.responseJSON.message;
-//             var is_invalid = response.responseJSON.errors;
-        
-//             $.each(is_invalid, function(key) {
-//                 // Assuming 'key' corresponds to the form field name
-//                 var inputField = $('[name="' + key + '"]');
-//                 var selectField = $('[name="' + key + '"]');
-//                 // Add the 'is-invalid' class to the input field's parent or any desired container
-//                 inputField.closest('.form-control').addClass('is-invalid');
-//                 selectField.closest('.form-select').addClass('is-invalid');
-//             });
-//         }
-    	
-        
-//         toastr.error(error, '', {
-//             timeOut: 3000
-//         });
-//     }
-// }
-
-
+    let type = 'POST';
+    let url = '/getPucFilteredData';
+    let message = '';
+    let form = '';
+    let data = new FormData();
+    data.append("filterFlag", filterFlag);
+    data.append("param1", param1);
+    data.append("param2", param2);
+    data.append("param3", param3);
+    // PASSING DATA TO FUNCTION
+    SendAjaxRequestToServer(type, url, data, '', getPucPageDataResponse, '', 'submit_button');
+}
 
 $(document).ready(function () {
     
@@ -292,36 +321,3 @@ $(document).ready(function () {
 
     $("#filter_dateRange").val('');
 });
-
-// document.getElementById('cameraIcon').addEventListener('click', function() {
-//     // Trigger click event on the input field
-//     document.getElementById('upload_vehicle').click();
-// });
-// document.getElementById('upload_vehicle').addEventListener('change', function() {
-//     if (this.files.length > 0) {
-//         // Get the filename of the selected file
-//         var filename = this.files[0].name;
-//         // Update the content of the <span> element with the filename
-//         document.getElementById('picturename').innerText = filename;
-//     } else {
-//         // No file selected, reset the content of the <span> element
-//         document.getElementById('picturename').innerText = 'Upload Vehicle Photo';
-//     }
-// });
-
-// document.getElementById('challanIcon').addEventListener('click', function() {
-//     // Trigger click event on the input field
-//     document.getElementById('upload_challan').click();
-// });
-// document.getElementById('upload_challan').addEventListener('change', function() {
-//     if (this.files.length > 0) {
-//         // Get the filename of the selected file
-//         var filename = this.files[0].name;
-//         // Update the content of the <span> element with the filename
-//         document.getElementById('challanName').innerText = filename;
-//     } else {
-//         // No file selected, reset the content of the <span> element
-//         document.getElementById('challanName').innerText = 'Upload Challan Screenshot';
-//     }
-// });
-

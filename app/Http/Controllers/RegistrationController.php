@@ -85,7 +85,7 @@ class RegistrationController extends Controller
         $Users->landmark = $request->user_landmark;
         
         $req_file = 'upload_picture';
-        $path = '/images/uploads/profile';
+        $path = '/assets/uploads/profile';
         if ($request->hasFile($req_file)) {
            
             $uploadedFile = $request->file($req_file);
@@ -95,7 +95,7 @@ class RegistrationController extends Controller
         }
 
         $req_file1 = 'upload_aadhar';
-        $path1 = '/images/uploads/aadhar';
+        $path1 = '/assets/uploads/aadhar';
         if ($request->hasFile($req_file1)) {
            
             $uploadedFile = $request->file($req_file1);

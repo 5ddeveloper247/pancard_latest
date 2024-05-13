@@ -197,7 +197,7 @@ class FrontEndController extends Controller
         $Users->landmark = $request->user_landmark;
         
         $req_file = 'upload_picture';
-        $path = '/images/uploads/profile';
+        $path = '/assets/uploads/profile';
         $previous_image = User::where('id', $userId)->value('profile_picture');
 
         if ($request->hasFile($req_file)) {
@@ -213,7 +213,7 @@ class FrontEndController extends Controller
         }
         
         $req_file1 = 'upload_aadhar';
-        $path1 = '/images/uploads/aadhar';
+        $path1 = '/assets/uploads/aadhar';
         $previous_image1 = User::where('id', $userId)->value('aadhar');
 
         if ($request->hasFile($req_file1)) {
@@ -333,7 +333,7 @@ class FrontEndController extends Controller
 
         
         $req_file = 'upload_vehicle';
-        $path = '/images/uploads/puc';
+        $path = '/assets/uploads/puc';
         if ($request->hasFile($req_file)) {
            
             $uploadedFile = $request->file($req_file);
@@ -343,7 +343,7 @@ class FrontEndController extends Controller
         }
 
         $req_file1 = 'upload_challan';
-        $path1 = '/images/uploads/aadhar';
+        $path1 = '/assets/uploads/aadhar';
         if ($request->hasFile($req_file1)) {
            
             $uploadedFile1 = $request->file($req_file1);
@@ -369,6 +369,66 @@ class FrontEndController extends Controller
        
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
+
+    public function getPucFilteredData(Request $request)
+    {   
+        
+        $user_id = session('user')->id;
+        $filterFlag = $request->filterFlag;
+        $param1 = $request->param1;     // for status
+        $param2 = $request->param2;     // for date 1
+        $param3 = $request->param3;     // for date 2
+
+        
+        if($param1 == 'pending'){
+            $status = '1';
+        }else if($param1 == 'completed'){
+            $status = '4';
+        }else{
+            $status = '';
+        }
+        if($filterFlag == '1'){
+            if($status == '' && $param2 == null){
+                
+                $puc_list = Puc::where('user_id', $user_id)->with(['pucType'])->get();
+            
+            }else if($status != '' && $param2 != null){ 
+                $puc_list = Puc::where('user_id', $user_id)
+                                ->where('status', $status)
+                                ->whereDate('date', '=', $param2)
+                                ->with(['pucType'])->get();
+
+            } else if($status == '' && $param2 != null){ 
+
+                $puc_list = Puc::where('user_id', $user_id)->whereDate('date', '=', $param2)->with(['pucType'])->get();
+            
+            }else if($status != '' && $param2 == null){ 
+                
+                $puc_list = Puc::where('user_id', $user_id)->where('status', $status)->with(['pucType'])->get();
+            }
+
+        } else if($filterFlag == '2'){
+
+            if($status == '' && $param3 != null){
+                $puc_list = Puc::where('user_id', $user_id)
+                                ->whereDate('date', '>=', $param2)    // for start date
+                                ->whereDate('date', '<=', $param3)    // for end date
+                                ->with(['pucType'])->get();
+            
+            }else{
+                $puc_list = Puc::where('user_id', $user_id)
+                                ->where('status', $status)
+                                ->whereDate('date', '>=', $param2)    // for start date
+                                ->whereDate('date', '<=', $param3)    // for end date
+                                ->with(['pucType'])->get();
+            }
+        }
+
+        $data['puc_list'] = $puc_list;
+       
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+    
     // public function testEmail(Request $request)
     // {
         // $userDetails = User::where('id', '2')->first();
