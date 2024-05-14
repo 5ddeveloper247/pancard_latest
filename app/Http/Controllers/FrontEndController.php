@@ -110,6 +110,7 @@ class FrontEndController extends Controller
     public function home(Request $request)
     {   
         $data['page'] = 'home';
+        $data['user'] = User::where('id', session('user')->id)->first();
         $data['notifications_limited'] = Notifications::limit(1)->get();
         $data['notifications_all'] = Notifications::get();
         $data['userPucTypes'] = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->get();
@@ -121,12 +122,15 @@ class FrontEndController extends Controller
     public function order(Request $request)
     {   
         $data['page'] = 'order';
+        $data['user'] = User::where('id', session('user')->id)->first();
+        $data['userPucTypes'] = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->get();
         return view('user/order')->with($data);
     }
 
     public function wallet(Request $request)
     {   
         $data['page'] = 'wallet';
+        $data['user'] = User::where('id', session('user')->id)->first();
         return view('user/wallet')->with($data);
     }
 
@@ -199,10 +203,10 @@ class FrontEndController extends Controller
         $req_file = 'upload_picture';
         $path = '/assets/uploads/profile';
         $previous_image = User::where('id', $userId)->value('profile_picture');
-
+        
         if ($request->hasFile($req_file)) {
             
-            deleteImage($previous_image);
+            deleteImage(str_replace(url('/'), '', $previous_image));
             
             $uploadedFile = $request->file($req_file);
 
@@ -218,7 +222,7 @@ class FrontEndController extends Controller
 
         if ($request->hasFile($req_file1)) {
             
-            deleteImage($previous_image1);
+            deleteImage(str_replace(url('/'), '', $previous_image1));
             
             $uploadedFile = $request->file($req_file1);
 
@@ -295,25 +299,47 @@ class FrontEndController extends Controller
     public function createPucUser(Request $request)
     {   
         // dd($request->all());
-        $validatedData = $request->validate([
-            'puc_type' => 'required',
-            'puc_type_rate' => 'required',
-            'registration_number' => 'required|max:20',
-            'vehicle_model' => 'required',
-            'puc_name' => 'required|max:100',
-            'mobile_number' => 'required|max:15',
-            'challan' => 'required',
-            'chassis_number' => 'required|max:5',
-            'engine_number' => 'required|max:5',
-            'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-            'upload_challan' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-        ]);
+        if($request->puc_id == ''){
+            $validatedData = $request->validate([
+                'puc_type' => 'required',
+                'puc_type_rate' => 'required',
+                'registration_number' => 'required|max:20',
+                'vehicle_model' => 'required',
+                'puc_name' => 'required|max:100',
+                'mobile_number' => 'required|max:15',
+                'challan' => 'required',
+                'chassis_number' => 'required|max:5',
+                'engine_number' => 'required|max:5',
+                'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+                'upload_challan' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+            ]);
+        }else{
+            $validatedData = $request->validate([
+                'puc_type' => 'required',
+                'puc_type_rate' => 'required',
+                'registration_number' => 'required|max:20',
+                'vehicle_model' => 'required',
+                'puc_name' => 'required|max:100',
+                'mobile_number' => 'required|max:15',
+                'challan' => 'required',
+                'chassis_number' => 'required|max:5',
+                'engine_number' => 'required|max:5',
+                'upload_vehicle' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+                'upload_challan' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+            ]);
+        }
+        
    
         // Process form submission if validation passes
         
         $user_id = session('user')->id;
-        $Puc = new Puc();
-       
+
+        if($request->puc_id != ''){
+            $Puc = Puc::where('user_id', $user_id)->where('id', $request->puc_id)->first();
+        }else{
+            $Puc = new Puc();
+        }
+        
         // Update the settings with the new values
         $Puc->user_id = $user_id;
         $Puc->puc_type_id = $request->puc_type;
@@ -329,33 +355,54 @@ class FrontEndController extends Controller
         $Puc->end_date = null;
         $Puc->status = '1';
         $Puc->rejection_reason = null;
+        $Puc->certificate_pdf = null;
         $Puc->date = date('Y-m-d');
 
         
         $req_file = 'upload_vehicle';
         $path = '/assets/uploads/puc';
+        $previous_image = Puc::where('user_id', $user_id)->where('id', $request->puc_id)->value('vehicle_image');
+
         if ($request->hasFile($req_file)) {
            
+            if($previous_image){
+                deleteImage(str_replace(url('/'), '', $previous_image));
+            }  
+
             $uploadedFile = $request->file($req_file);
 
             $savedImage = saveSingleImage($uploadedFile, $path);
             $Puc->vehicle_image = url('/').$savedImage;
+        }else{  // if file is not update on edit case then assign previous file
+            $Puc->vehicle_image = $previous_image;
         }
 
         $req_file1 = 'upload_challan';
         $path1 = '/assets/uploads/aadhar';
+        $previous_image1 = Puc::where('user_id', $user_id)->where('id', $request->puc_id)->value('challan_image');
+        
         if ($request->hasFile($req_file1)) {
            
+            if($previous_image1){
+                deleteImage(str_replace(url('/'), '', $previous_image1));
+            }  
             $uploadedFile1 = $request->file($req_file1);
 
             $savedImage1 = saveSingleImage($uploadedFile1, $path1);
             $Puc->challan_image = url('/').$savedImage1;
+        }else{  // if file is not update on edit case then assign previous file
+            $Puc->challan_image = $previous_image1;
         }
         
         // Save the changes
         $Puc->save();
 
-        return response()->json(['status' => 200,'message' => "PUC Created Successfully!"]);
+        if($request->puc_id != ''){
+            return response()->json(['status' => 200,'message' => "PUC Updated Successfully!"]);
+        }else{
+            return response()->json(['status' => 200,'message' => "PUC Created Successfully!"]);
+        }
+
     }
 
 
@@ -429,6 +476,28 @@ class FrontEndController extends Controller
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
     
+    public function editSpecificPuc(Request $request)
+    {   
+        
+        $user_id = session('user')->id;
+        $puc_id = $request->puc_id;
+        
+        $detail = Puc::where('user_id', $user_id)->where('id', $puc_id)->with(['pucType'])->first();
+        if($detail){
+            if($detail->status == '3'){
+                $data['puc_detail'] = $detail;
+                return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+            }else{
+                return response()->json(['status' => 402,'message' => "Unable to edit when status is 'Pending or Completed'"]);
+            }
+        }else{
+            return response()->json(['status' => 402,'message' => "Something went wrong"]);
+        }
+        
+       
+        
+    }
+
     // public function testEmail(Request $request)
     // {
         // $userDetails = User::where('id', '2')->first();

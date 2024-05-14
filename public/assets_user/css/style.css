@@ -671,3 +671,23 @@ header>img {
     border-color:#dc3545 !important;
 }
 
+
+.dropdown-menu {
+    box-shadow: 0px 4px 6px rgb(5 5 5 / 50%); /* Add a box shadow */
+}
+
+.dropdown-menu li {
+    list-style: none; /* Remove default list styles */
+}
+
+.dropdown-menu .dropdown-item {
+    padding: 0; /* Remove default padding */
+}
+
+.pay-detail {
+    cursor: pointer; /* Add pointer cursor to indicate clickable */
+}
+
+.dropdown-item:hover{
+    background-color: #80808038;
+}

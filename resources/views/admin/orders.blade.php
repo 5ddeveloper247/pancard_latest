@@ -26,7 +26,7 @@
             </li>
             <li class="nav-item px-1" role="presentation">
                 <button id="nav-sub-links"
-                    class="nav-link text-nowrap px-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
+                    class="nav-link text-nowrap px-2 px-md-3  d-flex flex-column align-items-center justify-content-center bulkupload-reset"
                     data-bs-toggle="pill" data-bs-target="#pills-bulk-upload" type="button"
                     role="tab" aria-controls="pills-bulk-upload" aria-selected="false">
                     Bulk Upload
@@ -114,76 +114,55 @@
             <div class="tab-pane fade bulk-upload" id="pills-bulk-upload" role="tabpanel"
                 aria-labelledby="pills-bulk-upload-tab" tabindex="0">
                 <!-- =====BULK-UPLOAD-UNSELECTED====== -->
-                <div id="bulk-upload-unselected" style="display: none;">
-                    <div class="d-flex justify-content-between">
-                        <div
-                            class="upload bulk-upload-width px-md-4 px-2 d-flex align-items-center justify-content-between border">
-                            Upload Click here to upload file
-                            <svg width="22" height="21" viewBox="0 0 22 21" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10.7143 12.8857V1M10.7143 1L13.6286 4.2M10.7143 1L7.80005 4.2"
-                                    stroke="#515C6F" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M6.82857 19.2857H14.6C17.3472 19.2857 18.7218 19.2857 19.5747 18.483C20.4286 17.6784 20.4286 16.3865 20.4286 13.8V12.8857C20.4286 10.3001 20.4286 9.00734 19.5747 8.20368C18.8286 7.50151 17.6843 7.41283 15.5714 7.40186M5.85714 7.40186C3.74429 7.41283 2.59994 7.50151 1.85389 8.20368C1 9.00734 1 10.3001 1 12.8857V13.8C1 16.3865 1 17.6793 1.85389 18.483C2.14531 18.7573 2.49697 18.9374 2.94286 19.0563"
-                                    stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
+                <div id="bulk-upload-unselected">
+                    <form id="uploadBulk_form" enctype="multipart/form-data">
+                        <div class="d-flex justify-content-between">
+                            <div id="uploadBulkIcon" class="upload bulk-upload-width px-md-4 px-2 d-flex align-items-center justify-content-between border">
+                                <span id="filename1" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Click here to upload file</span>
+                                <input type="file" accept="application/pdf" id="uploadBilkFile" name="uploadFile[]" multiple style="display: none;">
+                                <i class="fa fa-"></i>
+                                <svg width="22" height="21" viewBox="0 0 22 21" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.7143 12.8857V1M10.7143 1L13.6286 4.2M10.7143 1L7.80005 4.2"
+                                        stroke="#515C6F" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M6.82857 19.2857H14.6C17.3472 19.2857 18.7218 19.2857 19.5747 18.483C20.4286 17.6784 20.4286 16.3865 20.4286 13.8V12.8857C20.4286 10.3001 20.4286 9.00734 19.5747 8.20368C18.8286 7.50151 17.6843 7.41283 15.5714 7.40186M5.85714 7.40186C3.74429 7.41283 2.59994 7.50151 1.85389 8.20368C1 9.00734 1 10.3001 1 12.8857V13.8C1 16.3865 1 17.6793 1.85389 18.483C2.14531 18.7573 2.49697 18.9374 2.94286 19.0563"
+                                        stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <button type="button" class="btn text-white bulk-upload-btn transfer-now-btn px-3 ms-2" id="uploadBulk_submit" disabled>Upload Submit</button>
                         </div>
-                        <button type="button" class="btn text-white bulk-upload-btn px-3 ms-2">Upload
-                            Submit</button>
-                    </div>
+                    </form>
                     <span>Click all files rename to vehicle registration No.</span>
                     <div class="bulk-order-table">
-                        <div class="row justify-content-around">
-                            <span class="col-8 d-flex justify-content-center">File Name</span>
-                            <span class="col-4 d-flex justify-content-center bulk-order-status">Status</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- =====BULK-UPLOAD-SELECTED====== -->
-                <div id="bulk-upload-selected">
-                    <div class="d-flex justify-content-between">
-                        <div
-                            class="upload bulk-upload-selected-width px-md-4 px-2 d-flex align-items-center justify-content-between">
-                            Files has been uploaded (95)
-                            <svg width="22" height="21" viewBox="0 0 22 21" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10.7143 12.8857V1M10.7143 1L13.6286 4.2M10.7143 1L7.80005 4.2"
-                                    stroke="#0D9E00" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M6.82857 19.2857H14.6C17.3472 19.2857 18.7218 19.2857 19.5747 18.483C20.4286 17.6784 20.4286 16.3865 20.4286 13.8V12.8857C20.4286 10.3001 20.4286 9.00734 19.5747 8.20368C18.8286 7.50151 17.6843 7.41283 15.5714 7.40186M5.85714 7.40186C3.74429 7.41283 2.59994 7.50151 1.85389 8.20368C1 9.00734 1 10.3001 1 12.8857V13.8C1 16.3865 1 17.6793 1.85389 18.483C2.14531 18.7573 2.49697 18.9374 2.94286 19.0563"
-                                    stroke="#0D9E00" stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <button type="button" class="btn text-white bulk-upload-btn transfer-now-btn px-3 ms-2">Upload
-                            Submit</button>
-                    </div>
-                    <span>Click all files rename to vehicle registration No.</span>
-                    <div class="bulk-order-table">
-                        <div class="d-flex flex-column bulk-order-table-structure">
+                        <div class="d-flex flex-column bulk-order-table-structure" >
                             <div class="row justify-content-around table-head">
                                 <span class="col-8 d-flex justify-content-center">File Name</span>
                                 <span class="col-4 d-flex justify-content-center bulk-order-status">Status</span>
                             </div>
-                            <div class="row justify-content-around">
-                                <span class="col-8 d-flex justify-content-center">AS24AC2594</span>
-                                <span
-                                    class="col-4 d-flex justify-content-center bulk-order-status record-success">Success</span>
+                            <div id="bulkUpload_container">   
+                                <!-- <div class="row justify-content-around line-div">
+                                    <span class="col-8 d-flex justify-content-center">AS24AC2594</span>
+                                    <span
+                                        class="col-4 d-flex justify-content-center bulk-order-status record-success">Success</span>
+                                </div>
+                                <div class="row justify-content-around">
+                                    <span class="col-8 d-flex justify-content-center">AS11H2536</span>
+                                    <span
+                                        class="col-4 d-flex justify-content-center bulk-order-status record-success">Success</span>
+                                </div>
+                                <div class="row justify-content-around">
+                                    <span class="col-8 d-flex justify-content-center">AS24S1254</span>
+                                    <span class="col-4 d-flex justify-content-center bulk-order-status record-failed">Not
+                                        Found</span>
+                                </div> -->
                             </div>
-                            <div class="row justify-content-around">
-                                <span class="col-8 d-flex justify-content-center">AS11H2536</span>
-                                <span
-                                    class="col-4 d-flex justify-content-center bulk-order-status record-success">Success</span>
-                            </div>
-                            <div class="row justify-content-around">
-                                <span class="col-8 d-flex justify-content-center">AS24S1254</span>
-                                <span class="col-4 d-flex justify-content-center bulk-order-status record-failed">Not
-                                    Found</span>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
 

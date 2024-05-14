@@ -256,7 +256,7 @@
 
 
                     <div class="form-floating col-6 col-md-4">
-                        <input type="text" class="form-control" id="registration_number" name="registration_number" maxlength="10" placeholder="DG5S8FU"/>
+                        <input type="text" class="form-control" id="registration_number" name="registration_number" maxlength="15" placeholder="DG5S8FU"/>
                         <label class="ps-4" for="registration_number">Registeration No</label>
                     </div>
 

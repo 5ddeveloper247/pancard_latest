@@ -14,11 +14,16 @@ function getPucPageDataResponse(response){
     
     var puc_list = data['puc_list'];
 
+    makePucList(puc_list);
+    
+}
+
+function makePucList(puc_list){
     var html = '';
     if(puc_list.length > 0){
         $.each(puc_list, function(index, value) {
             var status_txt = '';
-            if(value.status == '1'){
+            if(value.status == '1'){    // pending
                 status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-2">
                                 <svg width="12" height="11" viewBox="0 0 12 11" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +35,7 @@ function getPucPageDataResponse(response){
                                 </svg>
                                 Processing
                             </span>`;
-            }else if(value.status == '3'){
+            }else if(value.status == '3'){  // reject
                 status_txt = `<span class="text-end bg-r ms-2 ms-sm-5 pe-2">
                                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g clip-path="url(#clip0_887_44)">
@@ -45,17 +50,17 @@ function getPucPageDataResponse(response){
                                 </svg>
                                 Reason: ${value.rejection_reason}
                             </span>`;
-            }else if(value.status == '4'){
+            }else if(value.status == '4'){ // complete
                 status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-3">
                                     Completed
                                 </span>`;
             }
             html += `<div class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4 mx-md-5 px-md-4">
-                        <div class="d-flex flex-column">
+                        <div class="d-flex flex-column editPuc_btn" data-id="${value.id}" title="Edit PUC" style="cursor:pointer;">
                             <span class="fw-bold text-dark">
                                 ${value.name}
                             </span>
-                            <span class="text-dark d-flex ">${value.puc_type.name}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
+                            <span class="text-dark d-flex ">${value.puc_type != null ? value.puc_type.name: ''}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
                             <span class="text-dark">
                                 ${value.model}&nbsp;-&nbsp;${value.phone_number}
                             </span>
@@ -185,7 +190,6 @@ function getPucPageDataResponse(response){
     }
 
     $("#pucOrders_container").html(html);
-    
 }
 
 
@@ -303,7 +307,183 @@ function getPucFilteredData(filterFlag, param1='', param2='', param3=''){
     data.append("param2", param2);
     data.append("param3", param3);
     // PASSING DATA TO FUNCTION
-    SendAjaxRequestToServer(type, url, data, '', getPucPageDataResponse, '', 'submit_button');
+    SendAjaxRequestToServer(type, url, data, '', getPucFilteredResponse, '', 'submit_button');
+}
+
+function getPucFilteredResponse(response){
+
+    var data = response.data;
+    
+    var puc_list = data['puc_list'];
+
+    makePucList(puc_list);
+    
+}
+
+function getPucTypeRate(){
+
+    var puc_type_id = $("#puc_type").val();
+    console.log(puc_type_id);
+    if(puc_type_id != ''){
+        let type = 'POST';
+        let url = '/getPucTypeRate';
+        let message = '';
+        let form = '';
+        let data = new FormData();
+        data.append("puc_type_id", puc_type_id);
+        // PASSING DATA TO FUNCTION
+        SendAjaxRequestToServer(type, url, data, '', getPucTypeRateResponse, '', 'submit_button');
+    }else{
+        $("#puc_charges").html(`&#8377; 0`);
+        $("#puc_type_rate").val('0');
+    }
+    
+}
+function getPucTypeRateResponse(response){
+
+    var data = response.data;
+    var userPucRates = data['userPucRates'];
+
+    if(userPucRates != null){
+        $("#puc_charges").html('&#8377; '+userPucRates['puc_rate']);
+        $("#puc_type_rate").val(userPucRates['puc_rate']);
+    }else{
+        $("#puc_charges").html(`&#8377; 0`);
+        $("#puc_type_rate").val('0');
+    }
+}
+
+$(document).on('click', '.editPuc_btn', function (e) {
+
+    var puc_id = $(this).attr('data-id');
+    if(puc_id != ''){
+        e.preventDefault();
+        let type = 'POST';
+        let url = '/editSpecificPuc';
+        let message = '';
+        let form = '';
+        let data = new FormData();
+        data.append('puc_id', puc_id);
+            
+        // PASSING DATA TO FUNCTION
+        SendAjaxRequestToServer(type, url, data, '', editSpecificPucResponse, '', '.editPuc_btn1');
+    }
+	
+	
+});
+
+
+function editSpecificPucResponse(response) {
+
+    // SHOWING MESSAGE ACCORDING TO RESPONSE
+    if (response.status == 200 || response.status == '200') {
+      
+        var data = response.data;
+        var puc_detail = data['puc_detail'];
+        resetPucForm();
+
+        if(puc_detail != null){
+            $("#puc_id").val(puc_detail.id);
+            $("#puc_type").val(puc_detail.puc_type_id);
+            $("#registration_number").val(puc_detail.registration_number);
+            $("#vehicle_model").val(puc_detail.model);
+            $("#puc_name").val(puc_detail.name);
+            $("#mobile_number").val(puc_detail.phone_number);
+            
+            $("[name=challan]").val(puc_detail.challan);
+            $("#chassis_number").val(puc_detail.chasis_number);
+            $("#engine_number").val(puc_detail.engine_number);
+
+            $("#picturename").text(puc_detail.vehicle_image);
+            $("#challanName").text(puc_detail.challan_image);
+            $("#puc_charges").html("&#8377; "+puc_detail.puc_type_rate);
+            $("#puc_type_rate").val(puc_detail.puc_type_rate);
+        }
+
+        $("#main_section").hide();
+        $("#makePuc_section").show(); 
+
+    } else {
+        
+        if(response.status == 402){
+            error = response.message;
+        }else{
+            error = response.responseJSON.message;
+        }
+    	
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+    }
+}
+
+function resetPucForm(){
+    let form = $('#puc_create_form');
+    form.trigger("reset");
+
+    $("#picturename").html('Upload Vehicle Photo');
+    $("#challanName").html('Upload Challan Screenshot');
+
+    $("#puc_charges").html('&#8377; 0');
+    $("#puc_type_rate").val('0');
+}
+
+$(document).on('click', '#puc_create_submit', function (e) {
+
+	e.preventDefault();
+	let type = 'POST';
+	let url = '/createPucUser';
+	let message = '';
+	let form = $('#puc_create_form');
+	let data = new FormData(form[0]);
+	    
+	// PASSING DATA TO FUNCTION
+	$('[name]').removeClass('is-invalid');
+	SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '.reset_pass_submit');
+	
+});
+
+function resetPasswordProfileResponse(response) {
+
+    // SHOWING MESSAGE ACCORDING TO RESPONSE
+    if (response.status == 200 || response.status == '200') {
+      
+        toastr.success(response.message, '', {
+            timeOut: 3000
+        });
+
+        resetPucForm();
+        getPucPageData();
+
+        $("#main_section").show();
+        $("#makePuc_section").hide(); 
+
+    } else {
+        
+        if(response.status == 402){
+            
+            error = response.message;
+
+        }else{
+            
+            error = response.responseJSON.message;
+            var is_invalid = response.responseJSON.errors;
+        
+            $.each(is_invalid, function(key) {
+                // Assuming 'key' corresponds to the form field name
+                var inputField = $('[name="' + key + '"]');
+                var selectField = $('[name="' + key + '"]');
+                // Add the 'is-invalid' class to the input field's parent or any desired container
+                inputField.closest('.form-control').addClass('is-invalid');
+                selectField.closest('.form-select').addClass('is-invalid');
+            });
+        }
+    	
+        
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+    }
 }
 
 $(document).ready(function () {
@@ -320,4 +500,37 @@ $(document).ready(function () {
     });
 
     $("#filter_dateRange").val('');
+});
+
+
+document.getElementById('cameraIcon').addEventListener('click', function() {
+    // Trigger click event on the input field
+    document.getElementById('upload_vehicle').click();
+});
+document.getElementById('upload_vehicle').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        // Get the filename of the selected file
+        var filename = this.files[0].name;
+        // Update the content of the <span> element with the filename
+        document.getElementById('picturename').innerText = filename;
+    } else {
+        // No file selected, reset the content of the <span> element
+        document.getElementById('picturename').innerText = 'Upload Vehicle Photo';
+    }
+});
+
+document.getElementById('challanIcon').addEventListener('click', function() {
+    // Trigger click event on the input field
+    document.getElementById('upload_challan').click();
+});
+document.getElementById('upload_challan').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        // Get the filename of the selected file
+        var filename = this.files[0].name;
+        // Update the content of the <span> element with the filename
+        document.getElementById('challanName').innerText = filename;
+    } else {
+        // No file selected, reset the content of the <span> element
+        document.getElementById('challanName').innerText = 'Upload Challan Screenshot';
+    }
 });

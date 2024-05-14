@@ -5,7 +5,7 @@
 
 @section('content')
 <section>
-        <div class="container-fluid order-tab-container">
+        <div class="container-fluid order-tab-container" id="main_section">
             <ul id="nav-order-tab" class="nav nav-pills d-flex align-items-center justify-content-between
                  flex-nowrap gap-2 px-0 px-md-5 mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item">
@@ -562,6 +562,122 @@
                     tabindex="0">...</div>
             </div>
         </div>
+
+        <div class="container-fluid vehicle-details-container g-0" id="makePuc_section">
+            <button type="button" class="view-btn py-1 px-3" id="backToMainPage">
+                <&nbsp;Back to profile
+            </button>
+            <form class="row g-3 register pt-4" id="puc_create_form" novalidate>
+                <input type="hidden" id="puc_id" name="puc_id">
+                <div class="form-floating col-6 col-md-4">
+                    <label class="visually-hidden" for="puc_type"></label>
+                    <select class="form-select" id="puc_type" name="puc_type" onchange="getPucTypeRate()">
+                        <option value="">PUC Type</option>
+                        @foreach($userPucTypes as $rate)
+                            <option value="{{$rate->puc_type_id}}">{{$rate->pucType->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+
+                <div class="form-floating col-6 col-md-4">
+                    <input type="text" class="form-control" id="registration_number" name="registration_number" maxlength="15" placeholder="DG5S8FU"/>
+                    <label class="ps-4" for="registration_number">Registeration No</label>
+                </div>
+
+                <div class="form-floating col-6 col-md-4">
+                    <input type="text" class="form-control" id="vehicle_model" name="vehicle_model" maxlength="20" placeholder="name@example.com" />
+                    <label class="ps-4" for="vehicle_model">Vehicle model</label>
+                </div>
+
+
+                <div class="form-floating col-6 col-md-4">
+                    <input type="text" class="form-control" id="puc_name" name="puc_name" maxlength="50" placeholder="123"/>
+                    <label class="ps-4" for="puc_name">Name</label>
+                </div>
+
+                <div class="form-floating col-6 col-md-4">
+                    <input type="number" class="form-control" id="mobile_number" name="mobile_number" maxlength="15" placeholder="name@example.com" />
+                    <label class="ps-4" for="mobile_number">Mobile No</label>
+                </div>
+
+
+                <div class="form-floating col-6 col-md-4">
+                    <div id="cameraIcon" class="upload px-4 d-flex align-items-center justify-content-between">
+                        <span id="picturename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Vehicle Photo</span>
+                        <input type="file" accept="image/*" capture="camera" id="upload_vehicle" name="upload_vehicle" multiple="false" style="display: none;">
+                        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z"
+                                stroke="#727C8E" stroke-width="1.5" />
+                            <path
+                                d="M1 11.364C1 8.29905 1 6.76705 1.749 5.66705C2.07416 5.1887 2.49085 4.77949 2.975 4.46305C3.695 3.99005 4.597 3.82105 5.978 3.76105C6.637 3.76105 7.204 3.27105 7.333 2.63605C7.43158 2.17092 7.68773 1.75408 8.05815 1.456C8.42857 1.15791 8.89055 0.996855 9.366 1.00005H12.634C13.622 1.00005 14.473 1.68505 14.667 2.63605C14.796 3.27105 15.363 3.76105 16.022 3.76105C17.402 3.82105 18.304 3.99105 19.025 4.46305C19.51 4.78105 19.927 5.19005 20.251 5.66705C21 6.76705 21 8.29905 21 11.364C21 14.428 21 15.96 20.251 17.061C19.9253 17.5389 19.5087 17.948 19.025 18.265C17.904 19 16.343 19 13.222 19H8.778C5.657 19 4.096 19 2.975 18.265C2.49154 17.9477 2.07529 17.5382 1.75 17.06C1.53326 16.7361 1.3733 16.3777 1.277 16M18 8.00005H17"
+                                stroke="#727C8E" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="row gy-2 gx-0 gap-2 pe-2">
+                    <div class="col-2 challan ms-2 px-2">
+                        <label for="challan">
+                            Challan
+                        </label>
+                        <div class="form-floating">
+                            <select id="Challan-form" class="form-select" id="challan" name="challan">
+                                <option value="">choose</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-floating col">
+                        <input type="number" class="form-control" id="chassis_number" name="chassis_number" maxlength="5" placeholder="name@example.com" />
+                        <label class="ps-4" for="chassis_number">Chasis last 5 digits</label>
+                    </div>
+
+
+                    <div class="form-floating col">
+                        <input type="number" class="form-control" id="engine_number" name="engine_number" maxlength="20" placeholder="name@example.com" />
+                        <label class="ps-4" for="engine_number">Engine last 5 digits</label>
+                    </div>
+                </div>
+
+
+                <div class="form-floating col-8">
+                    <div id="challanIcon" class="upload px-4 d-flex align-items-center justify-content-between">
+                    <span id="challanName" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload challan Screenshot</span>
+                        <input type="file" accept="image/*" capture="camera" id="upload_challan" name="upload_challan" multiple="false" style="display: none;">
+                        <svg width="19" height="18" viewBox="0 0 19 18" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.49995 11.4V1M9.49995 1L12.05 3.8M9.49995 1L6.94995 3.8" stroke="#515C6F"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M6.1 17H12.9C15.3038 17 16.5066 17 17.2529 16.2976C18 15.5936 18 14.4632 18 12.2V11.4C18 9.13756 18 8.00636 17.2529 7.30316C16.6001 6.68876 15.5988 6.61116 13.75 6.60156M5.25 6.60156C3.40125 6.61116 2.39995 6.68876 1.74715 7.30316C1 8.00636 1 9.13756 1 11.4V12.2C1 14.4632 1 15.5944 1.74715 16.2976C2.00215 16.5376 2.30985 16.6952 2.7 16.7992"
+                                stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="form-floating col-4">
+                    <div class="upload py-1 px-4">
+                        Charges <br>
+                        <b class="text-dark fs-5" id="puc_charges"></b>
+                    </div>
+                    <input type="hidden" id="puc_type_rate" name="puc_type_rate" value="0">
+                </div>
+
+                <div class="py-3 text-center">
+                    <button type="button" id="puc_create_submit" class="vehicle-info-btn w-100 py-3">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </section>
 
     <!-- ====================================POPUP=================================== -->

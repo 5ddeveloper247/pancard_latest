@@ -634,7 +634,7 @@ label {
 
 .users-details-inputs:focus {
     box-shadow: none;
-    border: 1px solid #515C6F;
+    border: 1px solid #515C6F !important;
 }
 
 .small-w-rates {

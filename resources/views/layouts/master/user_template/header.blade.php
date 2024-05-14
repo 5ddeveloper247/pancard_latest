@@ -64,7 +64,7 @@
                     opacity="0.5" />
             </svg>
             <span class="py-2 px-3">
-                ₹ 1000
+                ₹ {{@$user->balance}}
             </span>
         </li>
     </ul>

@@ -43,7 +43,7 @@ $(document).on('click', '#puc_create_submit', function (e) {
 	let message = '';
 	let form = $('#puc_create_form');
 	let data = new FormData(form[0]);
-	    
+    data.append('puc_id', '');
 	// PASSING DATA TO FUNCTION
 	$('[name]').removeClass('is-invalid');
 	SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '.reset_pass_submit');

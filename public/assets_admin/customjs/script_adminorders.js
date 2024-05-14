@@ -126,7 +126,7 @@ function makePucPendingListing(puc_list){
                                 </span>
                             </div>
                             <div class="d-flex flex-nowrap">
-                                <select class="form-select pending-dropdown py-0 my-1 ms-2 reasonSelect_txt" id="" style="width: 180px;">
+                                <select class="form-select pending-dropdown py-0 my-1 ms-2 reasonSelect_txt" id="" style=""><!-- width: 180px; -->
                                     <option value="">Choose Reason</option>
                                     <option value="Photo not clear">Photo not clear</option>
                                     <option value="Vehicle Not found">Vehicle Not found</option>
@@ -274,7 +274,7 @@ function makePucOrderHistoryListing(puc_list){
                                 </span>
                             </div>
                             <div class="d-flex flex-nowrap ${value.status == '1' ? 'd-block' : 'd-none'}">
-                                <select class="form-select pending-dropdown py-0 my-1 ms-2 reasonSelect_txt" id="" style="width: 180px;">
+                                <select class="form-select pending-dropdown py-0 my-1 ms-2 reasonSelect_txt" id="" style=""><!-- width: 180px; -->
                                     <option value="">Choose Reason</option>
                                     <option value="Photo not clear">Photo not clear</option>
                                     <option value="Vehicle Not found">Vehicle Not found</option>
@@ -618,6 +618,101 @@ function uploadPucPdfFileResponse(response) {
     }
 }
 
+$(document).on('click', '#uploadBulk_submit', function (e) {
+
+	e.preventDefault();
+	let type = 'POST';
+	let url = '/admin/uploadExcelBulkForm';
+	let message = '';
+	let form = $('#uploadBulk_form');
+	let data = new FormData(form[0]);
+	    
+	// PASSING DATA TO FUNCTION
+	$('[name]').removeClass('is-invalid');
+    $("#bulkUpload_container").html('<p class="text-center">Processing...</p>');
+	SendAjaxRequestToServer(type, url, data, '', uploadBulkResponse, '', '#uploadBulk_submit');
+	
+});
+
+function uploadBulkResponse(response) {
+
+    // SHOWING MESSAGE ACCORDING TO RESPONSE
+    if (response.status == 200 || response.status == '200') {
+      
+        toastr.success(response.message, '', {
+            timeOut: 3000
+        });
+
+        var data = response.data;
+        
+        let form = $('#uploadBulk_form');
+        form.trigger("reset");
+
+        $("#filename1").text('Click here to upload file');
+        $("#uploadBulk_submit").prop('disabled', true);
+
+        makeBulkUploadResponseList(data);
+        getPucPageData();
+
+    } else {
+        
+        if(response.status == 402){
+            
+            error = response.message;
+
+        }else{
+
+            error = response.responseJSON.message;
+            var is_invalid = response.responseJSON.errors;
+            
+            $.each(is_invalid, function(key) {
+                // Assuming 'key' corresponds to the form field name
+                var inputField = $('[name="' + key + '"]');
+                var selectField = $('[name="' + key + '"]');
+                // Add the 'is-invalid' class to the input field's parent or any desired container
+                inputField.closest('.form-control').addClass('is-invalid');
+                selectField.closest('.form-select').addClass('is-invalid');
+            });
+        }
+        $("#bulkUpload_container").html('');
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+    }
+}
+
+function makeBulkUploadResponseList(responseList){
+
+    var html = '';
+    if(responseList.length > 0){
+        $.each(responseList, function(index, value) {
+            
+
+            html += `<div class="row justify-content-around line-div">
+                        <span class="col-8 d-flex justify-content-center">${value.name}</span>
+                        <span class="col-4 d-flex justify-content-center bulk-order-status ${value.error == '200' ? 'record-success' : 'record-failed'}">${value.msg}</span>
+                    </div>`;
+            
+            
+        });
+    }
+    $("#bulkUpload_container").html(html);
+}
+
+$(document).on('click', '.bulkupload-reset', function (e) {
+
+    let form = $('#uploadBulk_form');
+    form.trigger("reset");
+	    
+    $("#filename1").text('Click here to upload file');  
+    $("#bulkUpload_container").html('');
+
+    $("#uploadBulkIcon").addClass('bulk-upload-width');
+    $("#uploadBulkIcon").addClass('border');
+    $("#uploadBulkIcon").removeClass('bulk-upload-selected-width');
+    $("#uploadBulk_submit").prop('disabled', true);
+});
+
 $(document).ready(function () {
     
     getPucPageData();
@@ -651,4 +746,31 @@ document.getElementById('uploadFile').addEventListener('change', function() {
         // No file selected, reset the content of the <span> element
         document.getElementById('filename').innerText = 'Click here to upload file';
     }
+});
+
+document.getElementById('uploadBulkIcon').addEventListener('click', function() {
+    // Trigger click event on the input field
+    document.getElementById('uploadBilkFile').click();
+});
+document.getElementById('uploadBilkFile').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        // Get the filename of the selected file
+        var filename = this.files[0].name;
+        // Update the content of the <span> element with the filename
+        document.getElementById('filename1').innerText = filename;
+        
+        $("#uploadBulkIcon").removeClass('bulk-upload-width');
+        $("#uploadBulkIcon").removeClass('border');
+        $("#uploadBulkIcon").addClass('bulk-upload-selected-width');
+        $("#uploadBulk_submit").prop('disabled', false);
+    } else {
+        // No file selected, reset the content of the <span> element
+        document.getElementById('filename1').innerText = 'Click here to upload file';
+        
+        $("#uploadBulkIcon").addClass('bulk-upload-width');
+        $("#uploadBulkIcon").addClass('border');
+        $("#uploadBulkIcon").removeClass('bulk-upload-selected-width');
+        $("#uploadBulk_submit").prop('disabled', true);
+    }
+    
 });

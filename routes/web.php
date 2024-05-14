@@ -63,9 +63,11 @@ Route::group(['prefix' => 'admin'], function () {
         
         Route::post('/getUserInfoData', [AdminController::class, 'getUserInfoData'])->name('admin.getUserInfoData');
         Route::post('/uploadPucPdfFile', [AdminController::class, 'uploadPucPdfFile'])->name('admin.uploadPucPdfFile');
+        Route::post('/uploadExcelBulkForm', [AdminController::class, 'uploadExcelFrom'])->name('admin.uploadExcelBulkForm');
         
         
-        Route::get('pdf-to-text', [PDFController::class, 'pdfToText']);
+        
+        
     });
     
 });
@@ -112,8 +114,8 @@ Route::group(['prefix' => '/'], function () {
         
         Route::post('/getPucPageData', [FrontEndController::class, 'getPucPageData'])->name('getPucPageData');
         Route::post('/getPucFilteredData', [FrontEndController::class, 'getPucFilteredData'])->name('getPucFilteredData');
+        Route::post('/editSpecificPuc', [FrontEndController::class, 'editSpecificPuc'])->name('editSpecificPuc');
         
-
 
         
     });

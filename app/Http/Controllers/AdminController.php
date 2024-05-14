@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Spatie\PdfToText\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Settings;
@@ -230,27 +231,22 @@ class AdminController extends Controller
 
     public function deleteSpecificNotification(Request $request)
     {   
-        
         $notif_id = $request->id;
         $notification = Notifications::where('id', $notif_id)->delete();
         $data['notifications'] = Notifications::get();
         return response()->json(['status' => 200,'message' => "Notification Deleted Successfully!", 'data' => $data]);
-        
     }
 
     public function editSpecificNotification(Request $request)
     {   
-        
         $notif_id = $request->id;
         $data['notification'] = Notifications::where('id', $notif_id)->first();
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
-        
     }
 
 
     public function storeTutorialSettings(Request $request)
     {   
-        
         $req_file = 'uploadThumbnail';
         $path = '/images/thumbnail';
 
@@ -269,7 +265,6 @@ class AdminController extends Controller
         }
         
         // Process form submission if validation passes
-        
         if($request->tutorial_id == null){
             $Tutorials = new Tutorials();
         }else{
@@ -290,10 +285,10 @@ class AdminController extends Controller
         }
         
         $previous_image = Tutorials::where('id', $request->tutorial_id)->value('thumbnail');
-
+       
         if ($request->hasFile($req_file)) {
             if($request->tutorial_id != null){
-                deleteImage($previous_image);
+                deleteImage(str_replace(url('/'), '', $previous_image));
             }
             $uploadedFile = $request->file($req_file);
 
@@ -455,7 +450,7 @@ class AdminController extends Controller
 
         if ($request->hasFile($req_file)) {
             if($request->user_id != null){
-                deleteImage($previous_image);
+                deleteImage(str_replace(url('/'), '', $previous_image));
             }
             $uploadedFile = $request->file($req_file);
 
@@ -468,10 +463,10 @@ class AdminController extends Controller
         $req_file1 = 'upload_aadhar';
         $path1 = '/assets/uploads/aadhar';
         $previous_image1 = User::where('id', $request->user_id)->value('aadhar');
-
+        
         if ($request->hasFile($req_file1)) {
             if($request->user_id != null){
-                deleteImage($previous_image1);
+                deleteImage(str_replace(url('/'), '', $previous_image1));
             }
             $uploadedFile = $request->file($req_file1);
 
@@ -652,9 +647,7 @@ class AdminController extends Controller
             'uploadFile' => 'required|mimes:pdf,PDF|max:2048'
         ]);
 
-
         // extract start and end date from pdf file 
-
         $uploadedFile = $request->file('uploadFile');
         // Save the uploaded file to a temporary location
         $pdfFilePath = $uploadedFile->storeAs('temp', $uploadedFile->getClientOriginalName());
@@ -689,12 +682,13 @@ class AdminController extends Controller
         if((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != ''){
             
             $req_file = 'uploadFile';
-            $path = '/assets/uploads/profile';
+            $path = '/assets/uploads/puc/pdf_files';
             $previous_file = Puc::where('id', $request->puc_id)->value('certificate_pdf');
-
+            
+            // dd($previous_file);
             if ($request->hasFile($req_file)) {
                 if($previous_file){
-                    deleteImage($previous_file);
+                    deleteImage(str_replace(url('/'), '', $previous_file));
                 }
                 
                 $uploadedFile = $request->file($req_file);
@@ -718,16 +712,135 @@ class AdminController extends Controller
         }else{
             return response()->json(['status' => 402,'message' => "PDF file not have proper dates try another file"]);
         }
-        // print("<pre>");
-        // print_r($startDate);
-        // print("<pre>");
-        // print_r($endDate);
-        // dd($text);
-        // exit;
-        
-        
-        
-        // return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
+
+    public function uploadExcelFrom(Request $request)
+    {       
+        
+        $validatedData = $request->validate([
+            'uploadFile.*' => 'required|mimes:pdf,PDF',
+            'uploadFile' => 'max:10|min:1',
+        ], [
+            'uploadFile.max' => 'You can upload a maximum of :max files at a time.',
+            'uploadFile.min' => 'You can upload atleast :max file for bulk upload.',
+        ]);
+
+        $tempArray = [];
+        $dataArray = [];
+        
+        // Process uploaded files
+        if ($request->hasFile('uploadFile')) {
+            foreach ($request->file('uploadFile') as $key => $file) {
+                
+                // Get the original file name
+                $filename = $file->getClientOriginalName();
+                $filenameWithoutExtension = pathinfo($filename, PATHINFO_FILENAME);
+                $tempArray['name'] = $filename;
+
+                // extract start and end date from pdf file 
+                $uploadedFile = $file;
+                // Save the uploaded file to a temporary location
+                $pdfFilePath = $uploadedFile->storeAs('temp', $uploadedFile->getClientOriginalName());
+
+                // Extract text from the PDF file
+                $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
+                if (config('app.env')=='local') {
+                    $text = Pdf::getText($file,$binpath);
+                }else{ // on dev or prod
+                    $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
+                }
+                // Delete the temporary PDF file
+                unlink(storage_path('app/' . $pdfFilePath));
+
+                $pattern = '/\b(\d{2})\/(\d{2})\/(\d{4})\b/'; // Regex pattern for DD/MM/YYYY format
+                preg_match_all($pattern, $text, $matches);
+
+                // Extracted dates
+                $dates = $matches[0];
+                
+                foreach ($dates as $key => $date) {
+                    $dateString = Carbon::createFromFormat('d/m/Y', $date);
+                    // Extract the time portion
+                    $dateFormated = $dateString->format('Y-m-d');
+                    if($key == 0){
+                        $startDate = $dateFormated;
+                    }elseif($key == 1){
+                        $endDate = $dateFormated;
+                    }
+                }
+
+                if((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != ''){
+                    
+                    
+                    $existPuc = Puc::where('registration_number', $filenameWithoutExtension)->first();
+
+                    if(isset($existPuc->id)){
+                        $req_file = 'uploadFile';
+                        $path = '/assets/uploads/puc/pdf_files';
+                        $previous_file = Puc::where('id', $existPuc->id)->value('certificate_pdf');
+                        
+                        if($previous_file){
+                            deleteImage(str_replace(url('/'), '', $previous_file));
+                        }  
+
+                        // dd($previous_file);
+                        $uploadedFile = $file;
+
+                        $savedFile = saveSingleImage($uploadedFile, $path);
+                        $full_path = url('/').$savedFile;
+                        
+                        Puc::where('id', $existPuc->id)->update([
+                            'status' => '4', 
+                            'start_date' => $startDate, 
+                            'end_date' => $endDate, 
+                            'certificate_pdf' => $full_path, 
+                            'updated_at' => date('Y-m-d H:i:s'), 
+                        ]);
+
+                        $tempArray['error'] = '200';
+                        $tempArray['msg'] = 'Success';
+                    }else{
+                        $tempArray['error'] = '402';
+                        $tempArray['msg'] = 'Not Found';
+                    }
+                }else{
+                    $tempArray['error'] = '402';
+                    $tempArray['msg'] = "PDF file not have proper dates try another file";
+                }
+                $dataArray[] = $tempArray;
+                $tempArray = [];
+            }
+
+            return response()->json(['status' => 200,'message' => "Upload Completed!", 'data' => $dataArray]);
+        }else{
+            return response()->json(['status' => 402,'message' => "No File Received!", 'data' => $dataArray]);
+        }
+        
+    
+        
+        
+    }
+
+
+
+    // // code for excel import 
+    // // Get the uploaded file from the request
+        // $excelFile = $request->file('uploadFile');
+
+        // // Read the Excel file
+        // $data = Excel::toArray([], $excelFile);
+
+        // // Access the first sheet data (assuming the Excel file has only one sheet)
+        // $sheetData = $data[0];
+
+        // dd($sheetData);
+        // // Loop through the data and process as needed
+        // foreach ($sheetData as $row) {
+        //     // Process each row
+        //     dd($row); // Example: Display the row data
+        // }
+
+        // return response()->json(['status' => 200,'message' => "File uploaded successfully!"]);
+    
     
 }
