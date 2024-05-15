@@ -28,11 +28,17 @@
             <h1>login-</h1>
             <span> Please Login your account </span>
         </div>
-		@if (session('error'))
+		@if(session('error'))
 			<div class="alert alert-danger">
 				{{session('error')}}
 			</div>
-		@endif
+		@elseif($errors->any())
+            <div class="alert alert-danger">
+                @foreach ($errors->all() as $error)
+                    <p class="mb-0">{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
 
         <div class="container px-4 pt-0">
             <form class="row g-3 login-form pt-md-0" method="POST" action="{{ route('loginSubmit') }}">

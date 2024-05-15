@@ -75,11 +75,6 @@ class AdminController extends Controller
         return view('admin/analytics')->with($data);
     }
 
-    public function analytics(){
-        $data['page'] = 'Analytics';
-        return view('admin/analytics')->with($data);
-    }
-
     public function wallet()
     {
         $data['page'] = 'Wallet';

@@ -56,10 +56,11 @@ class FrontEndController extends Controller
 
     public function loginSubmit(Request $request)
     {
+        
         $validatedData = $request->validate([
             'username' => 'required|exists:users,username',
         ]);
-
+        
         $user = User::where('username', $request->username)->first();
 
         if($user){
@@ -86,9 +87,7 @@ class FrontEndController extends Controller
                         $request->session()->flash('error', 'Your account is inactive. Please contact the administrator.');
                         return redirect('login');
                     }
-                   
                 }
-    
                 $request->session()->flash('error', 'The provided credentials do not match our records.');
                 return redirect('login');
             }
@@ -328,8 +327,13 @@ class FrontEndController extends Controller
         
         $user_id = session('user')->id;
         $puc_type_id = $request->puc_type_id;
-
-        $data['userPucRates'] = PucUserRates::where('user_id', $user_id)->where('puc_type_id', $puc_type_id)->first();
+        $puc_challan = $request->puc_challan;
+        
+        $userPucRates = PucUserRates::where('user_id', $user_id)->where('puc_type_id', $puc_type_id)->first();
+        $challanRate = User::where('user_id', $user_id)->value('challan_rate');
+        dd($challan_rate);
+        $data['userPucRates'] = $userPucRates;
+        
        
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }

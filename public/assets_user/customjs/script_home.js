@@ -1,20 +1,23 @@
 function getPucTypeRate(){
 
-    var puc_type_id = $("#puc_type").val();
-    console.log(puc_type_id);
-    if(puc_type_id != ''){
+    // var puc_type_id = $("#puc_type").val();
+    // var puc_challan = $("#challan").val();
+    
+    // if(puc_type_id != ''){
         let type = 'POST';
         let url = '/getPucTypeRate';
         let message = '';
         let form = '';
         let data = new FormData();
         data.append("puc_type_id", puc_type_id);
+        data.append("puc_challan", puc_challan);
+        
         // PASSING DATA TO FUNCTION
         SendAjaxRequestToServer(type, url, data, '', getPucTypeRateResponse, '', 'submit_button');
-    }else{
-        $("#puc_charges").html(`&#8377; 0`);
-        $("#puc_type_rate").val('0');
-    }
+    // }else{
+    //     $("#puc_charges").html(`&#8377; 0`);
+    //     $("#puc_type_rate").val('0');
+    // }
     
 }
 function getPucTypeRateResponse(response){
@@ -30,8 +33,11 @@ function getPucTypeRateResponse(response){
         $("#puc_type_rate").val('0');
     }
 }
+$(document).on('change', '#challan', function (e) {
 
-
+	getPucTypeRate();
+	
+});
 
 $(document).on('click', '#puc_create_submit', function (e) {
 
