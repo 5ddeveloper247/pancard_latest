@@ -17,9 +17,10 @@
             <ul id="nav-wallet-tab" class="nav nav-pills pt-3 d-flex align-items-center justify-content-between"
                 id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button id="wallet-tab-bg-color" class="nav-link fw-bolder fs-3 text-dark" id="pills-disabled-tab"
-                        data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab"
-                        aria-controls="pills-disabled" aria-selected="false" disabled>₹ 1250</button>
+                    <form id="add_transaction_form">
+                        <input type="hidden" name="selected_bank_id" id="selected_bank_id">
+                   <input type="number" class="form-control" name="transaction_amount" maxlength="6" id="transaction_amount" style="width:120px; height:52px;" placeholder="₹ 500" >
+                   
                 </li>
                 <li class="nav-item" role="presentation">
                     <button id="wallet-tab-bg-color" class="nav-link active py-3" id="pills-online-tab"
@@ -46,145 +47,86 @@
                         </a>
                     </div>
                     <h5>
-                        Transection History
+                        Transaction History
                     </h5>
 
-                    <div class="d-flex justify-content-between border rounded-2">
-                        <div class="d-flex pt-3 ps-3">
-                            <svg width="68" height="68" viewBox="0 0 48 48" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.5" y="0.5" width="37" height="37" rx="4.5" fill="#FBFBFB" stroke="#F0F0F0" />
-                                <path d="M23.1666 19.5834H24.5555V20.9723H23.1666V19.5834Z" fill="#727C8E" />
-                                <path
-                                    d="M27.5714 13.5556H10.4286V11.4222H26.1429V10H10.4286C10.0497 10 9.68633 10.1498 9.41842 10.4166C9.15051 10.6833 9 11.045 9 11.4222V26.3556C9 26.7328 9.15051 27.0945 9.41842 27.3612C9.68633 27.6279 10.0497 27.7778 10.4286 27.7778H27.5714C27.9503 27.7778 28.3137 27.6279 28.5816 27.3612C28.8495 27.0945 29 26.7328 29 26.3556V14.9778C29 14.6006 28.8495 14.2388 28.5816 13.9721C28.3137 13.7054 27.9503 13.5556 27.5714 13.5556ZM10.4286 26.3556V14.9778H27.5714V17.1111H21.8571C21.4783 17.1111 21.1149 17.261 20.847 17.5277C20.5791 17.7944 20.4286 18.1561 20.4286 18.5333V22.8C20.4286 23.1772 20.5791 23.5389 20.847 23.8057C21.1149 24.0724 21.4783 24.2222 21.8571 24.2222H27.5714V26.3556H10.4286ZM27.5714 18.5333V22.8H21.8571V18.5333H27.5714Z"
-                                    fill="#515C6F" />
-                            </svg>
-                            <div class="d-flex flex-column">
-                                <h6>
-                                    You added
-                                </h6>
-                                <small>18 Dec 21, 08:22 PM</small>
-                            </div>
-                        </div>
-                        <div class="pt-3 pe-3">
-                            <span class="fw-bolder text-success"> + ₹1250</span><br>
-                            <span class="fw-bold text-warning">Pending</span>
-                        </div>
+                    <div id="transactionhistorydiv">
+                        
                     </div>
 
-                    <div class="d-flex justify-content-between border mt-3 rounded-2">
-                        <div class="d-flex pt-3 ps-3">
-                            <svg width="68" height="68" viewBox="0 0 48 48" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.5" y="0.5" width="37" height="37" rx="4.5" fill="#FBFBFB" stroke="#F0F0F0" />
-                                <path d="M23.1666 19.5834H24.5555V20.9723H23.1666V19.5834Z" fill="#727C8E" />
-                                <path
-                                    d="M27.5714 13.5556H10.4286V11.4222H26.1429V10H10.4286C10.0497 10 9.68633 10.1498 9.41842 10.4166C9.15051 10.6833 9 11.045 9 11.4222V26.3556C9 26.7328 9.15051 27.0945 9.41842 27.3612C9.68633 27.6279 10.0497 27.7778 10.4286 27.7778H27.5714C27.9503 27.7778 28.3137 27.6279 28.5816 27.3612C28.8495 27.0945 29 26.7328 29 26.3556V14.9778C29 14.6006 28.8495 14.2388 28.5816 13.9721C28.3137 13.7054 27.9503 13.5556 27.5714 13.5556ZM10.4286 26.3556V14.9778H27.5714V17.1111H21.8571C21.4783 17.1111 21.1149 17.261 20.847 17.5277C20.5791 17.7944 20.4286 18.1561 20.4286 18.5333V22.8C20.4286 23.1772 20.5791 23.5389 20.847 23.8057C21.1149 24.0724 21.4783 24.2222 21.8571 24.2222H27.5714V26.3556H10.4286ZM27.5714 18.5333V22.8H21.8571V18.5333H27.5714Z"
-                                    fill="#515C6F" />
-                            </svg>
-                            <div class="d-flex flex-column">
-                                <h6>
-                                    You added
-                                </h6>
-                                <small>18 Dec 21, 08:22 PM</small>
-                            </div>
-                        </div>
-                        <div class="pt-3 pe-3">
-                            <span class="fw-bolder text-danger">- ₹550</span><br>
-                            <span class="fw-bold">Debited</span>
-                        </div>
-                    </div>
+                    
+                    
 
-                    <div class="d-flex justify-content-between border mt-3 rounded-2">
-                        <div class="d-flex pt-3 ps-3">
-                            <svg width="68" height="68" viewBox="0 0 48 48" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.5" y="0.5" width="37" height="37" rx="4.5" fill="#FBFBFB" stroke="#F0F0F0" />
-                                <path d="M23.1666 19.5834H24.5555V20.9723H23.1666V19.5834Z" fill="#727C8E" />
-                                <path
-                                    d="M27.5714 13.5556H10.4286V11.4222H26.1429V10H10.4286C10.0497 10 9.68633 10.1498 9.41842 10.4166C9.15051 10.6833 9 11.045 9 11.4222V26.3556C9 26.7328 9.15051 27.0945 9.41842 27.3612C9.68633 27.6279 10.0497 27.7778 10.4286 27.7778H27.5714C27.9503 27.7778 28.3137 27.6279 28.5816 27.3612C28.8495 27.0945 29 26.7328 29 26.3556V14.9778C29 14.6006 28.8495 14.2388 28.5816 13.9721C28.3137 13.7054 27.9503 13.5556 27.5714 13.5556ZM10.4286 26.3556V14.9778H27.5714V17.1111H21.8571C21.4783 17.1111 21.1149 17.261 20.847 17.5277C20.5791 17.7944 20.4286 18.1561 20.4286 18.5333V22.8C20.4286 23.1772 20.5791 23.5389 20.847 23.8057C21.1149 24.0724 21.4783 24.2222 21.8571 24.2222H27.5714V26.3556H10.4286ZM27.5714 18.5333V22.8H21.8571V18.5333H27.5714Z"
-                                    fill="#515C6F" />
-                            </svg>
-                            <div class="d-flex flex-column">
-                                <h6>
-                                    You added
-                                </h6>
-                                <small>18 Dec 21, 08:22 PM</small>
-                            </div>
-                        </div>
-                        <div class="pt-3 pe-3">
-                            <span class="fw-bolder text-danger">- ₹130</span><br>
-                            <span class="fw-bold">Debited</span>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between border mt-3 rounded-2">
-                        <div class="d-flex pt-3 ps-3">
-                            <svg width="68" height="68" viewBox="0 0 48 48" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.5" y="0.5" width="37" height="37" rx="4.5" fill="#FBFBFB" stroke="#F0F0F0" />
-                                <path d="M23.1666 19.5834H24.5555V20.9723H23.1666V19.5834Z" fill="#727C8E" />
-                                <path
-                                    d="M27.5714 13.5556H10.4286V11.4222H26.1429V10H10.4286C10.0497 10 9.68633 10.1498 9.41842 10.4166C9.15051 10.6833 9 11.045 9 11.4222V26.3556C9 26.7328 9.15051 27.0945 9.41842 27.3612C9.68633 27.6279 10.0497 27.7778 10.4286 27.7778H27.5714C27.9503 27.7778 28.3137 27.6279 28.5816 27.3612C28.8495 27.0945 29 26.7328 29 26.3556V14.9778C29 14.6006 28.8495 14.2388 28.5816 13.9721C28.3137 13.7054 27.9503 13.5556 27.5714 13.5556ZM10.4286 26.3556V14.9778H27.5714V17.1111H21.8571C21.4783 17.1111 21.1149 17.261 20.847 17.5277C20.5791 17.7944 20.4286 18.1561 20.4286 18.5333V22.8C20.4286 23.1772 20.5791 23.5389 20.847 23.8057C21.1149 24.0724 21.4783 24.2222 21.8571 24.2222H27.5714V26.3556H10.4286ZM27.5714 18.5333V22.8H21.8571V18.5333H27.5714Z"
-                                    fill="#515C6F" />
-                            </svg>
-                            <div class="d-flex flex-column">
-                                <h6>
-                                    You added
-                                </h6>
-                                <small>18 Dec 21, 08:22 PM</small>
-                            </div>
-                        </div>
-                        <div class="pt-3 pe-3 text-end">
-                            <span class="fw-bolder text-danger"> - ₹110+300</span><br>
-                            <span class="fw-bold">Debited</span>
-                        </div>
-                    </div>
+                    
                 </div>
                 <div class="tab-pane fade" id="pills-manual" role="tabpanel" aria-labelledby="pills-manual-tab"
                     tabindex="0">
                     <div class="row gy-3 m-0">
                         <div class="form-floating col-6 ps-0">
-                            <input type="email" class="form-control" id="vehicle-model"
-                                placeholder="name@example.com" />
-                            <label class="ps-4" for="vehicle-model">Vehicle model</label>
+                            <input type="text" class="form-control" id="utr_no" name="utr_no"
+                                />
+                            <label class="ps-4" for="utr_no">UTR No</label>
                         </div>
 
 
                         <div class="form-floating col-6 pe-0">
-                            <input type="number" class="form-control" id="vehicle-name" placeholder="123" />
-                            <label class="ps-4" for="vehicle-name">Name</label>
+                            <input type="date" class="form-control" name="transaction_date" id="transaction_date" placeholder="123" />
+                            <label class="ps-4" for="transaction_date">Transaction Date</label>
                         </div>
                     </div>
 
 
-                    <div class="pay-detail d-flex align-items-center justify-content-between 
-                        my-3 border border-dark rounded-2 px-3">
-                        <div class="d-flex flex-column">
-                            <span>Bank Name</span>
-                            <span>Holder Name</span>
-                            <span>A/C No</span>
-                            <span>IFSC Code</span>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle pay-detail d-flex align-items-center justify-content-between my-3 border border-dark rounded-2 px-3" data-bs-toggle="dropdown" aria-expanded="false" id="selected_bank_details">
 
+                            <div class="d-flex flex-column">
+                                <span>Bank Name</span>
+                                <span>Holder Name</span>
+                                <span>A/C No</span>
+                                <span>IFSC Code</span>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <h6 class="fw-bolder m-0">----------</h6>
+                                <h6 class="fw-bolder m-0">----------</h6>
+                                <h6 class="fw-bolder m-0">----------</h6>
+                                <h6 class="fw-bolder m-0">----------</h6>
+                            </div>
+                            <!-- <svg width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.5 7L0.138785 0.25L14.8612 0.250001L7.5 7Z" fill="#D7D7D7" />
+                            </svg> -->
                         </div>
-                        <div class="d-flex flex-column">
-                            <h6 class="fw-bolder m-0">Axis Bank</h6>
-                            <h6 class="fw-bolder m-0">PUC Zone</h6>
-                            <h6 class="fw-bolder m-0">918010028645992</h6>
-                            <h6 class="fw-bolder m-0"> UTIB0001870</h6>
-                        </div>
-                        <svg width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7.5 7L0.138785 0.25L14.8612 0.250001L7.5 7Z" fill="#D7D7D7" />
-                        </svg>
+                        <ul class="dropdown-menu" style="width:100%;">
+                        @foreach ($banks as $bank )
+                        @if ($bank->bank_type == 1)
+                        <li><span class="dropdown-item select_bank cursor-pointer " data-id="{{$bank->id}}" >{{$bank->upi_id}}</span></li>
+                        @endif
+                        @if ($bank->bank_type == 2)
+                        <li><span class="dropdown-item select_bank cursor-pointer" data-id="{{$bank->id}}" >{{$bank->bank_name}}</span></li>     
+                        @endif
+                        
+                            
+                        @endforeach
+                        </ul>
                     </div>
+
+
+
+
+
+
+
+
+
+
 
 
                     <div class="py-3 text-center">
-                        <a href="payment-confirmation.html" type="submit"
-                            class="vehicle-info-btn w-100 py-3 fw-bolder fs-5">
-                            Add ₹1250 to your wallet
-                        </a>
+                        <button type="submit"
+                            class="vehicle-info-btn w-100 py-3 fw-bolder fs-5 add_transaction_btn">
+                            Add to your wallet
+                        </button>
                     </div>
+                </form>
 
                     <h6>
                         Bank account and UPI Details
@@ -275,7 +217,6 @@
 @endsection
 
 @push('script')
-    <!-- <script src="{{ asset('customjs/web/register/common.js') }}?v={{time()}}"></script> -->
-    
+    <script src="{{ asset('assets_user/customjs/script_wallet.js') }}"></script>
 	
 @endpush

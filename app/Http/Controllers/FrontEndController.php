@@ -18,6 +18,8 @@ use App\Models\Tutorials;
 use App\Models\Notifications;
 use App\Models\PucUserRates;
 use App\Models\Puc;
+use App\Models\Banks;
+use App\Models\Transactions;
 
 
 
@@ -130,8 +132,44 @@ class FrontEndController extends Controller
     public function wallet(Request $request)
     {   
         $data['page'] = 'wallet';
+        $data['banks'] = Banks::where('enable',1)->get();
         $data['user'] = User::where('id', session('user')->id)->first();
         return view('user/wallet')->with($data);
+    }
+
+    public function getBankDetails(Request $request){
+
+        $bank_id = $request->bank_id;
+        $data['bank_detail'] = Banks::where('id',$bank_id)->first();
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+    public function addTransaction(Request $request){
+        $validatedData = $request->validate([
+            'selected_bank_id' => 'required',
+            'utr_no' => 'required|max:100',
+            'transaction_date' => 'required|date',
+            'transaction_amount' => 'required|numeric|min:500',
+           
+        ],
+        ['selected_bank_id.required' => 'Select bank from dropdown first']);
+       
+        $transaction = new Transactions;
+        $transaction->transaction_type = '2';
+        $transaction->user_id = Auth::id();
+        $transaction->bank_id = $request->selected_bank_id;
+        $transaction->amount = $request->transaction_amount;
+        $transaction->transaction_number = $request->utr_no;
+        $transaction->status = '1';
+        $transaction->date = $request->transaction_date;
+        $transaction->save();
+        return response()->json(['status' => 200,'message' => "Transaction Added Successfully"]);
+
+    }
+
+    public function getTransactionHistory(){
+        $user_id = Auth::id();
+        $data['history'] = Transactions::where('user_id',$user_id)->get();
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
 
     public function profile(Request $request)
