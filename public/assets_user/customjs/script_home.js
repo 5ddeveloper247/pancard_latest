@@ -29,8 +29,6 @@ function getPucTypeRateResponse(response){
         $("#puc_charges").html(`&#8377; 0`);
         $("#puc_type_rate").val('0');
     }
-
-    
 }
 
 

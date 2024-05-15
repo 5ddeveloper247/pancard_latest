@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}"/>
     
 </head>
+<script>
+    var base_url = "{{url('/')}}";
+</script>
 <body>
     <header>
         <svg width="100%" height="36vh" viewBox="0 0 1200 295" preserveAspectRatio="none" fill="none"

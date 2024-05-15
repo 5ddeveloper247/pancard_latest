@@ -37,7 +37,7 @@ function SendAjaxRequestToServer(
     // console.log(data, url, dataType);
     $.ajax({
         type: requestType,
-        url: url,
+        url: base_url+url,
         data: data,
         dataType: dataType,
         processData: false,

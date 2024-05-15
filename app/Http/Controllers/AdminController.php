@@ -68,6 +68,11 @@ class AdminController extends Controller
         return view('admin/settings')->with($data);
     }
 
+    public function analytics(){
+        $data['page'] = 'Analytics';
+        return view('admin/analytics')->with($data);
+    }
+
     public function wallet(){
         $data['page'] = 'Wallet';
         return view('admin/wallet')->with($data);
@@ -821,7 +826,112 @@ class AdminController extends Controller
         
     }
 
+    public function getAnalyticsPageData(Request $request)
+    {
+       
+        $filter_flag = $request->filterFlag;
+        $param1 = $request->param1;
+        $param2 = $request->param2;
 
+        $puc_2w = $puc_2w_fine = $puc_3w = $puc_3w_fine = $puc_4w = $puc_4w_fine = 0;
+        $puc_2w_am = $puc_2w_fine_am = $puc_3w_am = $puc_3w_fine_am = $puc_4w_am = $puc_4w_fine_am = 0;
+
+        if($filter_flag == '0'){
+            $data['pending_users'] = User::where('type', 'user')->where('status', 'inactive')->count();
+            $data['active_users'] = User::where('type', 'user')->whereIn('status', ['active','approved'])->count();
+            
+            $puc_list = Puc::get();
+        }else if($filter_flag == '1'){  // for today and yesterday filter
+            $data['pending_users'] = User::where('type', 'user')
+                                        ->where('status', 'inactive')
+                                        ->whereDate('created_at', '=', $param1)
+                                        ->count();
+                                        
+            $data['active_users'] = User::where('type', 'user')
+                                        ->whereDate('created_at', '=', $param1)
+                                        ->whereIn('status', ['active','approved'])
+                                        ->count();
+            $puc_list = Puc::whereDate('date', '=', $param1)->get();
+
+        }else if($filter_flag == '2'){          // for month filter
+            
+            $data['pending_users'] = User::where('type', 'user')
+                                        ->where('status', 'inactive')
+                                        ->whereYear('created_at', date('Y'))
+                                        ->whereMonth('created_at', '=', $param1)
+                                        ->count();
+
+            $data['active_users'] = User::where('type', 'user')
+                                        ->whereIn('status', ['active','approved'])
+                                        ->whereYear('created_at', date('Y'))
+                                        ->whereMonth('created_at', '=', $param1)
+                                        
+                                        ->count();
+            $puc_list = Puc::whereYear('date', date('Y'))->whereMonth('date', '=', $param1)->get();
+       
+        }else if($filter_flag == '3'){          // for date range filter
+            
+            $data['pending_users'] = User::where('type', 'user')
+                                        ->where('status', 'inactive')
+                                        ->whereDate('created_at', '>=', $param1)    // for start date
+                                        ->whereDate('created_at', '<=', $param2)    // for end date
+                                        ->count();
+
+            $data['active_users'] = User::where('type', 'user')
+                                        ->whereIn('status', ['active','approved'])
+                                        ->whereDate('created_at', '>=', $param1)    // for start date
+                                        ->whereDate('created_at', '<=', $param2)    // for end date
+                                        ->count();
+            $puc_list = Puc::whereDate('date', '>=', $param1)->whereDate('date', '<=', $param2)->get();
+        }
+
+        
+        
+        if($puc_list){
+            foreach($puc_list as $key => $value){
+                if($value->puc_type_id == 1){
+                    $puc_2w = $puc_2w + 1; 
+                    $puc_2w_am = $puc_2w_am + $value->puc_type_rate; 
+                }
+                if($value->puc_type_id == 2){
+                    $puc_2w_fine = $puc_2w_fine + 1; 
+                    $puc_2w_fine_am = $puc_2w_fine_am + $value->puc_type_rate; 
+                }
+                if($value->puc_type_id == 3){
+                    $puc_3w = $puc_3w + 1; 
+                    $puc_3w_am = $puc_3w_am + $value->puc_type_rate; 
+                }
+                if($value->puc_type_id == 4){
+                    $puc_3w_fine = $puc_3w_fine + 1; 
+                    $puc_3w_fine_am = $puc_3w_fine_am + $value->puc_type_rate; 
+                }
+                if($value->puc_type_id == 1){
+                    $puc_4w = $puc_4w + 1; 
+                    $puc_4w_am = $puc_4w_am + $value->puc_type_rate; 
+                }
+                if($value->puc_type_id == 1){
+                    $puc_4w_fine = $puc_4w_fine + 1; 
+                    $puc_4w_fine_am = $puc_4w_fine_am + $value->puc_type_rate; 
+                }
+            }
+        }
+        
+        $data['puc_2w'] = $puc_2w;
+        $data['puc_2w_fine'] = $puc_2w_fine;
+        $data['puc_3w'] = $puc_3w;
+        $data['puc_3w_fine'] = $puc_3w_fine;
+        $data['puc_4w'] = $puc_4w;
+        $data['puc_4w_fine'] = $puc_4w_fine;
+
+        $data['puc_2w_am'] = $puc_2w_am;
+        $data['puc_2w_fine_am'] = $puc_2w_fine_am;
+        $data['puc_3w_am'] = $puc_3w_am;
+        $data['puc_3w_fine_am'] = $puc_3w_fine_am;
+        $data['puc_4w_am'] = $puc_4w_am;
+        $data['puc_4w_fine_am'] = $puc_4w_fine_am;
+
+        return response()->json(['status' => 200,'message' => "", "data"=> $data]);
+    }
 
     // // code for excel import 
     // // Get the uploaded file from the request

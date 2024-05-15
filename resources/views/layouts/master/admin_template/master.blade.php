@@ -13,7 +13,9 @@
     <link rel="stylesheet" href="{{ asset('assets_admin/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css') }}" />
 </head>
-
+<script>
+    var base_url = "{{url('/')}}";
+</script>
 <body class="">
     @include('layouts.master.admin_template.header')
     

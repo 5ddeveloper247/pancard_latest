@@ -19,8 +19,7 @@
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a href="admin-analytics.html"
-                class="nav-link d-flex flex-column align-items-center justify-content-center">
+            <a href="{{ route('admin.analytics') }}" class="nav-link d-flex flex-column align-items-center {{$page == 'Analytics' ? 'active' : ''}} justify-content-center">
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path opacity="0.3"
                         d="M0 2C0 0.89543 0.895431 0 2 0H20C21.1046 0 22 0.895431 22 2V20C22 21.1046 21.1046 22 20 22H2C0.89543 22 0 21.1046 0 20V2Z"

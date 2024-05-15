@@ -35,7 +35,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
         Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
         Route::get('/wallet', [AdminController::class, 'wallet'])->name('admin.wallet');
-
+        Route::get('/analytics', [AdminController::class, 'analytics'])->name('admin.analytics');
         
 
         /************** AJAX ROUTES ******************/
@@ -65,6 +65,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/uploadPucPdfFile', [AdminController::class, 'uploadPucPdfFile'])->name('admin.uploadPucPdfFile');
         Route::post('/uploadExcelBulkForm', [AdminController::class, 'uploadExcelFrom'])->name('admin.uploadExcelBulkForm');
         
+        Route::post('/getAnalyticsPageData', [AdminController::class, 'getAnalyticsPageData'])->name('admin.getAnalyticsPageData');
         
         
         

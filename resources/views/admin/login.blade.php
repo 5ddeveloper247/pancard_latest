@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/fonts/fonts.google.css') }}"/>
     <link rel="stylesheet" href="{{ asset('assets_admin/css/style.css') }}" />
 </head>
-
+<script>
+    var base_url = "{{url('/')}}";
+</script>
 <body>
 	<div class="container d-flex flex-column align-items-center justify-content-center h-100 text-center">
 		<div class="px-4">
