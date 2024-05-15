@@ -21,6 +21,8 @@ use App\Models\Areas;
 use App\Models\PucTypes;
 use App\Models\PucUserRates;
 use App\Models\Puc;
+use App\Models\Banks;
+use App\Models\Transactions;
 
 
 
@@ -36,44 +38,114 @@ class AdminController extends Controller
         // $this->middleware('auth');
     }
 
-    
+
     public function index(Request $request)
-    {   
+    {
         $data['page'] = 'Orders';
         return view('admin/orders')->with($data);
     }
 
     public function users(Request $request)
-    {   
+    {
         $data['states'] = States::where('status', '1')->get();
         $data['puc_types'] = PucTypes::where('status', '1')->get();
-        
+
         do {
-            $username_auto = 'PUCZ'.mt_rand(100000, 999999);
+            $username_auto = 'PUCZ' . mt_rand(100000, 999999);
             $existing_number = User::where('username', $username_auto)->first();
         } while ($existing_number);
 
         $data['username_auto'] = $username_auto;
         $data['page'] = 'Users';
-        
+
         return view('admin/users')->with($data);
     }
 
     public function settings(Request $request)
-    {   
+    {
         $data['page'] = 'Settings';
         $data['users'] = User::where('status', 'Active')->whereIn('type', ['user'])->get();
         $data['puc_types'] = PucTypes::where('status', '1')->get();
         return view('admin/settings')->with($data);
     }
 
-    public function wallet(){
+    public function wallet()
+    {
         $data['page'] = 'Wallet';
+        $data['banks'] = Banks::where('enable', 1)->get();
         return view('admin/wallet')->with($data);
     }
+    public function getBankList()
+    {
+        $data = Banks::where('enable', 1)->get();
+        echo json_encode($data);
+    }
+
+    public function addBank(Request $request)
+    {
+        $validatedData = $request->validate([
+            'bank_type' => 'required'
+        ]);
+        if ($request['bank_type'] == '2') {
+            $validatedData = $request->validate([
+                'bank_type' => 'required',
+                'bank_name' => 'required|max:100',
+                'holder_name' => 'required|max:100',
+                'account_number' => 'required|numeric',
+                'ifsc_code' => 'required|string',
+            ]);
+        }
+        if ($request['bank_type'] == '1') {
+            $validatedData = $request->validate([
+                'upi_id' => 'required|max:100',
+                'holder_name' => 'required|max:100',
+            ]);
+        }
+
+        // Process form submission if validation passes
+        $bank = new Banks;
+        if ($request['bank_type'] == '1') {
+            $bank->upi_id = $request['upi_id'];
+            $bank->holder_name = $request['holder_name'];
+            $bank->bank_type = $request['bank_type'];
+        }
+        if ($request['bank_type'] == '2') {
+            $bank->bank_type = $request['bank_type'];
+            $bank->bank_name = $request['bank_name'];
+            $bank->holder_name = $request['holder_name'];
+            $bank->account_number = $request['account_number'];
+            $bank->ifsc_code = $request['ifsc_code'];
+        }
+
+        $bank->created_at = date('Y-m-d H:i:s');
+        $bank->updated_at = date('Y-m-d H:i:s');
+
+
+        // Save the changes
+        $bank->save();
+
+        return response()->json(['status' => 200, 'message' => "Bank Information Added Successfully!"]);
+    }
+
+    public function deleteBank(Request $request)
+    {
+        $bank_id = $request->bank_id;
+        $record = Banks::where('id', $bank_id)->first();
+
+
+        if ($record) {
+            $record->delete();
+            return response()->json(['status' => 200, 'message' => "Bank Deleted Successfully!"]);
+        } else {
+            return response()->json(['status' => 404, 'message' => "Record Not Found!"], 404);
+        }
+    }
+
+
+
 
     public function login(Request $request)
-    {   
+    {
         $request->session()->forget('user');
         return view('admin/login');
     }
@@ -84,7 +156,7 @@ class AdminController extends Controller
 
         if (Auth::attempt($credentials)) {
 
-            $user = Auth::user(); 
+            $user = Auth::user();
             $request->session()->put('user', $user);
             // Authentication passed...
             return redirect()->intended('/admin/orders');
@@ -96,9 +168,9 @@ class AdminController extends Controller
 
     public function logout(Request $request)
     {
-       
+
         $request->session()->forget('user');
-       
+
         return redirect('admin');
     }
 
@@ -110,11 +182,11 @@ class AdminController extends Controller
         $data['notifications'] = Notifications::get();
         $data['tutorials'] = Tutorials::get();
 
-        return response()->json(['status' => 200,'data' => $data]);
+        return response()->json(['status' => 200, 'data' => $data]);
     }
 
     public function storeGeneralSettings(Request $request)
-    {   
+    {
         $validatedData = $request->validate([
             'company' => 'required|max:100',
             'websiteTitle' => 'required|max:100',
@@ -125,14 +197,14 @@ class AdminController extends Controller
             'helplineEmail' => 'required|max:100',
             'helplineNumber' => 'required|numeric',
         ]);
-   
+
         // Process form submission if validation passes
         $settings = Settings::first();
-        
-        if(!isset($settings->id)){
+
+        if (!isset($settings->id)) {
             $settings = new Settings();
         }
-       
+
         // Update the settings with the new values
         $settings->company = $request->company;
         $settings->website_title = $request->websiteTitle;
@@ -144,32 +216,32 @@ class AdminController extends Controller
         $settings->helpline_phone = $request->helplineNumber;
         $settings->puc_type = $request->pucType;
         $settings->disable_user_id = $request->disableUser;
-        
-        if(!$settings->id){
+
+        if (!$settings->id) {
             $settings->created_at = date('Y-m-d H:i:s');
             $settings->updated_at = date('Y-m-d H:i:s');
-        }else{
+        } else {
             $settings->updated_at = date('Y-m-d H:i:s');
         }
-        
+
         // Save the changes
         $settings->save();
 
-        return response()->json(['status' => 200,'message' => "Settings Added Successfully!"]);
+        return response()->json(['status' => 200, 'message' => "Settings Added Successfully!"]);
     }
 
     public function storeApiSettings(Request $request)
-    {   
+    {
         $validatedData = $request->validate([
             'merchatId' => 'required|max:255',
             'merchantKey' => 'required|max:255',
             'convinceFee' => 'required|min:0|max:100'
         ]);
-   
+
         // Process form submission if validation passes
         $ApiSettings = ApiSettings::first();
-        
-        if(!isset($ApiSettings->id)){
+
+        if (!isset($ApiSettings->id)) {
             $ApiSettings = new ApiSettings();
         }
         // Update the settings with the new values
@@ -177,32 +249,32 @@ class AdminController extends Controller
         $ApiSettings->merchant_key = $request->merchantKey;
         $ApiSettings->fee_percent = $request->convinceFee;
         $ApiSettings->status = $request->apiStatus;
-        
-        if(!$ApiSettings->id){
+
+        if (!$ApiSettings->id) {
             $ApiSettings->created_at = date('Y-m-d H:i:s');
             $ApiSettings->updated_at = date('Y-m-d H:i:s');
-        }else{
+        } else {
             $ApiSettings->updated_at = date('Y-m-d H:i:s');
         }
         $ApiSettings->save();
-        
-        return response()->json(['status' => 200,'message' => "API Settings Added Successfully!"]);
+
+        return response()->json(['status' => 200, 'message' => "API Settings Added Successfully!"]);
         // return redirect()->back()->with('success', 'API Settings Added Successfully...');
     }
 
     public function storeNotifSettings(Request $request)
-    {   
+    {
         $validatedData = $request->validate([
             'notification_title' => 'required|max:100',
             'notification_url' => 'sometimes|nullable|url',
             'notification_text' => 'required'
         ]);
-   
+
         // Process form submission if validation passes
-        
-        if($request->notification_id == null){
+
+        if ($request->notification_id == null) {
             $Notifications = new Notifications();
-        }else{
+        } else {
             $Notifications = Notifications::find($request->notification_id);
         }
 
@@ -210,69 +282,67 @@ class AdminController extends Controller
         $Notifications->title = $request->notification_title;
         $Notifications->url = $request->notification_url;
         $Notifications->message = $request->notification_text;
-        
-        if(!$Notifications->id){
+
+        if (!$Notifications->id) {
             $Notifications->date = date('Y-m-d H:i:s');
             $Notifications->created_at = date('Y-m-d H:i:s');
             $Notifications->updated_at = date('Y-m-d H:i:s');
-        }else{
+        } else {
             $Notifications->updated_at = date('Y-m-d H:i:s');
         }
         $Notifications->save();
-        
+
         $data['notifications'] = Notifications::get();
-        if($request->notification_id == null){
-            return response()->json(['status' => 200,'message' => "Notification Added Successfully!", 'data' => $data]);
-        }else{
-            return response()->json(['status' => 200,'message' => "Notification Updated Successfully!", 'data' => $data]);
+        if ($request->notification_id == null) {
+            return response()->json(['status' => 200, 'message' => "Notification Added Successfully!", 'data' => $data]);
+        } else {
+            return response()->json(['status' => 200, 'message' => "Notification Updated Successfully!", 'data' => $data]);
         }
     }
 
     public function deleteSpecificNotification(Request $request)
-    {   
-        
+    {
+
         $notif_id = $request->id;
         $notification = Notifications::where('id', $notif_id)->delete();
         $data['notifications'] = Notifications::get();
-        return response()->json(['status' => 200,'message' => "Notification Deleted Successfully!", 'data' => $data]);
-        
+        return response()->json(['status' => 200, 'message' => "Notification Deleted Successfully!", 'data' => $data]);
     }
 
     public function editSpecificNotification(Request $request)
-    {   
-        
+    {
+
         $notif_id = $request->id;
         $data['notification'] = Notifications::where('id', $notif_id)->first();
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
-        
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
 
     public function storeTutorialSettings(Request $request)
-    {   
-        
+    {
+
         $req_file = 'uploadThumbnail';
         $path = '/images/thumbnail';
 
-        if($request->tutorial_id == null){
+        if ($request->tutorial_id == null) {
             $validatedData = $request->validate([
                 'tutorial_title' => 'required|max:100',
                 'tutorial_url' => 'required|url',
                 'uploadThumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048'
             ]);
-        }else{
+        } else {
             $validatedData = $request->validate([
                 'tutorial_title' => 'required|max:100',
                 'tutorial_url' => 'required|url',
                 'uploadThumbnail' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048'
             ]);
         }
-        
+
         // Process form submission if validation passes
-        
-        if($request->tutorial_id == null){
+
+        if ($request->tutorial_id == null) {
             $Tutorials = new Tutorials();
-        }else{
+        } else {
             $Tutorials = Tutorials::find($request->tutorial_id);
         }
 
@@ -280,105 +350,102 @@ class AdminController extends Controller
         $Tutorials->title = $request->tutorial_title;
         $Tutorials->url = $request->tutorial_url;
         $Tutorials->status = isset($request->tutorial_status) ? $request->tutorial_status : '';
-        
-        if(!$Tutorials->id){
+
+        if (!$Tutorials->id) {
             $Tutorials->date = date('Y-m-d H:i:s');
             $Tutorials->created_at = date('Y-m-d H:i:s');
             $Tutorials->updated_at = date('Y-m-d H:i:s');
-        }else{
+        } else {
             $Tutorials->updated_at = date('Y-m-d H:i:s');
         }
-        
+
         $previous_image = Tutorials::where('id', $request->tutorial_id)->value('thumbnail');
 
         if ($request->hasFile($req_file)) {
-            if($request->tutorial_id != null){
+            if ($request->tutorial_id != null) {
                 deleteImage($previous_image);
             }
             $uploadedFile = $request->file($req_file);
 
             $savedImage = saveSingleImage($uploadedFile, $path);
-            $Tutorials->thumbnail = url('/').$savedImage;
-        }else{  // if file is not update on edit case then assign previous file
+            $Tutorials->thumbnail = url('/') . $savedImage;
+        } else {  // if file is not update on edit case then assign previous file
             $Tutorials->thumbnail = $previous_image;
         }
-        
+
         $Tutorials->save();
-        
+
         $data['tutorials'] = Tutorials::get();
-        if($request->tutorial_id == null){
-            return response()->json(['status' => 200,'message' => "Tutorial Added Successfully!", 'data' => $data]);
-        }else{
-            return response()->json(['status' => 200,'message' => "Tutorial Updated Successfully!", 'data' => $data]);
+        if ($request->tutorial_id == null) {
+            return response()->json(['status' => 200, 'message' => "Tutorial Added Successfully!", 'data' => $data]);
+        } else {
+            return response()->json(['status' => 200, 'message' => "Tutorial Updated Successfully!", 'data' => $data]);
         }
     }
 
     public function deleteSpecificTutorial(Request $request)
-    {   
-        
+    {
+
         $notif_id = $request->id;
         $notification = Tutorials::where('id', $notif_id)->delete();
         $data['tutorial'] = Tutorials::get();
-        return response()->json(['status' => 200,'message' => "Tutorial Deleted Successfully!", 'data' => $data]);
-        
+        return response()->json(['status' => 200, 'message' => "Tutorial Deleted Successfully!", 'data' => $data]);
     }
 
     public function editSpecificTutorial(Request $request)
-    {   
-        
+    {
+
         $tutorial_id = $request->id;
         $data['tutorial'] = Tutorials::where('id', $tutorial_id)->first();
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
-        
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
-    
+
 
     public function getUsersPageData(Request $request)
     {
         $data['pending_users'] = User::where('status', 'inactive')->where('type', 'user')->with(['state', 'city', 'area'])->get();
         $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->get();
 
-        return response()->json(['status' => 200,'data' => $data]);
+        return response()->json(['status' => 200, 'data' => $data]);
     }
 
-    
+
     public function updateUserBalance(Request $request)
     {
         $flag = $request->flag;
         $amount = $request->amount;
         $user = User::where('id', $request->user_id)->first();
 
-        if($user){
-            
-            if($flag == 'credit'){
+        if ($user) {
+
+            if ($flag == 'credit') {
                 $new_amount = $user->balance + $amount;
-            }else if($flag == 'debit'){
+            } else if ($flag == 'debit') {
                 $new_amount = $user->balance - $amount;
-            }else{
-                return response()->json(['status' => 402,'message' => 'Something went wrong!']);
+            } else {
+                return response()->json(['status' => 402, 'message' => 'Something went wrong!']);
             }
-            
+
             User::where('id', $user->id)->update([
                 'balance' => $new_amount,
             ]);
 
-            $data['active_users'] = User::whereIn('status', ['active','approved'])->where('type', 'user')->with(['state', 'city', 'area'])->get();
-            
-            return response()->json(['status' => 200,'message' => 'Balance updated successfully!', 'data' => $data]);
-        
-        }else{
-            return response()->json(['status' => 402,'message' => 'Something went wrong!']);
+            $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->get();
+
+            return response()->json(['status' => 200, 'message' => 'Balance updated successfully!', 'data' => $data]);
+        } else {
+            return response()->json(['status' => 402, 'message' => 'Something went wrong!']);
         }
 
-        
 
-        return response()->json(['status' => 200,'data' => $data]);
+
+        return response()->json(['status' => 200, 'data' => $data]);
     }
-    
-    
+
+
     public function registerUser(Request $request)
-    {   
-        if($request->user_id == null){ // create user validation
+    {
+        if ($request->user_id == null) { // create user validation
             $validatedData = $request->validate([
                 'user_name' => 'required|max:100',
                 'username_auto' => 'required|max:100',
@@ -401,8 +468,7 @@ class AdminController extends Controller
             ]);
 
             $Users = new User();
-            
-        }else{ // update user validation
+        } else { // update user validation
 
             $validatedData = $request->validate([
                 'user_name' => 'required|max:100',
@@ -427,9 +493,9 @@ class AdminController extends Controller
 
             // Process form submission if validation passes
             $existing = User::where('user_type', $request->username_auto)->first();
-            
-            if(isset($existing->id)){
-                return response()->json(['status' => 401,'message' => "Username is already exist, try another time!"]);
+
+            if (isset($existing->id)) {
+                return response()->json(['status' => 401, 'message' => "Username is already exist, try another time!"]);
             }
             $Users = User::find($request->user_id);
         }
@@ -448,47 +514,47 @@ class AdminController extends Controller
         $Users->area_id = $request->user_area;
         $Users->landmark = $request->user_landmark;
         $Users->upload_option = $request->upload_option;
-        
+
         $req_file = 'upload_picture';
         $path = '/assets/uploads/profile';
         $previous_image = User::where('id', $request->user_id)->value('profile_picture');
 
         if ($request->hasFile($req_file)) {
-            if($request->user_id != null){
+            if ($request->user_id != null) {
                 deleteImage($previous_image);
             }
             $uploadedFile = $request->file($req_file);
 
             $savedImage = saveSingleImage($uploadedFile, $path);
-            $Users->profile_picture = url('/').$savedImage;
-        }else{  // if file is not update on edit case then assign previous file
+            $Users->profile_picture = url('/') . $savedImage;
+        } else {  // if file is not update on edit case then assign previous file
             $Users->profile_picture = $previous_image;
         }
-        
+
         $req_file1 = 'upload_aadhar';
         $path1 = '/assets/uploads/aadhar';
         $previous_image1 = User::where('id', $request->user_id)->value('aadhar');
 
         if ($request->hasFile($req_file1)) {
-            if($request->user_id != null){
+            if ($request->user_id != null) {
                 deleteImage($previous_image1);
             }
             $uploadedFile = $request->file($req_file1);
 
             $savedFile = saveSingleImage($uploadedFile, $path1);
-            $Users->aadhar = url('/').$savedFile;
-        }else{  // if file is not update on edit case then assign previous file
+            $Users->aadhar = url('/') . $savedFile;
+        } else {  // if file is not update on edit case then assign previous file
             $Users->aadhar = $previous_image1;
         }
 
         $Users->status = 'approved';
-        if($request->user_id == null){
+        if ($request->user_id == null) {
             $Users->created_at = date('Y-m-d H:i:s');
             $Users->updated_at = date('Y-m-d H:i:s');
-        }else{
+        } else {
             $Users->updated_at = date('Y-m-d H:i:s');
         }
-        
+
         // Save the changes
         $Users->save();
 
@@ -496,12 +562,12 @@ class AdminController extends Controller
         $pucTypeIds = $request->input('puc_type_ids');
         $pucTypeRates = $request->input('puc_type_rate');
 
-        if(count($pucTypeRates) > 0){
+        if (count($pucTypeRates) > 0) {
             PucUserRates::where('user_id', $Users->id)->delete(); //  delete previous entries and save new
-            foreach($pucTypeRates as $key => $pucTypeRate){
+            foreach ($pucTypeRates as $key => $pucTypeRate) {
 
-                if($pucTypeRate != null){
-                    
+                if ($pucTypeRate != null) {
+
                     $PucUserRates = new PucUserRates();
                     $PucUserRates->user_id = $Users->id;
                     $PucUserRates->puc_type_id = $pucTypeIds[$key];
@@ -511,143 +577,141 @@ class AdminController extends Controller
                 }
             }
         }
-        
+
         do {
-            $username_auto = 'PUCZ'.mt_rand(100000, 999999);
+            $username_auto = 'PUCZ' . mt_rand(100000, 999999);
             $existing_number = User::where('username', $username_auto)->first();
         } while ($existing_number);
 
         $data['username_auto'] = $username_auto;
 
-        if($request->user_id == null){
-            return response()->json(['status' => 200,'message' => "User Created Successfully!", 'data' => $data]);
-        }else{
-            return response()->json(['status' => 200,'message' => "User Updated Successfully!", 'data' => $data]);
+        if ($request->user_id == null) {
+            return response()->json(['status' => 200, 'message' => "User Created Successfully!", 'data' => $data]);
+        } else {
+            return response()->json(['status' => 200, 'message' => "User Updated Successfully!", 'data' => $data]);
         }
     }
 
     public function editUser(Request $request)
-    {   
-        
+    {
+
         $user_id = $request->id;
         $user_detail = User::where('id', $user_id)->with(['state', 'city', 'area', 'pucRates'])->first();
         $data['user_detail'] = $user_detail;
         $data['cities'] = Cities::where('state_id', $user_detail->state_id)->get();
         $data['areas'] = Areas::where('city_id', $user_detail->city_id)->get();
         // dd($data);
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
     public function getUserFilteredData(Request $request)
-    {   
-        
+    {
+
         $filterFlag = $request->filterFlag;
-        $param1 = $request->param1; 
+        $param1 = $request->param1;
         $param2 = $request->param2;
 
-        if($filterFlag == '1' || $filterFlag == '2'){
+        if ($filterFlag == '1' || $filterFlag == '2') {
             $Users = User::whereIn('status', ['active', 'approved'])
-                        ->where('type', 'user')
-                        ->whereDate('created_at', '=', $param1)         // for today  & yesterday
-                        ->with(['state', 'city', 'area'])
-                        ->get();
-        
-        }else if($filterFlag == '3'){
-            
+                ->where('type', 'user')
+                ->whereDate('created_at', '=', $param1)         // for today  & yesterday
+                ->with(['state', 'city', 'area'])
+                ->get();
+        } else if ($filterFlag == '3') {
+
             $Users = User::whereIn('status', ['active', 'approved'])
-                        ->where('type', 'user')
-                        ->whereYear('created_at', date('Y'))
-                        ->whereMonth('created_at', $param1)             // for month
-                        ->with(['state', 'city', 'area'])
-                        ->get();
-        }else if($filterFlag == '4'){
-            
+                ->where('type', 'user')
+                ->whereYear('created_at', date('Y'))
+                ->whereMonth('created_at', $param1)             // for month
+                ->with(['state', 'city', 'area'])
+                ->get();
+        } else if ($filterFlag == '4') {
+
             $Users = User::whereIn('status', ['active', 'approved'])
-                            ->where('type', 'user')
-                            ->whereDate('created_at', '>=', $param1)    // for start date
-                            ->whereDate('created_at', '<=', $param2)    // for end date
-                            ->with(['state', 'city', 'area'])
-                            ->get();
+                ->where('type', 'user')
+                ->whereDate('created_at', '>=', $param1)    // for start date
+                ->whereDate('created_at', '<=', $param2)    // for end date
+                ->with(['state', 'city', 'area'])
+                ->get();
         }
-       
+
         $data['active_users'] = $Users;
         // dd($data);
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
     public function getPucPageData(Request $request)
-    {   
+    {
         $puc_type_id = $request->puc_type_id;
 
-        $data['pending_puc_list'] = Puc::where('status', '1')->with(['pucType','user'])->get();
-        $data['all_puc_list'] = Puc::with(['pucType','user'])->get();
-       
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+        $data['pending_puc_list'] = Puc::where('status', '1')->with(['pucType', 'user'])->get();
+        $data['all_puc_list'] = Puc::with(['pucType', 'user'])->get();
+
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
     public function changePucStatus(Request $request)
-    {   
+    {
         $puc_id = $request->pucId;
         $status_flag = $request->statusFlag;
         $rejection_reason = $request->param1;
-        if($status_flag == '4'){
+        if ($status_flag == '4') {
             Puc::where('id', $puc_id)->update([
                 'status' => '4', // completed status
             ]);
-        }else if($status_flag == '3'){
+        } else if ($status_flag == '3') {
             Puc::where('id', $puc_id)->update([
                 'status' => '3', // completed status
                 'rejection_reason' => $rejection_reason, // rejected status
             ]);
         }
-        
-        return response()->json(['status' => 200,'message' => ""]);
+
+        return response()->json(['status' => 200, 'message' => ""]);
     }
 
     public function getOrderHistoryFilteredData(Request $request)
-    {   
-        
+    {
+
         $filterFlag = $request->filterFlag;
-        $param1 = $request->param1; 
+        $param1 = $request->param1;
         $param2 = $request->param2;
 
-        if($filterFlag == '1' || $filterFlag == '2'){
+        if ($filterFlag == '1' || $filterFlag == '2') {
             $puc_list = Puc::whereDate('date', '=', $param1)         // for today  & yesterday
-                            ->with(['pucType','user'])
-                            ->get();
-        
-        }else if($filterFlag == '3'){
-            
+                ->with(['pucType', 'user'])
+                ->get();
+        } else if ($filterFlag == '3') {
+
             $puc_list = Puc::whereYear('date', date('Y'))
-                            ->whereMonth('date', $param1)             // for month
-                            ->with(['pucType','user'])
-                            ->get();
-        }else if($filterFlag == '4'){
-            
+                ->whereMonth('date', $param1)             // for month
+                ->with(['pucType', 'user'])
+                ->get();
+        } else if ($filterFlag == '4') {
+
             $puc_list = Puc::whereDate('date', '>=', $param1)    // for start date
-                            ->whereDate('date', '<=', $param2)    // for end date
-                            ->with(['pucType','user'])
-                            ->get();
+                ->whereDate('date', '<=', $param2)    // for end date
+                ->with(['pucType', 'user'])
+                ->get();
         }
-       
+
         $data['all_puc_list'] = isset($puc_list) ? $puc_list : array();
         // dd($data);
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
-    
+
     public function getUserInfoData(Request $request)
-    {   
-        
+    {
+
         $user_id = $request->user_id;
-        
+
         $data['user_info'] = User::where('id', $user_id)->with(['state', 'city', 'area'])->first();
         // dd($data);
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
     public function uploadPucPdfFile(Request $request)
-    {   
+    {
         $validatedData = $request->validate([
             'uploadFile' => 'required|mimes:pdf,PDF|max:2048'
         ]);
@@ -661,9 +725,9 @@ class AdminController extends Controller
 
         // Extract text from the PDF file
         $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
-        if (config('app.env')=='local') {
-            $text = Pdf::getText($request->file('uploadFile'),$binpath);
-        }else{ // on dev or prod
+        if (config('app.env') == 'local') {
+            $text = Pdf::getText($request->file('uploadFile'), $binpath);
+        } else { // on dev or prod
             $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
         }
         // Delete the temporary PDF file
@@ -674,49 +738,47 @@ class AdminController extends Controller
 
         // Extracted dates
         $dates = $matches[0];
-        
+
         foreach ($dates as $key => $date) {
             $dateString = Carbon::createFromFormat('d/m/Y', $date);
             // Extract the time portion
             $dateFormated = $dateString->format('Y-m-d');
-            if($key == 0){
+            if ($key == 0) {
                 $startDate = $dateFormated;
-            }elseif($key == 1){
+            } elseif ($key == 1) {
                 $endDate = $dateFormated;
             }
         }
 
-        if((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != ''){
-            
+        if ((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != '') {
+
             $req_file = 'uploadFile';
             $path = '/assets/uploads/profile';
             $previous_file = Puc::where('id', $request->puc_id)->value('certificate_pdf');
 
             if ($request->hasFile($req_file)) {
-                if($previous_file){
+                if ($previous_file) {
                     deleteImage($previous_file);
                 }
-                
+
                 $uploadedFile = $request->file($req_file);
 
                 $savedFile = saveSingleImage($uploadedFile, $path);
-                $full_path = url('/').$savedFile;
-
-            }else{  // if file is not update on edit case then assign previous file
+                $full_path = url('/') . $savedFile;
+            } else {  // if file is not update on edit case then assign previous file
                 $full_path = $previous_file;
             }
-            
+
             Puc::where('id', $request->puc_id)->update([
-                'start_date' => $startDate, 
-                'end_date' => $endDate, 
-                'certificate_pdf' => $full_path, 
-                'updated_at' => date('Y-m-d H:i:s'), 
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'certificate_pdf' => $full_path,
+                'updated_at' => date('Y-m-d H:i:s'),
             ]);
 
-            return response()->json(['status' => 200,'message' => "File uploaded successfully!"]);
-
-        }else{
-            return response()->json(['status' => 402,'message' => "PDF file not have proper dates try another file"]);
+            return response()->json(['status' => 200, 'message' => "File uploaded successfully!"]);
+        } else {
+            return response()->json(['status' => 402, 'message' => "PDF file not have proper dates try another file"]);
         }
         // print("<pre>");
         // print_r($startDate);
@@ -724,10 +786,58 @@ class AdminController extends Controller
         // print_r($endDate);
         // dd($text);
         // exit;
-        
-        
-        
+
+
+
         // return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
-    
+
+    public function pendingTransactionsList()
+    {
+        $data['pendingTransactionsList'] = Transactions::with('createdByUser','bankName')->where('status', '1')->get();
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+    }
+
+    public function completeTransaction(Request $request){
+        $transaction_id = $request->transaction_id;
+
+        $transaction = Transactions::where('id',$transaction_id)->first();
+        if($transaction){
+            $transaction->status = '3';
+            $transaction->save();
+
+            $user = user::where('id', $transaction->user_id)->first();
+            $user->balance+= $transaction->amount;
+            $user->save();
+            return response()->json(['status' => 200,'message' => "Transaction status updated successfully"]);
+        }
+    }
+
+    public function rejectTransaction(Request $request){
+        $transaction_id = $request->transaction_id;
+
+        $transaction = Transactions::where('id',$transaction_id)->first();
+        if($transaction){
+            $transaction->status = '2';
+            $transaction->save();
+            return response()->json(['status' => 200,'message' => "Transaction status updated successfully"]);
+        }
+    }
+
+    public function walletHistory(){
+        $data['walletHistory'] = Transactions::with('createdByUser')->get();
+        return response()->json(['status' => 200,'message' => "",'data'=> $data]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }

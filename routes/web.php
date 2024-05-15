@@ -66,6 +66,15 @@ Route::group(['prefix' => 'admin'], function () {
         
         
         Route::get('pdf-to-text', [PDFController::class, 'pdfToText']);
+        Route::get('getBankList', [AdminController::class, 'getBankList']);
+        Route::post('addBank', [AdminController::class, 'addBank']);
+        Route::post('deleteBank', [AdminController::class, 'deleteBank']);
+        Route::get('pendingTransactionsList', [AdminController::class, 'pendingTransactionsList']);
+        Route::post('completeTransaction', [AdminController::class, 'completeTransaction']);
+        Route::post('rejectTransaction', [AdminController::class, 'rejectTransaction']);
+        Route::get('walletHistory', [AdminController::class, 'walletHistory']);
+       
+
     });
     
 });
@@ -113,7 +122,9 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/getPucPageData', [FrontEndController::class, 'getPucPageData'])->name('getPucPageData');
         Route::post('/getPucFilteredData', [FrontEndController::class, 'getPucFilteredData'])->name('getPucFilteredData');
         
-
+        Route::post('getBankDetails', [FrontEndController::class, 'getBankDetails']);
+        Route::post('addTransaction', [FrontEndController::class, 'addTransaction']);
+        Route::get('getTransactionHistory', [FrontEndController::class, 'getTransactionHistory']);
 
         
     });
