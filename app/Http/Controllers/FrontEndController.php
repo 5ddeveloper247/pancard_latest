@@ -163,6 +163,18 @@ class FrontEndController extends Controller
         $transaction->status = '1';
         $transaction->date = $request->transaction_date;
         $transaction->save();
+        $newTransactionId = $transaction->id;
+        $bankData = Banks::where('id', $transaction->bank_id)->first();
+        $userName = Auth::user()->name;
+        $mailData['bankData'] = $bankData;
+        $mailData['userName'] = $userName;
+        $date = new \DateTime($transaction->date);
+        $transaction->date = $date->format('d-m-Y');
+        $mailData['transaction'] = $transaction;
+        $body = view('emails.transaction', $mailData);
+        $userEmailsSend[] = 'zaidkhurshid525@gmail.com';//$pucDetail->user->email;
+        // to username, to email, from username, subject, body html
+        sendMail($userName, $userEmailsSend, 'PANCARD', 'Transaction Made', $body); // send_to_name, send_to_email, email_from_name, subject, body
         return response()->json(['status' => 200,'message' => "Transaction Added Successfully"]);
 
     }

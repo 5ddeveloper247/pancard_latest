@@ -234,6 +234,19 @@ class AdminController extends Controller
         User::where('id', $userDetail['id'])->update([
             'balance' => $newBalance,
         ]);
+        $transaction_updated = Transactions::where('id', $transaction_id)->first();
+        $userData= User::where('id', $userDetail['id'])->first();
+        $bankData = Banks::where('id', $transaction_updated->bank_id)->first();
+        $mailData['bankData'] = $bankData;
+        $mailData['userName'] = $userData->name;
+        $date = new \DateTime($transaction_updated->date);
+        $transaction_updated->date = $date->format('d-m-Y');
+        $mailData['transaction'] = $transaction_updated;
+        $body = view('emails.transaction', $mailData);
+        $userEmailsSend[] = 'zaidkhurshid525@gmail.com';//$pucDetail->user->email;
+        // to username, to email, from username, subject, body html
+        sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Transaction Approved', $body); // send_to_name, send_to_email, email_from_name, subject, body
+
         return response()->json(['status' => 200,'message' => "Transaction Completed Successfully!"]);
     }
 
@@ -243,6 +256,18 @@ class AdminController extends Controller
         Transactions::where('id', $transaction_id)->update([
             'status' => '2',
         ]);
+        $transaction_updated = Transactions::where('id', $transaction_id)->first();
+        $userData= User::where('id', $transaction_updated['user_id'])->first();
+        $bankData = Banks::where('id', $transaction_updated->bank_id)->first();
+        $mailData['bankData'] = $bankData;
+        $mailData['userName'] = $userData->name;
+        $date = new \DateTime($transaction_updated->date);
+        $transaction_updated->date = $date->format('d-m-Y');
+        $mailData['transaction'] = $transaction_updated;
+        $body = view('emails.transaction', $mailData);
+        $userEmailsSend[] = 'zaidkhurshid525@gmail.com';//$pucDetail->user->email;
+        // to username, to email, from username, subject, body html
+        sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Transaction Rejected', $body); // send_to_name, send_to_email, email_from_name, subject, body
         return response()->json(['status' => 200,'message' => "Transaction Rejected Successfully!"]);
     }
 
@@ -548,6 +573,27 @@ class AdminController extends Controller
             $transaction->status = '3';
             $transaction->date = date('Y-m-d');
             $transaction->save();
+
+            $newTransactionId = $transaction->id;
+            $transaction_updated = Transactions::where('id', $newTransactionId)->with(['createdByUser','bankName'])->first();
+            $userData= $transaction_updated->createdByUser;
+
+            $mailData['bankData'] = $transaction_updated->bankName;
+            
+            $mailData['userName'] = $userData->name;
+            $date = new \DateTime($transaction_updated->date);
+            $transaction_updated->date = $date->format('d-m-Y');
+            $mailData['transaction'] = $transaction_updated;
+            // dd($mailData['transaction']->status);
+            $body = view('emails.admin_credit_debit', $mailData);
+            $userEmailsSend[] = 'zaidkhurshid525@gmail.com';//$userData->email;
+            // to username, to email, from username, subject, body html
+            if($transaction_updated->type == 1){
+            sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Balance Added', $body); // send_to_name, send_to_email, email_from_name, subject, body
+            }
+            if($transaction_updated->type == 2){
+                sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Balance Deducted', $body); // send_to_name, send_to_email, email_from_name, subject, body
+                }
 
             $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->get();
 
