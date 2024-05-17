@@ -153,11 +153,13 @@ class FrontEndController extends Controller
         ['selected_bank_id.required' => 'Select bank from dropdown first']);
        
         $transaction = new Transactions;
-        $transaction->transaction_type = '2';
+        $transaction->type = '1'; // 1=>credit, 2=>debit
+        $transaction->transaction_type = '2'; // manual transaction
         $transaction->user_id = Auth::id();
         $transaction->bank_id = $request->selected_bank_id;
         $transaction->amount = $request->transaction_amount;
         $transaction->transaction_number = $request->utr_no;
+        $transaction->transaction_remarks = 'Added by user';
         $transaction->status = '1';
         $transaction->date = $request->transaction_date;
         $transaction->save();
@@ -167,7 +169,7 @@ class FrontEndController extends Controller
 
     public function getTransactionHistory(){
         $user_id = Auth::id();
-        $data['history'] = Transactions::where('user_id',$user_id)->get();
+        $data['history'] = Transactions::where('user_id',$user_id)->with(['userPuc','userPuc.pucType'])->get();
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
 
@@ -328,11 +330,26 @@ class FrontEndController extends Controller
         $user_id = session('user')->id;
         $puc_type_id = $request->puc_type_id;
         $puc_challan = $request->puc_challan;
+        $charges = 0;
+        $userPucRates = PucUserRates::where('user_id', $user_id)->where('puc_type_id', $puc_type_id)->value('puc_rate');
+        $challanRate = User::where('id', $user_id)->value('challan_rate');
         
-        $userPucRates = PucUserRates::where('user_id', $user_id)->where('puc_type_id', $puc_type_id)->first();
-        $challanRate = User::where('user_id', $user_id)->value('challan_rate');
-        dd($challan_rate);
-        $data['userPucRates'] = $userPucRates;
+        if($userPucRates && $puc_challan != ''){
+            
+            $charges = $challanRate*$puc_challan;
+            $charges += $userPucRates;
+        
+        }else if($userPucRates && $puc_challan == ''){
+        
+            $charges += $userPucRates;
+        
+        }else if(!$userPucRates && $puc_challan != ''){
+        
+            $charges = $challanRate*$puc_challan;
+        }
+        
+        
+        $data['charges'] = $charges;
         
        
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
@@ -371,9 +388,7 @@ class FrontEndController extends Controller
             ]);
         }
         
-   
         // Process form submission if validation passes
-        
         $user_id = session('user')->id;
 
         if($request->puc_id != ''){
@@ -385,7 +400,7 @@ class FrontEndController extends Controller
         // Update the settings with the new values
         $Puc->user_id = $user_id;
         $Puc->puc_type_id = $request->puc_type;
-        $Puc->puc_type_rate = $request->puc_type_rate;
+        $Puc->puc_charges = $request->puc_type_rate;
         $Puc->registration_number = $request->registration_number;
         $Puc->model = $request->vehicle_model;
         $Puc->name = $request->puc_name;
@@ -439,10 +454,43 @@ class FrontEndController extends Controller
         // Save the changes
         $Puc->save();
 
-        if($request->puc_id != ''){
-            return response()->json(['status' => 200,'message' => "PUC Updated Successfully!"]);
-        }else{
+        //add debit entry in transaction table 
+        $transaction = new Transactions;
+        $transaction->type = '2'; // 1=>credit, 2=>debit
+        $transaction->transaction_type = '2'; // 1=>online, 2=>manual transaction
+        $transaction->user_id = $user_id;
+        $transaction->bank_id = null;
+        $transaction->puc_id = $Puc->id;
+        $transaction->amount = $request->puc_type_rate;
+        $transaction->transaction_number = null;
+        $transaction->transaction_remarks = 'User PUC';
+        $transaction->status = '3';
+        $transaction->date = date('Y-m-d');
+        $transaction->save();
+
+        if($request->puc_id == ''){
+            
+            $pucDetail = Puc::where('user_id', $user_id)->where('id', $Puc->id)->with(['user','pucType'])->first();
+            $pucDetail->pucTypeName = $pucDetail->pucType->name;
+            
+            $userDetail = $pucDetail->user;
+
+            $balance = $userDetail->balance;
+            $newBalance = $balance - $pucDetail->puc_charges;
+
+            User::where('id', $userDetail->id)->update([
+                'balance' => $newBalance
+            ]);
+
+            // send email code
+            $body = view('emails.puc_order', $pucDetail);
+            $userEmailsSend[] = 'hamza@5dsolutions.ae';//$pucDetail->user->email;
+            // to username, to email, from username, subject, body html
+            sendMail($pucDetail->user->name, $userEmailsSend, 'PANCARD', 'PUC Create', $body); // send_to_name, send_to_email, email_from_name, subject, body
+
             return response()->json(['status' => 200,'message' => "PUC Created Successfully!"]);
+        }else{
+            return response()->json(['status' => 200,'message' => "PUC Updated Successfully!"]);
         }
 
     }
@@ -535,22 +583,19 @@ class FrontEndController extends Controller
         }else{
             return response()->json(['status' => 402,'message' => "Something went wrong"]);
         }
-        
-       
-        
     }
 
     // public function testEmail(Request $request)
     // {
-        // $userDetails = User::where('id', '2')->first();
-        // $body = view('emails.forget_password', $userDetails);
+    //     $userDetails = User::where('id', '2')->first();
+    //     $body = view('emails.forget_password', $userDetails);
 
         
-        // $userEmailsSend[] = 'hamza@5dsolutions.ae';
+    //     $userEmailsSend[] = 'hamza@5dsolutions.ae';
 
-        // // to username, to email, from username, subject, body html
-        // sendMail('hamza waheed', $userEmailsSend, 'PANCARD', 'Test email', $body);
+    //     // to username, to email, from username, subject, body html
+    //     sendMail('hamza waheed', $userEmailsSend, 'PANCARD', 'Test email', $body);
        
-        // echo 'test success';
+    //     echo 'test success';
     // }
 }

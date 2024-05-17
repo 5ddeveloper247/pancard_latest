@@ -71,7 +71,7 @@ $(document).on('click', '.register_form_submit', function (e) {
 	    
 	// PASSING DATA TO FUNCTION
 	$('[name]').removeClass('is-invalid');
-	SendAjaxRequestToServer(type, url, data, '', registerUserResponse, '', '#register_form_submit');
+	SendAjaxRequestToServer(type, url, data, '', registerUserResponse, '', '.register_form_submit');
 	
 });
 

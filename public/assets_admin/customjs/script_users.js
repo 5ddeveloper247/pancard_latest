@@ -295,7 +295,7 @@ $(document).on('click', '.register_form_submit', function (e) {
 	    
 	// PASSING DATA TO FUNCTION
 	$('[name]').removeClass('is-invalid');
-	SendAjaxRequestToServer(type, url, data, '', registerUserResponse, '', '#register_form_submit');
+	SendAjaxRequestToServer(type, url, data, '', registerUserResponse, '', '.register_form_submit');
 	
 });
 
@@ -321,6 +321,8 @@ function registerUserResponse(response) {
         // success response action 
         getUsersPageData();
 
+        $(".block_user_btn").hide();
+
     } else {
         
     	error = response.responseJSON.message;
@@ -340,8 +342,6 @@ function registerUserResponse(response) {
     }
 }
 
-
-
 $(document).on('click', '.create-user', function (e) {
 
     let form = $('#registration_form');
@@ -350,7 +350,7 @@ $(document).on('click', '.create-user', function (e) {
     $("#picturename").text('Upload Picture');
     $("#filename").text('Upload Aadhar');
     $("#user_type").val('retailer');
-	
+	$(".block_user_btn").hide();
 });
 
 $(document).on('click', '.edit_user_btn', function (e) {
@@ -394,6 +394,7 @@ function editUserResponse(response) {
         $("#picturename").text(user_detail['profile_picture']);
         $("#filename").text(user_detail['aadhar']);
         $("#user_type").val(user_detail['user_type']);
+        $("#user_challan_amount").val(user_detail['challan_rate']);
         $("#upload_option").val(user_detail['upload_option']);
         
         var puc_rates = user_detail['puc_rates'];
@@ -406,8 +407,53 @@ function editUserResponse(response) {
         $(".create-user").addClass('active');
         $(".sub-tabs").hide();
         $("#user-approve-block").show();
+        $(".block_user_btn").show();
 
     }
+}
+
+$(document).on('click', '.block_user_btn', function (e) {
+
+    var user_id = $("#user_id").val();
+    if(user_id != ''){
+        e.preventDefault();
+        let type = 'POST';
+        let url = '/admin/blockUser';
+        let message = '';
+        let data = new FormData();
+        data.append("id", user_id);
+            
+        // PASSING DATA TO FUNCTION
+        SendAjaxRequestToServer(type, url, data, '', blockUserResponse, '', '#register_form_submit');
+    }else{
+        toastr.error('Something went wrong!', '', {
+            timeOut: 3000
+        });return;
+    }
+});
+
+function blockUserResponse(response) {
+
+    var data = response.data;
+    
+    toastr.success(response.message, '', {
+        timeOut: 3000
+    });
+
+    let form = $('#registration_form');
+    form.trigger("reset");
+
+    var data = response.data;
+    username_auto = data.username_auto;
+    $("#username_auto").val(username_auto);
+    
+
+    $("#picturename").text('Upload Picture');
+    $("#filename").text('Upload Aadhar');
+    $(".block_user_btn").hide();
+    // success response action 
+    getUsersPageData();
+    
 }
 
 $(document).on('click', '.filter_today', function (e) {

@@ -1,7 +1,7 @@
 function getPucTypeRate(){
 
-    // var puc_type_id = $("#puc_type").val();
-    // var puc_challan = $("#challan").val();
+    var puc_type_id = $("#puc_type").val();
+    var puc_challan = $("#Challan-form").val();
     
     // if(puc_type_id != ''){
         let type = 'POST';
@@ -23,17 +23,17 @@ function getPucTypeRate(){
 function getPucTypeRateResponse(response){
 
     var data = response.data;
-    var userPucRates = data['userPucRates'];
+    var charges = data['charges'];
 
-    if(userPucRates != null){
-        $("#puc_charges").html('&#8377; '+userPucRates['puc_rate']);
-        $("#puc_type_rate").val(userPucRates['puc_rate']);
+    if(charges != null){
+        $("#puc_charges").html('&#8377; '+charges);
+        $("#puc_type_rate").val(charges);
     }else{
         $("#puc_charges").html(`&#8377; 0`);
         $("#puc_type_rate").val('0');
     }
 }
-$(document).on('change', '#challan', function (e) {
+$(document).on('change', '#Challan-form', function (e) {
 
 	getPucTypeRate();
 	

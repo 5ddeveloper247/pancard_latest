@@ -121,7 +121,7 @@
                         placeholder="Name" maxlength="50">
                     <label class="ms-2 d-flex align-items-center" for="user_name">Name</label>
                 </div>
-
+ 
                 <div class="form-floating col-6 col-md-4 my-2">
                     <input type="text" class="form-control users-details-inputs form-control-sm"
                         id="username_auto" name="username_auto" value="{{$username_auto}}" readonly placeholder="Username (Auto generate)">
@@ -171,7 +171,7 @@
                     <label class="ms-2 d-flex align-items-center" for="user_area">Area</label>
                 </div>
                 <div class="form-floating col-6 col-md-4 my-2">
-                    <input type="email" class="form-control users-details-inputs form-control-sm" id="user_landmark" name="user_landmark"
+                    <input type="text" class="form-control users-details-inputs form-control-sm" id="user_landmark" name="user_landmark"
                         placeholder="Landmark">
                     <label class="ms-2 d-flex align-items-center" for="user_landmark">Landmark</label>
                 </div>
@@ -216,12 +216,10 @@
                 @endforeach
                
                 <div class="d-flex align-items-around col-12 my-2">
-                    <button id="nav-sub-links-for-days"
-                        class="form-control users-details-inputs large-w-rates form-control-sm py-0 px-1"
-                        id="pills-today-tab" data-bs-toggle="pill" data-bs-target="#pills-today" type="button"
-                        role="tab" aria-controls="pills-today" aria-selected="true">
-                        Challan
-                    </button>
+                    <div class="form-floating col-6 col-md-4 ">
+                        <input type="number" class="form-control users-details-inputs form-control-sm rmv-arrow" id="user_challan_amount" name="challan_amount" placeholder="Challan Amount" maxlength="10">
+                        <label class="ms-2 d-flex align-items-center" for="user_challan_amount">Challan Amount</label>
+                    </div>
                     <span
                         class="d-flex flex-column justify-content-center users-details-inputs upload-options challan ms-2 px-2">
                         <label for="userState" class="text-nowrap">
@@ -240,7 +238,7 @@
 
                 <div class="form-floating col-12 my-2">
                     <button type="button"
-                        class="btn bg-primary text-white users-details-inputs w-100 px-5">Block User</button>
+                        class="btn bg-primary text-white users-details-inputs w-100 px-5 block_user_btn">Block User</button>
 
                 </div>
             </form>

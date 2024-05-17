@@ -61,9 +61,19 @@ function getBanklist_response(response) {
 
 $(document).ready(function () {
 
+    $('#filter_dateRange').daterangepicker({
+        startDate: moment().startOf('month'),
+        endDate: moment().endOf('month'),
+        locale: {
+            format: 'DD-MM-YYYY' // Set the date format
+        }
+    });
+    $('#filter_dateRange').val('');
+
     getBanklist();
     pendingTransactionsList();
     walletHistory();
+    
     $('.upi_id_div').hide();
     $('.bank_name_div').hide();
     $('.holder_name_div').hide();
@@ -101,10 +111,10 @@ $(document).ready(function () {
             $('#add_bank_btn').addClass('disabled');
         }
     });
+    
 
 
 });
-
 
 $(document).on('click', '#add_bank_btn', function (e) {
 
@@ -154,7 +164,6 @@ function addBankResponse(response) {
         });
     }
 }
-
 // to delete banks 
 tempBankId = '';
 $(document).on('click', '.delete_bank_btn', function (e) {
@@ -172,7 +181,6 @@ function deletebank() {
     // PASSING DATA TO FUNCTION
     SendAjaxRequestToServer(type, url, data, '', deletebankResponse, '', '');
 }
-
 
 function deletebankResponse(response) {
     if (response.status == 200 || response.status == '200') {
@@ -203,6 +211,7 @@ function deletebankResponse(response) {
     }
 
 }
+
 function closedeletebankmodal() {
     tempBankId = '';
     $("#deleteBankConfirmModal").modal('hide');
@@ -217,90 +226,103 @@ function pendingTransactionsList() {
 }
 
 function pendingTransactionsListResponse(response) {
-    var list = response.data.pendingTransactionsList;
-    $('#wallet-pending-content').empty();
-    $.each(list, function (index, list) {
-        var bank_type = list.bank_name.bank_type;
-        if (bank_type == '1') {
-            var bank = list.bank_name.upi_id;
+    var transaction_list = response.data.pendingTransactionsList;
+    var html = '';
+    
+    if(transaction_list.length > 0){
+        $.each(transaction_list, function (index, list) {
+            var bank_type = list.bank_name.bank_type;
+            
+            if (bank_type == '1') {
+                var bank = list.bank_name.upi_id;
+    
+            }
+            if (bank_type == '2') {
+                var bank = list.bank_name.bank_name;
+    
+            }
+            var formattedDate = new Date(list.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            var companyName = list.created_by_user.company_name;
+            var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
 
-        }
-        if (bank_type == '2') {
-            var bank = list.bank_name.bank_name;
+            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4">
+                            <div class="d-flex align-items-center justify-content-between ">
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold text-dark">
+                                        ${list.created_by_user.name}
+                                    </span>
+                                    <span class="text-dark d-flex ">Date: ${formattedDate}</span>
+                                    <span class="text-dark">
+                                        Bank Account: ${bank}
+                                    </span>
+                                    <span class="text-dark d-flex align-items-center utr-code-bg px-1">
+                                        UTR: ${list.transaction_number} <span class="ps-2"> <svg width="10" height="11" viewBox="0 0 10 11"
+                                                fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M2.33336 5.09092C2.33336 3.80547 2.33336 3.16228 2.72403 2.76319C3.11425 2.36365 3.74314 2.36365 5.00003 2.36365H6.33336C7.59025 2.36365 8.21914 2.36365 8.60936 2.76319C9.00003 3.16228 9.00003 3.80547 9.00003 5.09092V7.36365C9.00003 8.6491 9.00003 9.29228 8.60936 9.69137C8.21914 10.0909 7.59025 10.0909 6.33336 10.0909H5.00003C3.74314 10.0909 3.11425 10.0909 2.72403 9.69137C2.33336 9.29228 2.33336 8.6491 2.33336 7.36365V5.09092Z"
+                                                    stroke="#515C6F" />
+                                                <path opacity="0.5"
+                                                    d="M2.33333 8.72727C1.97971 8.72727 1.64057 8.5836 1.39052 8.32787C1.14048 8.07214 1 7.72529 1 7.36364V4.63636C1 2.92227 1 2.065 1.52089 1.53273C2.04133 1 2.87956 1 4.55556 1H6.33333C6.68696 1 7.02609 1.14367 7.27614 1.3994C7.52619 1.65513 7.66667 2.00198 7.66667 2.36364"
+                                                    stroke="#515C6F" />
+                                            </svg>
+                                        </span>
+                                    </span>
+                                    <div class="d-flex justify-content-md-center justify-content-between"></div>
+                        
+                                </div>
+                        
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex align-items-center justify-content-end">
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="modal-btn-neutral py-1 px-2">
+                                            <svg width="17" height="21" viewBox="0 0 17 21" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M5.26403 0.163832C6.3436 0.0150705 7.25136 0.675594 7.68089 1.53412L8.73741 3.64664C9.32355 4.81893 8.98674 6.19445 8.09836 7.05979C7.5735 7.5705 7.04603 8.15402 6.74012 8.66893C6.71986 8.70563 6.71354 8.74841 6.72231 8.7894C7.00517 10.3221 8.04388 11.8364 8.9705 12.9223C9.01711 12.974 9.07793 13.0109 9.14537 13.0283C9.21282 13.0458 9.2839 13.0429 9.34974 13.0202L11.4319 12.3696C11.9928 12.1943 12.595 12.2033 13.1505 12.3952C13.7059 12.5871 14.1852 12.9519 14.5182 13.4361L16.0252 15.6283C16.4337 16.2228 16.6406 17.0295 16.3274 17.8052C16.0477 18.4982 15.5066 19.4976 14.5224 20.1624C13.5009 20.8517 12.1018 21.1136 10.2711 20.4861C8.22565 19.7842 6.29331 18.0242 4.69098 15.7734C3.07922 13.5084 1.75241 10.6793 0.947838 7.72921C0.187267 4.94412 0.646124 3.06888 1.72622 1.8615C2.76808 0.696547 4.26093 0.301594 5.26403 0.163832ZM6.50912 2.11974C6.26974 1.6415 5.84284 1.40526 5.44212 1.46026C4.55112 1.58283 3.43541 1.9144 2.7026 2.73417C2.00803 3.51098 1.52717 4.87917 2.21022 7.38455C2.9776 10.1964 4.24103 12.8835 5.75746 15.0138C7.28331 17.1578 9.01712 18.6716 10.6954 19.2473C12.1909 19.7601 13.1521 19.5065 13.789 19.077C14.4626 18.6218 14.877 17.8985 15.1127 17.3149C15.2206 17.0478 15.174 16.7021 14.9456 16.37L13.4386 14.1784C13.2642 13.9247 13.0132 13.7336 12.7223 13.633C12.4314 13.5324 12.1159 13.5277 11.8221 13.6195L9.73998 14.27C9.11769 14.4644 8.41684 14.291 7.97422 13.7724C7.00989 12.6425 5.78103 10.9098 5.43374 9.02669C5.36736 8.67377 5.43139 8.30875 5.61393 7.9995C6.01098 7.33217 6.63955 6.65174 7.18379 6.12164C7.71546 5.60412 7.86631 4.83412 7.56565 4.23226L6.50912 2.11974Z"
+                                                    fill="#515C6F" />
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="modal-btn-price py-1 px-2 ms-2">
+                                            ₹${list.amount}
+                                        </button>
+                                    </div>
+                        
+                                </div>
+                            </div>
+                            <div class="d-flex flex-nowrap justify-content-between">
+                                <div>
+                                    <span class="diff-bg px-2 py-1 mx-md-3 mr-1 my-1 text-primary text-nowrap">
+                                        <b>${list.created_by_user.username}</b>(${truncatedCompanyName})
+                                    </span>
+                                </div>
+                                <div class="d-flex flex-nowrap">
+                                    <span class="states-btns mx-md-3 ms-1 my-1 text-white text-nowrap">
+                                        <button type="button" class="btn action-btns btn-danger px-2 py-0 rejectTransactionbtn"data-id="${list.id}">
+                                            Reject
+                                        </button>
+                                    </span>
+                                    <span class="states-btns mx-md-3 ms-1 my-1 text-white text-nowrap">
+                                        <button type="button" class="btn action-btns btn-primary px-2 py-0 acceptTransactionbtn" 
+                                            data-id="${list.id}">
+                                            Complete
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>`;
+    
+            
+    
+        });
+    }else{
+        html = `<div class="border rounded-2 text-center mt-2 pt-3">
+                    <p>No record found!</p>
+                </div>`;
+    }
 
-        }
-        var formattedDate = new Date(list.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        var companyName = list.created_by_user.company_name;
-        var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
-        var html = `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4">
-    <div class="d-flex align-items-center justify-content-between ">
-        <div class="d-flex flex-column">
-            <span class="fw-bold text-dark">
-                ${list.created_by_user.name}
-            </span>
-            <span class="text-dark d-flex ">Date: ${formattedDate}</span>
-            <span class="text-dark">
-                Bank Account: ${bank}
-            </span>
-            <span class="text-dark d-flex align-items-center utr-code-bg px-1">
-                UTR: ${list.transaction_number} <span class="ps-2"> <svg width="10" height="11" viewBox="0 0 10 11"
-                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M2.33336 5.09092C2.33336 3.80547 2.33336 3.16228 2.72403 2.76319C3.11425 2.36365 3.74314 2.36365 5.00003 2.36365H6.33336C7.59025 2.36365 8.21914 2.36365 8.60936 2.76319C9.00003 3.16228 9.00003 3.80547 9.00003 5.09092V7.36365C9.00003 8.6491 9.00003 9.29228 8.60936 9.69137C8.21914 10.0909 7.59025 10.0909 6.33336 10.0909H5.00003C3.74314 10.0909 3.11425 10.0909 2.72403 9.69137C2.33336 9.29228 2.33336 8.6491 2.33336 7.36365V5.09092Z"
-                            stroke="#515C6F" />
-                        <path opacity="0.5"
-                            d="M2.33333 8.72727C1.97971 8.72727 1.64057 8.5836 1.39052 8.32787C1.14048 8.07214 1 7.72529 1 7.36364V4.63636C1 2.92227 1 2.065 1.52089 1.53273C2.04133 1 2.87956 1 4.55556 1H6.33333C6.68696 1 7.02609 1.14367 7.27614 1.3994C7.52619 1.65513 7.66667 2.00198 7.66667 2.36364"
-                            stroke="#515C6F" />
-                    </svg>
-                </span>
-            </span>
-            <div class="d-flex justify-content-md-center justify-content-between"></div>
+    $('#wallet-pending-content').html(html);
 
-        </div>
-
-        <div class="d-flex flex-column">
-            <div class="d-flex align-items-center justify-content-end">
-                <!-- Button trigger modal -->
-                <button type="button" class="modal-btn-neutral py-1 px-2">
-                    <svg width="17" height="21" viewBox="0 0 17 21" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M5.26403 0.163832C6.3436 0.0150705 7.25136 0.675594 7.68089 1.53412L8.73741 3.64664C9.32355 4.81893 8.98674 6.19445 8.09836 7.05979C7.5735 7.5705 7.04603 8.15402 6.74012 8.66893C6.71986 8.70563 6.71354 8.74841 6.72231 8.7894C7.00517 10.3221 8.04388 11.8364 8.9705 12.9223C9.01711 12.974 9.07793 13.0109 9.14537 13.0283C9.21282 13.0458 9.2839 13.0429 9.34974 13.0202L11.4319 12.3696C11.9928 12.1943 12.595 12.2033 13.1505 12.3952C13.7059 12.5871 14.1852 12.9519 14.5182 13.4361L16.0252 15.6283C16.4337 16.2228 16.6406 17.0295 16.3274 17.8052C16.0477 18.4982 15.5066 19.4976 14.5224 20.1624C13.5009 20.8517 12.1018 21.1136 10.2711 20.4861C8.22565 19.7842 6.29331 18.0242 4.69098 15.7734C3.07922 13.5084 1.75241 10.6793 0.947838 7.72921C0.187267 4.94412 0.646124 3.06888 1.72622 1.8615C2.76808 0.696547 4.26093 0.301594 5.26403 0.163832ZM6.50912 2.11974C6.26974 1.6415 5.84284 1.40526 5.44212 1.46026C4.55112 1.58283 3.43541 1.9144 2.7026 2.73417C2.00803 3.51098 1.52717 4.87917 2.21022 7.38455C2.9776 10.1964 4.24103 12.8835 5.75746 15.0138C7.28331 17.1578 9.01712 18.6716 10.6954 19.2473C12.1909 19.7601 13.1521 19.5065 13.789 19.077C14.4626 18.6218 14.877 17.8985 15.1127 17.3149C15.2206 17.0478 15.174 16.7021 14.9456 16.37L13.4386 14.1784C13.2642 13.9247 13.0132 13.7336 12.7223 13.633C12.4314 13.5324 12.1159 13.5277 11.8221 13.6195L9.73998 14.27C9.11769 14.4644 8.41684 14.291 7.97422 13.7724C7.00989 12.6425 5.78103 10.9098 5.43374 9.02669C5.36736 8.67377 5.43139 8.30875 5.61393 7.9995C6.01098 7.33217 6.63955 6.65174 7.18379 6.12164C7.71546 5.60412 7.86631 4.83412 7.56565 4.23226L6.50912 2.11974Z"
-                            fill="#515C6F" />
-                    </svg>
-                </button>
-                <button type="button" class="modal-btn-price py-1 px-2 ms-2">
-                    ₹${list.amount}
-                </button>
-            </div>
-
-        </div>
-    </div>
-    <div class="d-flex flex-nowrap justify-content-between">
-        <div>
-            <span class="diff-bg px-2 py-1 mx-md-3 mr-1 my-1 text-primary text-nowrap">
-                <b>${list.created_by_user.username}</b>(${truncatedCompanyName})
-            </span>
-        </div>
-        <div class="d-flex flex-nowrap">
-            <span class="states-btns mx-md-3 ms-1 my-1 text-white text-nowrap">
-                <button type="button" class="btn action-btns btn-danger px-2 py-0 rejectTransactionbtn"data-id="${list.id}">
-                    Reject
-                </button>
-            </span>
-            <span class="states-btns mx-md-3 ms-1 my-1 text-white text-nowrap">
-                <button type="button" class="btn action-btns btn-primary px-2 py-0 acceptTransactionbtn" 
-                    data-id="${list.id}">
-                    Complete
-                </button>
-            </span>
-        </div>
-    </div>
-</div>`;
-
-        $('#wallet-pending-content').append(html);
-
-    });
+    
 }
 var temptransactionId = '';
 
@@ -335,9 +357,6 @@ function completeTransactionResponse(response){
         pendingTransactionsList();
         closecompleteTransactionModal();
         walletHistory();
-        
-        // success response action 
-
     }
 }
 
@@ -348,7 +367,6 @@ function closecompleteTransactionModal(){
     $("#completeTransactionModal").modal('hide');
 
 }
-
 
 $(document).on('click', '.rejectTransactionbtn', function (e) {
 
@@ -392,6 +410,7 @@ function closerejectTransactionModal(){
     $("#rejectTransactionModal").modal('hide');
 
 }
+
 function formatAMPM(date) {
     let hours = date.getHours();
     let minutes = date.getMinutes();
@@ -408,8 +427,7 @@ function formatDate(dateString) {
     const month = date.toLocaleString('default', { month: 'short' });
     const year = date.getFullYear().toString().slice(-2);
     return `${day} ${month} ${year}`;
-  }
-
+}
 
 function walletHistory(){
     let type = 'GET';
@@ -421,56 +439,175 @@ function walletHistory(){
 }
 
 function walletHistoryResponse(response){
-    var walletHistory = response.data.walletHistory;
-    $('#walletHistoryDiv').empty();
-    $.each(walletHistory, function (index, walletHistory) {
-        if(walletHistory.status == '1'){
-            var status = ` <span class="fw-bold text-warning">Pending</span>`;
-        }
-        if(walletHistory.status == '2'){
-            var status = ` <span class="fw-bold text-danger">Rejected</span>`;
-        }
-        if(walletHistory.status == '3'){
-            var status = ` <span class="fw-bold text-success">Success</span>`;
-        }
-        var companyName = walletHistory.created_by_user.company_name;
-        var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
+
+    var walletHistoryList = response.data.walletHistory;
+
+    updateWalletHistoryList(walletHistoryList);
+}
+
+function updateWalletHistoryList(walletHistoryList){
+    var html = '';
+
+    if(walletHistoryList.length > 0){
+        $.each(walletHistoryList, function (index, walletHistory) {
+            if(walletHistory.type == '2'){
+                var status = ` <span class="fw-bold text-danger">Debited</span>`;
+                var amount_txt = `<span class="fw-bolder text-danger"> &minus; &#8377;${walletHistory.amount}</span>`;
+                var name_txt = `<h6 class="m-0">Wallet debited</h6>`;
+            }else{
+                
+                var name_txt = `<h6 class="m-0">Wallet added</h6>`;
+
+                if(walletHistory.status == '1'){
+                    var status = ` <span class="fw-bold text-warning">Pending</span>`;
+                    var amount_txt = `<span class="fw-bolder text-warning"> &plus; &#8377;${walletHistory.amount}</span>`;
+                    
+                }
+                if(walletHistory.status == '2'){
+                    var status = ` <span class="fw-bold text-danger">Rejected</span>`;
+                    var amount_txt = `<span class="fw-bolder text-danger"> &plus; &#8377;${walletHistory.amount}</span>`;
+                    
+                }
+                if(walletHistory.status == '3'){
+                    var status = ` <span class="fw-bold text-success">Success</span>`;
+                    var amount_txt = `<span class="fw-bolder text-success"> &plus; &#8377;${walletHistory.amount}</span>`;
+                    
+                }
+            }
+            
+            var companyName = walletHistory.created_by_user.company_name;
+            var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
+    
+    
+            html += `<div class="d-flex justify-content-between border rounded-2 my-2">
+                        <div class="d-flex align-items-center pt-3 ps-3 pb-2">
+                            <svg width="68" height="68" viewBox="0 0 48 48" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect x="0.5" y="0.5" width="37" height="37" rx="4.5" fill="#FBFBFB"
+                                    stroke="#F0F0F0" />
+                                <path d="M23.1666 19.5834H24.5555V20.9723H23.1666V19.5834Z" fill="#727C8E" />
+                                <path
+                                    d="M27.5714 13.5556H10.4286V11.4222H26.1429V10H10.4286C10.0497 10 9.68633 10.1498 9.41842 10.4166C9.15051 10.6833 9 11.045 9 11.4222V26.3556C9 26.7328 9.15051 27.0945 9.41842 27.3612C9.68633 27.6279 10.0497 27.7778 10.4286 27.7778H27.5714C27.9503 27.7778 28.3137 27.6279 28.5816 27.3612C28.8495 27.0945 29 26.7328 29 26.3556V14.9778C29 14.6006 28.8495 14.2388 28.5816 13.9721C28.3137 13.7054 27.9503 13.5556 27.5714 13.5556ZM10.4286 26.3556V14.9778H27.5714V17.1111H21.8571C21.4783 17.1111 21.1149 17.261 20.847 17.5277C20.5791 17.7944 20.4286 18.1561 20.4286 18.5333V22.8C20.4286 23.1772 20.5791 23.5389 20.847 23.8057C21.1149 24.0724 21.4783 24.2222 21.8571 24.2222H27.5714V26.3556H10.4286ZM27.5714 18.5333V22.8H21.8571V18.5333H27.5714Z"
+                                    fill="#515C6F" />
+                            </svg>
+                            <div class="d-flex flex-column">
+                                ${name_txt}
+                                <small>${formatDate(walletHistory.created_at)}</small>
+                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap">
+                                    <b>${walletHistory.created_by_user.username}</b>(${truncatedCompanyName})
+                                </span>
+                            </div>
+                        </div>
+                        <div class="pt-3 pe-3 pb-2 d-flex flex-column align-items-end">
+                            ${amount_txt}
+                            ${status}
+                            <button type="button" class="btn added-by-admin px-2 py-0 mt-1">
+                                ${walletHistory.transaction_remarks}
+                            </button>
+                        </div>
+    
+                    </div>`;
+    
+        
+        });
+    }else{
+        html = `<div class="border rounded-2 text-center mt-2 pt-3">
+                    <p>No record found!</p>
+                </div>`;
+    }
+
+    $('#walletHistoryDiv').html(html);
+}
 
 
-        var html = `<div class="d-flex justify-content-between border rounded-2 my-2">
-        <div class="d-flex align-items-center pt-3 ps-3 pb-2">
-            <svg width="68" height="68" viewBox="0 0 48 48" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <rect x="0.5" y="0.5" width="37" height="37" rx="4.5" fill="#FBFBFB"
-                    stroke="#F0F0F0" />
-                <path d="M23.1666 19.5834H24.5555V20.9723H23.1666V19.5834Z" fill="#727C8E" />
-                <path
-                    d="M27.5714 13.5556H10.4286V11.4222H26.1429V10H10.4286C10.0497 10 9.68633 10.1498 9.41842 10.4166C9.15051 10.6833 9 11.045 9 11.4222V26.3556C9 26.7328 9.15051 27.0945 9.41842 27.3612C9.68633 27.6279 10.0497 27.7778 10.4286 27.7778H27.5714C27.9503 27.7778 28.3137 27.6279 28.5816 27.3612C28.8495 27.0945 29 26.7328 29 26.3556V14.9778C29 14.6006 28.8495 14.2388 28.5816 13.9721C28.3137 13.7054 27.9503 13.5556 27.5714 13.5556ZM10.4286 26.3556V14.9778H27.5714V17.1111H21.8571C21.4783 17.1111 21.1149 17.261 20.847 17.5277C20.5791 17.7944 20.4286 18.1561 20.4286 18.5333V22.8C20.4286 23.1772 20.5791 23.5389 20.847 23.8057C21.1149 24.0724 21.4783 24.2222 21.8571 24.2222H27.5714V26.3556H10.4286ZM27.5714 18.5333V22.8H21.8571V18.5333H27.5714Z"
-                    fill="#515C6F" />
-            </svg>
-            <div class="d-flex flex-column">
-                <h6 class="m-0">
-                    Wallet added
-                </h6>
-                <small>${formatDate(walletHistory.created_at)}</small>
-                <span class="diff-bg px-2 py-1 mx-md-3 mr-1 my-1 text-primary text-nowrap">
-                    <b>${walletHistory.created_by_user.username}</b>(${truncatedCompanyName})
-                </span>
-            </div>
-        </div>
-        <div class="pt-3 pe-3 pb-2 d-flex flex-column align-items-end">
-            <span class="fw-bolder text-success"> + ₹${walletHistory.amount}</span>
-           ${status}
-            <button type="button" class="btn added-by-admin px-2 py-0 mt-1">
-                Added by admin
-            </button>
+$(document).on('click', '.filter_today', function (e) {
+    
+    $(".filter-btns").removeClass('active');
+    $(".filter_today").addClass('active');
+    $("#filter_month,#filter_dateRange").val('');
+   
 
-        </div>
+    var param1 = moment().format('YYYY-MM-DD');
+    var param2 = '';
+    var filterflag = '1';
+    console.log(param1);
+    console.log(param2);
+    console.log(filterflag);
+    getWalletHistoryFilteredData (filterflag, param1, param2);
+});
 
-    </div>`;
+$(document).on('click', '.filter_yesterday', function (e) {
+    
+    $(".filter-btns").removeClass('active');
+    $(".filter_yesterday").addClass('active');
+    $("#filter_month,#filter_dateRange").val('');
 
-    $('#walletHistoryDiv').append(html);
-    });
+    var param1 = moment().subtract(1, 'days').format('YYYY-MM-DD');
+    var param2 = '';
+    var filterflag = '1';
+    console.log(param1);
+    console.log(param2);
+    console.log(filterflag);
+    getWalletHistoryFilteredData (filterflag, param1, param2);
+});
 
+$(document).on('change', '#filter_month', function (e) {
 
+    $(".filter-btns").removeClass('active');
+    $("#filter_dateRange").val('');
+
+    var param1 = $(this).val();
+    var param2 = '';
+    var filterflag = '2';
+    console.log(param1);
+    console.log(param2);
+    console.log(filterflag);
+    getWalletHistoryFilteredData (filterflag, param1, param2);
+    
+});
+
+var flag = false;
+$(document).on('change', '#filter_dateRange', function (e) {
+    if(flag){
+        var dateString = $(this).val();
+        var dateArray = dateString.split(" - ");
+        // Extract start and end dates from the array
+        var startDateFormatted = moment(dateArray[0], 'DD-MM-YYYY').format('YYYY-MM-DD');
+        var endDateFormatted = moment(dateArray[1], 'DD-MM-YYYY').format('YYYY-MM-DD');
+        
+        $(".filter-btns").removeClass('active');
+        $("#filter_month").val('');
+        
+        var param1 = startDateFormatted;
+        var param2 = endDateFormatted;
+        var filterflag = '3';
+        console.log(param1);
+        console.log(param2);
+        console.log(filterflag);
+        getWalletHistoryFilteredData (filterflag, param1, param2);
+    }
+    flag = true;
+});
+
+function getWalletHistoryFilteredData (filterFlag, param1='', param2='' ) {
+    
+    let type = 'POST';
+    let url = '/admin/getWalletHistoryFilteredData';
+    let message = '';
+    let form = '';
+    let data = new FormData();
+    data.append("filterFlag", filterFlag);
+    data.append("param1", param1);
+    data.append("param2", param2);
+    // PASSING DATA TO FUNCTION
+    SendAjaxRequestToServer(type, url, data, '', getWalletHistoryFilteredDataResponse, '', 'submit_button');
+    
+}
+
+function getWalletHistoryFilteredDataResponse(response){
+
+    var data = response.data;
+    var walletHistoryList = data.walletHistory;
+    updateWalletHistoryList(walletHistoryList)
+    
 }

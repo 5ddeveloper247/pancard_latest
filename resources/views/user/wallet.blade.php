@@ -11,7 +11,7 @@
                     Wallet
                 </h5>
                 <span>
-                    Available Balance <b class="text-primary">₹500</b>
+                    Available Balance <b class="text-primary">₹{{@$user->balance}}</b>
                 </span>
             </div>
             <ul id="nav-wallet-tab" class="nav nav-pills pt-3 d-flex align-items-center justify-content-between"
@@ -41,9 +41,9 @@
                     <p class="pt-3">0% charge only on upi payments otherwise 3% charge will be deduct from wallet
                     </p>
                     <div class="py-3 text-center">
-                        <a href="payment-confirmation.html" type="submit"
+                        <a href="javascript:;" type="submit"
                             class="vehicle-info-btn w-100 py-3 fw-bolder fs-5">
-                            Add ₹1250 to your wallet
+                            Add ₹0 to your wallet
                         </a>
                     </div>
                     <h5>

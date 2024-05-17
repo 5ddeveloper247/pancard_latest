@@ -95,7 +95,8 @@ function makePucList(puc_list){
                                         </defs>
                                     </svg>
                                 </button>
-                                <button type="button" class="modal-btn ${value.status != '4' ? 'd-none' : ''}">
+                                <a class="modal-btn ${value.status != '4' ? 'd-none' : ''}" href="${value.certificate_pdf != null ? value.certificate_pdf : 'javascript:;'}"
+                                    ${value.certificate_pdf != null ? 'target="_blank" download' : ''}>
                                     <svg width="74" height="71" viewBox="0 0 74 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g filter="url(#filter0_d_954_141)">
                                             <rect x="5.69232" y="3" width="63.0769" height="61" rx="5" fill="white"></rect>
@@ -115,7 +116,7 @@ function makePucList(puc_list){
                                             </filter>
                                         </defs>
                                     </svg>
-                                </button>
+                                </a>
                                 <button type="button" class="modal-btn showUploadsModal_btn" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}">
                                     <svg width="74" height="71" viewBox="0 0 74 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g filter="url(#filter0_d_954_152)">
@@ -323,30 +324,32 @@ function getPucFilteredResponse(response){
 function getPucTypeRate(){
 
     var puc_type_id = $("#puc_type").val();
-    console.log(puc_type_id);
-    if(puc_type_id != ''){
+    var puc_challan = $("#Challan-form").val();
+    
+    // if(puc_type_id != ''){
         let type = 'POST';
         let url = '/getPucTypeRate';
         let message = '';
         let form = '';
         let data = new FormData();
         data.append("puc_type_id", puc_type_id);
+        data.append("puc_challan", puc_challan);
         // PASSING DATA TO FUNCTION
         SendAjaxRequestToServer(type, url, data, '', getPucTypeRateResponse, '', 'submit_button');
-    }else{
-        $("#puc_charges").html(`&#8377; 0`);
-        $("#puc_type_rate").val('0');
-    }
+    // }else{
+    //     $("#puc_charges").html(`&#8377; 0`);
+    //     $("#puc_type_rate").val('0');
+    // }
     
 }
 function getPucTypeRateResponse(response){
 
     var data = response.data;
-    var userPucRates = data['userPucRates'];
+    var charges = data['charges'];
 
-    if(userPucRates != null){
-        $("#puc_charges").html('&#8377; '+userPucRates['puc_rate']);
-        $("#puc_type_rate").val(userPucRates['puc_rate']);
+    if(charges != null){
+        $("#puc_charges").html('&#8377; '+charges);
+        $("#puc_type_rate").val(charges);
     }else{
         $("#puc_charges").html(`&#8377; 0`);
         $("#puc_type_rate").val('0');
@@ -396,8 +399,8 @@ function editSpecificPucResponse(response) {
 
             $("#picturename").text(puc_detail.vehicle_image);
             $("#challanName").text(puc_detail.challan_image);
-            $("#puc_charges").html("&#8377; "+puc_detail.puc_type_rate);
-            $("#puc_type_rate").val(puc_detail.puc_type_rate);
+            $("#puc_charges").html("&#8377; "+puc_detail.puc_charges);
+            $("#puc_type_rate").val(puc_detail.puc_charges);
         }
 
         $("#main_section").hide();
@@ -485,6 +488,13 @@ function resetPasswordProfileResponse(response) {
         });
     }
 }
+
+$(document).on('click', '#backToMainPage', function (e) {
+
+    $("#main_section").show();
+    $("#makePuc_section").hide();
+    
+});
 
 $(document).ready(function () {
     

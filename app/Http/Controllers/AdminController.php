@@ -87,6 +87,41 @@ class AdminController extends Controller
         echo json_encode($data);
     }
 
+    public function getBankDetails(Request $request){
+
+        $bank_id = $request->bank_id;
+        $data['bank_detail'] = Banks::where('id',$bank_id)->first();
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+    // public function addTransaction(Request $request){
+    //     $validatedData = $request->validate([
+    //         'selected_bank_id' => 'required',
+    //         'utr_no' => 'required|max:100',
+    //         'transaction_date' => 'required|date',
+    //         'transaction_amount' => 'required|numeric|min:500',
+
+    //     ],
+    //     ['selected_bank_id.required' => 'Select bank from dropdown first']);
+
+    //     $transaction = new Transactions;
+    //     $transaction->transaction_type = '2';
+    //     $transaction->user_id = Auth::id();
+    //     $transaction->bank_id = $request->selected_bank_id;
+    //     $transaction->amount = $request->transaction_amount;
+    //     $transaction->transaction_number = $request->utr_no;
+    //     $transaction->status = '1';
+    //     $transaction->date = $request->transaction_date;
+    //     $transaction->save();
+    //     return response()->json(['status' => 200,'message' => "Transaction Added Successfully"]);
+
+    // }
+
+    public function getTransactionHistory(){
+        $user_id = Auth::id();
+        $data['history'] = Transactions::where('user_id',$user_id)->get();
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
     public function addBank(Request $request)
     {
         $validatedData = $request->validate([
@@ -145,6 +180,70 @@ class AdminController extends Controller
         } else {
             return response()->json(['status' => 404, 'message' => "Record Not Found!"], 404);
         }
+    }
+
+    public function pendingTransactionsList(Request $request){
+        
+        $data['pendingTransactionsList'] = Transactions::where('status','1')->with(['createdByUser','bankName'])->get();
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
+    public function walletHistory(Request $request){
+        
+        $data['walletHistory'] = Transactions::with(['createdByUser','bankName'])->get();
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+    
+    public function getWalletHistoryFilteredData(Request $request){
+        
+        $filterFlag = $request->filterFlag;
+        $param1 = $request->param1;
+        $param2 = $request->param2;
+
+        if($filterFlag == '1'){
+            $transactions = Transactions::whereDate('created_at', '=', $param1)         // for today  & yesterday
+                                        ->with(['createdByUser','bankName'])
+                                        ->get();
+        }else if($filterFlag == '2'){
+            $transactions = Transactions::whereYear('created_at', date('Y'))        // for today  & yesterday
+                                        ->whereMonth('created_at', $param1)
+                                        ->with(['createdByUser','bankName'])
+                                        ->get();
+        }else if($filterFlag == '3'){
+            $transactions = Transactions::whereDate('created_at', '>=', $param1)    // for start date
+                                        ->whereDate('created_at', '<=', $param2)    // for end date
+                                        ->with(['createdByUser','bankName'])
+                                        ->get();
+        }
+
+        $data['walletHistory'] = $transactions;
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
+    public function completeTransaction(Request $request){
+        
+        $transaction_id = $request->transaction_id;
+
+        $transaction = Transactions::where('id', $transaction_id)->with(['createdByUser'])->first();
+        $userDetail = $transaction->createdByUser;
+        $newBalance = $transaction->amount + $userDetail['balance'];
+        // dd($newBalance);
+        Transactions::where('id', $transaction_id)->update([
+            'status' => '3',
+        ]);
+        User::where('id', $userDetail['id'])->update([
+            'balance' => $newBalance,
+        ]);
+        return response()->json(['status' => 200,'message' => "Transaction Completed Successfully!"]);
+    }
+
+    public function rejectTransaction(Request $request){
+        
+        $transaction_id = $request->transaction_id;
+        Transactions::where('id', $transaction_id)->update([
+            'status' => '2',
+        ]);
+        return response()->json(['status' => 200,'message' => "Transaction Rejected Successfully!"]);
     }
 
 
@@ -424,8 +523,12 @@ class AdminController extends Controller
 
             if ($flag == 'credit') {
                 $new_amount = $user->balance + $amount;
+                $trnx_flag = 1;
+                $trnx_remarks = 'Added by admin';
             } else if ($flag == 'debit') {
                 $new_amount = $user->balance - $amount;
+                $trnx_flag = 2;
+                $trnx_remarks = 'Removed by admin';
             } else {
                 return response()->json(['status' => 402, 'message' => 'Something went wrong!']);
             }
@@ -433,6 +536,18 @@ class AdminController extends Controller
             User::where('id', $user->id)->update([
                 'balance' => $new_amount,
             ]);
+
+            $transaction = new Transactions;
+            $transaction->type = $trnx_flag; // 1=>credit, 2=>debit
+            $transaction->transaction_type = '2'; // 1=>online, 2=>manual transaction
+            $transaction->user_id = $user->id;
+            $transaction->bank_id = null;
+            $transaction->amount = $amount;
+            $transaction->transaction_number = null;
+            $transaction->transaction_remarks = $trnx_remarks;
+            $transaction->status = '3';
+            $transaction->date = date('Y-m-d');
+            $transaction->save();
 
             $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->get();
 
@@ -463,6 +578,7 @@ class AdminController extends Controller
                 'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
                 'upload_aadhar' => 'required|max:4096',
                 'user_type' => 'required',
+                'challan_amount' => 'required|max:10',
                 'puc_type_rate' => ['nullable', 'array', function ($attribute, $value, $fail) {
                     // Check if at least one value exists in the array
                     if (!collect($value)->filter()->count()) {
@@ -487,6 +603,7 @@ class AdminController extends Controller
                 'upload_picture' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
                 'upload_aadhar' => 'max:4096',
                 'user_type' => 'required',
+                'challan_amount' => 'required|max:10',
                 'puc_type_rate' => ['nullable', 'array', function ($attribute, $value, $fail) {
                     // Check if at least one value exists in the array
                     if (!collect($value)->filter()->count()) {
@@ -517,6 +634,7 @@ class AdminController extends Controller
         $Users->city_id = $request->user_city;
         $Users->area_id = $request->user_area;
         $Users->landmark = $request->user_landmark;
+        $Users->challan_rate = $request->challan_amount;
         $Users->upload_option = $request->upload_option;
 
         $req_file = 'upload_picture';
@@ -608,6 +726,19 @@ class AdminController extends Controller
         return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
+    public function blockUser(Request $request)
+    {
+
+        $user_id = $request->id;
+        
+        User::where('id', $user_id)->update([
+            'status' => 'inactive',
+        ]);
+
+        // dd($request->all());
+        return response()->json(['status' => 200, 'message' => "Block User Successfully"]);
+    }
+
     public function getUserFilteredData(Request $request)
     {
 
@@ -659,18 +790,58 @@ class AdminController extends Controller
         $puc_id = $request->pucId;
         $status_flag = $request->statusFlag;
         $rejection_reason = $request->param1;
+
+        $pucDetail = Puc::where('id', $puc_id)->with(['user', 'pucType'])->first();
+        $userDetail = $pucDetail->user;
+
+        // dd($userDetail);
         if ($status_flag == '4') {
             Puc::where('id', $puc_id)->update([
                 'status' => '4', // completed status
             ]);
+            $emailTitle = 'PUC Completed';
         } else if ($status_flag == '3') {
+            
             Puc::where('id', $puc_id)->update([
-                'status' => '3', // completed status
+                'status' => '3', // rejected status
                 'rejection_reason' => $rejection_reason, // rejected status
             ]);
-        }
 
-        return response()->json(['status' => 200, 'message' => ""]);
+            if($userDetail != null){
+                $balance = $userDetail->balance;
+                $newBalance = $balance + $pucDetail->puc_charges;
+                $emailTitle = 'PUC Rejected';
+
+                User::where('id', $userDetail->id)->update([
+                    'balance' => $newBalance
+                ]);
+
+                $transaction = new Transactions;
+                $transaction->type = '1'; // 1=>credit, 2=>debit
+                $transaction->transaction_type = '2'; // manual transaction
+                $transaction->user_id = $userDetail->id;
+                $transaction->bank_id = null;
+                $transaction->puc_id = $puc_id;
+                $transaction->amount = $pucDetail->puc_charges;
+                $transaction->transaction_number = null;
+                $transaction->transaction_remarks = 'Added by admin';
+                $transaction->status = '3';
+                $transaction->date = date('Y-m-d');
+                $transaction->save();
+
+            }
+        }
+        
+        $pucDetail = Puc::where('id', $puc_id)->with(['user', 'pucType'])->first();
+        $pucDetail->pucTypeName = $pucDetail->pucType->name;
+    
+        // send email code
+        $body = view('emails.puc_order', $pucDetail);
+        $userEmailsSend[] = 'hamza@5dsolutions.ae';//$pucDetail->user->email;
+        // to username, to email, from username, subject, body html
+        sendMail($pucDetail->user->name, $userEmailsSend, 'PANCARD', $emailTitle, $body); // send_to_name, send_to_email, email_from_name, subject, body
+
+        return response()->json(['status' => 200, 'message' => "PUC Status Updated Successfully!"]);
     }
 
     public function getOrderHistoryFilteredData(Request $request)

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id')->nullable();
             $table->integer('puc_type_id')->nullable();
-            $table->double('puc_type_rate', 8, 2)->nullable();
+            $table->double('puc_charges', 8, 2)->nullable();
             $table->string('registration_number', 100)->nullable();
             $table->string('model', 100)->nullable();
             $table->string('name', 100)->nullable();

@@ -21,4 +21,8 @@ class Transactions extends Model
     {
         return $this->belongsTo(Banks::class, 'bank_id', 'id');
     }
+    public function userPuc()
+    {
+        return $this->belongsTo(Puc::class, 'puc_id', 'id');
+    }
 }

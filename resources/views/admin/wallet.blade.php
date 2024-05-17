@@ -47,39 +47,49 @@
         </div>
         {{-- pending tab end --}}
         <div id="wallet-history-content" style="display: none;">
-            <ul class="nav nav-pills d-flex flex-nowrap align-items-center justify-content-between gap-0 gap-md-1 my-3"
-                id="pills-tab" role="tablist">
+        <ul class="nav nav-pills d-flex flex-nowrap align-items-center justify-content-between gap-0 gap-md-3 my-3"
+                id="" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button id="nav-sub-links-for-days"
-                        class="nav-link text-nowrap px-3 active d-flex flex-column align-items-center justify-content-center"
-                        id="pills-today-tab" data-bs-toggle="pill" data-bs-target="#pills-today" type="button"
+                        class="nav-link filter-btns filter_today text-nowrap px-3 d-flex flex-column align-items-center justify-content-center"
+                        data-bs-toggle="pill" data-bs-target="#pills-today" type="button"
                         role="tab" aria-controls="pills-today" aria-selected="true">
                         Today
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button id="nav-sub-links-for-days"
-                        class="nav-link text-nowrap px-3 d-flex flex-column align-items-center justify-content-center"
-                        id="pills-yesterday-tab" data-bs-toggle="pill" data-bs-target="#pills-yesterday" type="button"
+                        class="nav-link filter-btns filter_yesterday text-nowrap px-3 d-flex flex-column align-items-center justify-content-center"
+                        data-bs-toggle="pill" data-bs-target="#pills-yesterday" type="button"
                         role="tab" aria-controls="pills-yesterday" aria-selected="false">
                         Yesterday
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <select class="form-select months-dropdown">
-                        <option selected="">January</option>
-                        <option value="1">February</option>
-                        <option value="2">March</option>
-                        <option value="3">April</option>
+                    <select class="form-select months-dropdown" id="filter_month">
+                        <option value="">Choose Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
                     </select>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button id="nav-sub-links-for-days"
-                        class="nav-link text-nowrap px-4 px-md-5  d-flex flex-column align-items-center justify-content-center"
-                        id="pills-date-range-tab" data-bs-toggle="pill" data-bs-target="#pills-date-range"
-                        type="button" role="tab" aria-controls="pills-date-range" aria-selected="false">
+                    <!-- <button id="nav-sub-links-for-days"
+                        class="dateRangePickerBtn nav-link text-nowrap px-4 px-md-5  d-flex flex-column align-items-center justify-content-center"
+                        data-bs-toggle="pill" data-bs-target="#pills-date-range" type="button"
+                        role="tab" aria-controls="pills-date-range" aria-selected="false">
                         Date Range
-                    </button>
+                    </button> -->
+                    <input type="text" id="filter_dateRange" class="form-control" placeholder="Choose Range" readonly style="display:block;font-size:12px;padding: .485rem .75rem;"/>
                 </li>
             </ul>
             <div id="walletHistoryDiv">
@@ -316,9 +326,7 @@
         </div>
     </div>
 
-
-
-        <!-- complete transaction Modal -->
+    <!-- complete transaction Modal -->
     <div class="modal fade" id="completeTransactionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog completed-modal">
             <div class="modal-content completed-modal-content">
@@ -360,7 +368,8 @@
             </div>
         </div>
     </div>
-        <!-- reject transaction Modal -->
+
+    <!-- reject transaction Modal -->
     <div class="modal fade" id="rejectTransactionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog completed-modal">
             <div class="modal-content completed-modal-content">

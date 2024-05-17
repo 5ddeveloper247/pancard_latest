@@ -82,6 +82,7 @@ class RegistrationController extends Controller
         $Users->state_id = $request->user_state;
         $Users->city_id = $request->user_city;
         $Users->area_id = $request->user_area;
+        $Users->status = 'inactive';
         $Users->landmark = $request->user_landmark;
         
         $req_file = 'upload_picture';
@@ -111,6 +112,12 @@ class RegistrationController extends Controller
         // Save the changes
         $Users->save();
 
+        // send email code
+        $body = view('emails.registration', $Users);
+        $userEmailsSend[] = 'hamza@5dsolutions.ae';//$Users->email;
+        // to username, to email, from username, subject, body html
+        sendMail($Users->name, $userEmailsSend, 'PANCARD', 'Registration', $body); // send_to_name, send_to_email, email_from_name, subject, body
+
         do {
             $username_auto = 'PUCZ'.mt_rand(100000, 999999);
             $existing_number = User::where('username', $username_auto)->first();
@@ -138,10 +145,11 @@ class RegistrationController extends Controller
         ]);
 
         // send email code
-        $body = view('emails.forget_password', $user);
-        $userEmailsSend[] = $user->email;
+        $userDetail = User::where('email', $request->registered_email)->first();
+        $body = view('emails.forget_password', $userDetail);
+        $userEmailsSend[] = $userDetail->email;
         // to username, to email, from username, subject, body html
-        sendMail('Forget Password', $userEmailsSend, 'PANCARD', 'Forget Password OTP', $body);
+        sendMail($userDetail->name, $userEmailsSend, 'PANCARD', 'Forget Password OTP', $body); // send_to_name, send_to_email, email_from_name, subject, body
 
         return response()->json(['status' => 200,'message' => "OTP (One Time Password) is sent to user email adderess. Kindly enter OTP then change password!"]);
     }

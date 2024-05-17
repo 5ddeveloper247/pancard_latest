@@ -56,6 +56,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/registerUser', [AdminController::class, 'registerUser'])->name('admin.registerUser');
         Route::post('/editUser', [AdminController::class, 'editUser'])->name('admin.editUser');
         Route::post('/getUserFilteredData', [AdminController::class, 'getUserFilteredData'])->name('admin.getUserFilteredData');
+        Route::post('/blockUser', [AdminController::class, 'blockUser'])->name('admin.blockUser');
+        
 
         Route::post('/getPucPageData', [AdminController::class, 'getPucPageData'])->name('admin.getPucPageData');
         Route::post('/changePucStatus', [AdminController::class, 'changePucStatus'])->name('admin.changePucStatus');
@@ -76,7 +78,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('completeTransaction', [AdminController::class, 'completeTransaction']);
         Route::post('rejectTransaction', [AdminController::class, 'rejectTransaction']);
         Route::get('walletHistory', [AdminController::class, 'walletHistory']);
-       
+        Route::post('getWalletHistoryFilteredData', [AdminController::class, 'getWalletHistoryFilteredData']);
 
     });
     

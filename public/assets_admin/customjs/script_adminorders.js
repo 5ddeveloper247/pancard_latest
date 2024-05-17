@@ -397,6 +397,10 @@ function changePucStatus(statusFlag, param1=''){
 }
 function changePucStatusResponse(response){
 
+    toastr.success(response.message, '', {
+        timeOut: 3000
+    });
+
     var data = response.data;
     
     tempPucId = '';
