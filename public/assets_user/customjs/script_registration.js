@@ -92,7 +92,10 @@ function registerUserResponse(response) {
 
         $("#picturename").text('Upload Picture');
         $("#filename").text('Upload Aadhar');
-        // success response action 
+
+        setTimeout(function(){
+            tologin();
+        },3000);
 
     } else {
         

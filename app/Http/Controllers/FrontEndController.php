@@ -172,7 +172,7 @@ class FrontEndController extends Controller
         $transaction->date = $date->format('d-m-Y');
         $mailData['transaction'] = $transaction;
         $body = view('emails.transaction', $mailData);
-        $userEmailsSend[] = 'zaidkhurshid525@gmail.com';//$pucDetail->user->email;
+        $userEmailsSend[] = Auth::user()->email;
         // to username, to email, from username, subject, body html
         sendMail($userName, $userEmailsSend, 'PANCARD', 'Transaction Made', $body); // send_to_name, send_to_email, email_from_name, subject, body
         return response()->json(['status' => 200,'message' => "Transaction Added Successfully"]);
@@ -496,7 +496,7 @@ class FrontEndController extends Controller
 
             // send email code
             $body = view('emails.puc_order', $pucDetail);
-            $userEmailsSend[] = 'hamza@5dsolutions.ae';//$pucDetail->user->email;
+            $userEmailsSend[] = $pucDetail->user->email;
             // to username, to email, from username, subject, body html
             sendMail($pucDetail->user->name, $userEmailsSend, 'PANCARD', 'PUC Create', $body); // send_to_name, send_to_email, email_from_name, subject, body
 

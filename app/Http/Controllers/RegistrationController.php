@@ -114,7 +114,7 @@ class RegistrationController extends Controller
 
         // send email code
         $body = view('emails.registration', $Users);
-        $userEmailsSend[] = 'hamza@5dsolutions.ae';//$Users->email;
+        $userEmailsSend[] = $Users->email;
         // to username, to email, from username, subject, body html
         sendMail($Users->name, $userEmailsSend, 'PANCARD', 'Registration', $body); // send_to_name, send_to_email, email_from_name, subject, body
 

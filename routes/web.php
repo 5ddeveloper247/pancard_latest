@@ -19,6 +19,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 /************************** ADMIN SIDE ROUTES *****************************/
+Route::get('/excel_import', function () {
+    // return view('welcome');
+    return view('excel');
+});
+Route::post('/processExcel', [AdminController::class, 'processExcel'])->name('import');
 
 Route::group(['prefix' => 'admin'], function () {
     

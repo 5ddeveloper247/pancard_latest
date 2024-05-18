@@ -168,9 +168,13 @@
     <script src="{{ asset('assets_user/js/main.js') }}"></script>
     <script src="{{ asset('assets_user/customjs/common.js') }}"></script>
     <script src="{{ asset('assets_user/customjs/script_registration.js') }}"></script>
+  
     <script>
-     
-        
+        function tologin() {
+            
+            window.location.href = "{{route('login')}}";
+            
+        }
     </script>
 	
 </body>

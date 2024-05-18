@@ -39,7 +39,6 @@ class AdminController extends Controller
         // $this->middleware('auth');
     }
 
-
     public function index(Request $request)
     {
         $data['page'] = 'Orders';
@@ -81,6 +80,7 @@ class AdminController extends Controller
         $data['banks'] = Banks::where('enable', 1)->get();
         return view('admin/wallet')->with($data);
     }
+
     public function getBankList()
     {
         $data = Banks::where('enable', 1)->get();
@@ -243,7 +243,7 @@ class AdminController extends Controller
         $transaction_updated->date = $date->format('d-m-Y');
         $mailData['transaction'] = $transaction_updated;
         $body = view('emails.transaction', $mailData);
-        $userEmailsSend[] = 'zaidkhurshid525@gmail.com';//$pucDetail->user->email;
+        $userEmailsSend[] = $userData->email;
         // to username, to email, from username, subject, body html
         sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Transaction Approved', $body); // send_to_name, send_to_email, email_from_name, subject, body
 
@@ -265,7 +265,7 @@ class AdminController extends Controller
         $transaction_updated->date = $date->format('d-m-Y');
         $mailData['transaction'] = $transaction_updated;
         $body = view('emails.transaction', $mailData);
-        $userEmailsSend[] = 'zaidkhurshid525@gmail.com';//$pucDetail->user->email;
+        $userEmailsSend[] = $userData->email;
         // to username, to email, from username, subject, body html
         sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Transaction Rejected', $body); // send_to_name, send_to_email, email_from_name, subject, body
         return response()->json(['status' => 200,'message' => "Transaction Rejected Successfully!"]);
@@ -451,7 +451,7 @@ class AdminController extends Controller
     public function storeTutorialSettings(Request $request)
     {   
         $req_file = 'uploadThumbnail';
-        $path = '/images/thumbnail';
+        $path = '/assets/uploads/tutorials/thumbnail';
 
         if ($request->tutorial_id == null) {
             $validatedData = $request->validate([
@@ -586,7 +586,7 @@ class AdminController extends Controller
             $mailData['transaction'] = $transaction_updated;
             // dd($mailData['transaction']->status);
             $body = view('emails.admin_credit_debit', $mailData);
-            $userEmailsSend[] = 'zaidkhurshid525@gmail.com';//$userData->email;
+            $userEmailsSend[] = $userData->email;
             // to username, to email, from username, subject, body html
             if($transaction_updated->type == 1){
             sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Balance Added', $body); // send_to_name, send_to_email, email_from_name, subject, body
@@ -883,7 +883,7 @@ class AdminController extends Controller
     
         // send email code
         $body = view('emails.puc_order', $pucDetail);
-        $userEmailsSend[] = 'hamza@5dsolutions.ae';//$pucDetail->user->email;
+        $userEmailsSend[] = $pucDetail->user->email;
         // to username, to email, from username, subject, body html
         sendMail($pucDetail->user->name, $userEmailsSend, 'PANCARD', $emailTitle, $body); // send_to_name, send_to_email, email_from_name, subject, body
 
@@ -1011,5 +1011,70 @@ class AdminController extends Controller
         
         // return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
+
+
+//     public function processExcel(Request $request)
+//     {
+//         // Validate the request
+//         $request->validate([
+//             'excel_file' => 'required|mimes:xlsx',
+//         ]);
+
+//         // Get the uploaded file from the request
+//         $excelFile = $request->file('excel_file');
+
+//         // Read the Excel file
+//         $data = Excel::toArray([], $excelFile);
+
+//         // Access the first sheet data (assuming the Excel file has only one sheet)
+//         $sheetData = $data[0];
+        
+//         // print_r("<pre>");
+//         // print_r($sheetData);
+//         // exit();
+        
+//         // Loop through the data and process as needed
+//         foreach ($sheetData as $key => $row) {
+            
+//             if($key > 0 && $row[0] != ''){
+//                 // $dateValue = $row[0];
+//                 // $unixTimestamp = ($dateValue - 25569) * 86400; // Convert Excel date number to Unix timestamp
+
+//                 // $date = Carbon::createFromTimestamp($unixTimestamp);
+
+//                 // $formattedDate = $date->format('Y-m-d');
+
+//                 // echo $formattedDate."<br>";
+
+//                 // print_r("<pre>");
+//                 // print_r($row);
+//                 // exit();
+
+//                 // $State = new States();
+
+//                 // $State->id = $row[0];
+//                 // $State->name = $row[1];
+//                 // $State->status = '1';
+//                 // $State->save();
+
+//                 // $Cities = new Cities();
+
+//                 // $Cities->id = $row[0];
+//                 // $Cities->name = $row[1];
+//                 // $Cities->state_id = $row[2];
+//                 // $Cities->status = '1';
+//                 // $Cities->save();
+
+//                 // $Areas = new Areas();
+//                 // $Areas->id = $row[0];
+//                 // $Areas->name = $row[1];
+//                 // $Areas->city_id = $row[2];
+//                 // $Areas->status = '1';
+//                 // $Areas->save();
+                
+//             }
+//         }
+//         return true;
+//     }
     
 }

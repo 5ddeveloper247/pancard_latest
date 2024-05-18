@@ -50,7 +50,7 @@ $(document).on('click', '#puc_create_submit', function (e) {
     data.append('puc_id', '');
 	// PASSING DATA TO FUNCTION
 	$('[name]').removeClass('is-invalid');
-	SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '.reset_pass_submit');
+	SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '#puc_create_submit');
 	
 });
 

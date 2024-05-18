@@ -53,7 +53,7 @@
                     </div>
                 @endforeach
 
-                <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4 px-md-5">
+                <!-- <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4 px-md-5">
                     <span class="fw-bold">
                         <svg width="21" height="29" viewBox="0 0 21 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -65,9 +65,9 @@
                     <button type="button" class="view-btn py-1 px-3">
                         View All
                     </button>
-                </div>
+                </div> -->
 
-                <div id="edit-vehicle-details" class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4 mx-3 
+                <!-- <div id="edit-vehicle-details" class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4 mx-3 
                         mx-md-5 px-md-4">
                     <div class="d-flex flex-column">
                         <span class="fw-bold text-dark">
@@ -205,7 +205,7 @@
                             . 10 days remaining
                         </span>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="main-home-page" id="notification_section" style="display:none;">
                 <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4 px-md-5">
