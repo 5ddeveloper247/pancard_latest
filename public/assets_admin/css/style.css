@@ -402,6 +402,12 @@ label {
     background-color: transparent;
     border-radius: 5px;
 }
+.modal-btn-neutral .tick-icon {
+    display: none;
+}
+.modal-btn-completed .tick-icon {
+    display: block;
+}
 
 .modal-btn-price {
     background-color: #feefe6;
