@@ -104,7 +104,9 @@ Route::group(['prefix' => '/'], function () {
     /************** AJAX ROUTES ******************/
     Route::post('/getCitiesLovData', [FrontEndController::class, 'getCitiesLovData'])->name('getCitiesLovData');
     Route::post('/getAreasLovData', [FrontEndController::class, 'getAreasLovData'])->name('getAreasLovData');
+    Route::post('/getStateCityWrtCodeData', [FrontEndController::class, 'getStateCityWrtCodeData'])->name('getStateCityWrtCodeData');
     
+
     Route::post('/registerUser', [RegistrationController::class, 'registerUser'])->name('registerUser');
     Route::post('/getOtpCodeForget', [RegistrationController::class, 'getOtpCodeForget'])->name('getOtpCodeForget');
     Route::post('/verifyOtpCodeForget', [RegistrationController::class, 'verifyOtpCodeForget'])->name('verifyOtpCodeForget');

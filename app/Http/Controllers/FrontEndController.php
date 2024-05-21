@@ -112,9 +112,9 @@ class FrontEndController extends Controller
     {   
         $data['page'] = 'home';
         $data['user'] = User::where('id', session('user')->id)->first();
-        $data['notifications_limited'] = Notifications::limit(1)->get();
-        $data['notifications_all'] = Notifications::get();
-        $data['userPucTypes'] = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->get();
+        $data['notifications_limited'] = Notifications::limit(1)->orderBy('created_at', 'desc')->get();
+        $data['notifications_all'] = Notifications::orderBy('created_at', 'desc')->get();
+        $data['userPucTypes'] = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->orderBy('created_at', 'desc')->get();
         // $data['user'] = User::where('id', session('user')->id)->with(['pucRates','pucRates.pucType'])->first();
         // dd($data['user']);
         return view('user/home')->with($data);
@@ -124,14 +124,14 @@ class FrontEndController extends Controller
     {   
         $data['page'] = 'order';
         $data['user'] = User::where('id', session('user')->id)->first();
-        $data['userPucTypes'] = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->get();
+        $data['userPucTypes'] = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->orderBy('created_at', 'desc')->get();
         return view('user/order')->with($data);
     }
 
     public function wallet(Request $request)
     {   
         $data['page'] = 'wallet';
-        $data['banks'] = Banks::where('enable',1)->get();
+        $data['banks'] = Banks::where('enable',1)->orderBy('created_at', 'desc')->get();
         $data['user'] = User::where('id', session('user')->id)->first();
         return view('user/wallet')->with($data);
     }
@@ -181,7 +181,7 @@ class FrontEndController extends Controller
 
     public function getTransactionHistory(){
         $user_id = Auth::id();
-        $data['history'] = Transactions::where('user_id',$user_id)->with(['userPuc','userPuc.pucType'])->get();
+        $data['history'] = Transactions::where('user_id',$user_id)->with(['userPuc','userPuc.pucType'])->orderBy('created_at', 'desc')->get();
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
 
@@ -190,22 +190,54 @@ class FrontEndController extends Controller
         $data['page'] = 'profile';
         $data['user'] = User::where('id', session('user')->id)->first();
         $data['settings'] = Settings::first();
-        $data['tutorials'] = Tutorials::where('status', 'on')->get();
-        $data['notifications'] = Notifications::get();
-        $data['states'] = States::where('status', '1')->get();
+        $data['tutorials'] = Tutorials::where('status', 'on')->orderBy('created_at', 'desc')->get();
+        $data['notifications'] = Notifications::orderBy('created_at', 'desc')->get();
+        $data['states'] = States::where('status', '1')->orderBy('created_at', 'desc')->get();
         
         return view('user/profile')->with($data);
     }
 
     public function getCitiesLovData(Request $request)
     {
-        $data['cities'] = Cities::where('state_id', $request->state_id)->get();
+        $data['cities'] = Cities::where('state_id', $request->state_id)->orderBy('created_at', 'desc')->get();
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
 
     public function getAreasLovData(Request $request)
     {
-        $data['areas'] = Areas::where('city_id', $request->city_id)->get();
+        $data['areas'] = Areas::where('city_id', $request->city_id)->orderBy('created_at', 'desc')->get();
+        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    }
+
+    public function getStateCityWrtCodeData(Request $request)
+    {
+        $areaDetail = Areas::where('code', $request->pinCode)->first();
+        
+        if(isset($areaDetail->city_id)){
+            $cityDetail = Cities::where('id', $areaDetail->city_id)->first();
+            if(isset($cityDetail->state_id)){
+                $stateDetail = States::where('id', $cityDetail->state_id)->first();
+            }
+
+            $data['areaId'] = $areaDetail->id;
+            $data['cityId'] = $cityDetail->id;
+            $data['stateId'] = $stateDetail->id;
+
+            $data['citiesLov'] = Cities::where('state_id', $stateDetail->id)->orderBy('created_at', 'desc')->get();
+            $data['areasLov'] = Areas::where('city_id', $cityDetail->id)->orderBy('created_at', 'desc')->get();
+
+        }else{
+            $data['areaId'] = '';
+            $data['cityId'] = '';
+            $data['stateId'] = '';
+
+            $data['citiesLov'] = array();
+            $data['areasLov'] = array();
+        }
+        
+        
+        
+
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
     
@@ -215,8 +247,8 @@ class FrontEndController extends Controller
         $user_id = session('user')->id;
         $user_detail = User::where('id', $user_id)->with(['state', 'city', 'area', 'pucRates'])->first();
         $data['user_detail'] = $user_detail;
-        $data['cities'] = Cities::where('state_id', $user_detail->state_id)->get();
-        $data['areas'] = Areas::where('city_id', $user_detail->city_id)->get();
+        $data['cities'] = Cities::where('state_id', $user_detail->state_id)->orderBy('created_at', 'desc')->get();
+        $data['areas'] = Areas::where('city_id', $user_detail->city_id)->orderBy('created_at', 'desc')->get();
        
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
@@ -378,11 +410,11 @@ class FrontEndController extends Controller
                 'vehicle_model' => 'required',
                 'puc_name' => 'required|max:100',
                 'mobile_number' => 'required|max:15',
-                'challan' => 'required',
-                'chassis_number' => 'required|max:5',
-                'engine_number' => 'required|max:5',
+                // 'challan' => 'required',
+                'chassis_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
+                'engine_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
                 'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-                'upload_challan' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+                'upload_challan' => $request->challan != '' ? 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
             ]);
         }else{
             $validatedData = $request->validate([
@@ -392,9 +424,9 @@ class FrontEndController extends Controller
                 'vehicle_model' => 'required',
                 'puc_name' => 'required|max:100',
                 'mobile_number' => 'required|max:15',
-                'challan' => 'required',
-                'chassis_number' => 'required|max:5',
-                'engine_number' => 'required|max:5',
+                // 'challan' => 'required',
+                'chassis_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
+                'engine_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
                 'upload_vehicle' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
                 'upload_challan' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
             ]);
@@ -514,7 +546,7 @@ class FrontEndController extends Controller
         $user_id = session('user')->id;
         $puc_type_id = $request->puc_type_id;
 
-        $data['puc_list'] = Puc::where('user_id', $user_id)->with(['pucType'])->get();
+        $data['puc_list'] = Puc::where('user_id', $user_id)->with(['pucType'])->orderBy('created_at', 'desc')->get();
        
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
@@ -539,7 +571,7 @@ class FrontEndController extends Controller
         if($filterFlag == '1'){
             if($status == '' && $param2 == null){
                 
-                $puc_list = Puc::where('user_id', $user_id)->with(['pucType'])->get();
+                $puc_list = Puc::where('user_id', $user_id)->with(['pucType'])->orderBy('created_at', 'desc')->get();
             
             }else if($status != '' && $param2 != null){ 
                 $puc_list = Puc::where('user_id', $user_id)
@@ -549,11 +581,11 @@ class FrontEndController extends Controller
 
             } else if($status == '' && $param2 != null){ 
 
-                $puc_list = Puc::where('user_id', $user_id)->whereDate('date', '=', $param2)->with(['pucType'])->get();
+                $puc_list = Puc::where('user_id', $user_id)->whereDate('date', '=', $param2)->with(['pucType'])->orderBy('created_at', 'desc')->get();
             
             }else if($status != '' && $param2 == null){ 
                 
-                $puc_list = Puc::where('user_id', $user_id)->where('status', $status)->with(['pucType'])->get();
+                $puc_list = Puc::where('user_id', $user_id)->where('status', $status)->with(['pucType'])->orderBy('created_at', 'desc')->get();
             }
 
         } else if($filterFlag == '2'){
@@ -562,14 +594,16 @@ class FrontEndController extends Controller
                 $puc_list = Puc::where('user_id', $user_id)
                                 ->whereDate('date', '>=', $param2)    // for start date
                                 ->whereDate('date', '<=', $param3)    // for end date
-                                ->with(['pucType'])->get();
+                                ->with(['pucType'])
+                                ->orderBy('created_at', 'desc')->get();
             
             }else{
                 $puc_list = Puc::where('user_id', $user_id)
                                 ->where('status', $status)
                                 ->whereDate('date', '>=', $param2)    // for start date
                                 ->whereDate('date', '<=', $param3)    // for end date
-                                ->with(['pucType'])->get();
+                                ->with(['pucType'])
+                                ->orderBy('created_at', 'desc')->get();
             }
         }
 
@@ -596,6 +630,8 @@ class FrontEndController extends Controller
             return response()->json(['status' => 402,'message' => "Something went wrong"]);
         }
     }
+
+    
 
     // public function testEmail(Request $request)
     // {

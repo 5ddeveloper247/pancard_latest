@@ -145,7 +145,7 @@
                     <label class="ms-2 d-flex align-items-center" for="user_email">Email</label>
                 </div>
                 <div class="form-floating col-6 col-md-4 my-2">
-                    <input type="email" class="form-control users-details-inputs form-control-sm" id="user_pin" name="user_pin"
+                    <input type="email" class="form-control users-details-inputs form-control-sm" id="user_pin" name="user_pin" onchange="getStateCityWrtCodeData();"
                         placeholder="Shop PIN Code" maxlength="10">
                     <label class="ms-2 d-flex align-items-center" for="user_pin">Shop PIN Code</label>
                 </div>

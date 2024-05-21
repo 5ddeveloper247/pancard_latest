@@ -333,6 +333,11 @@ header>img {
     color: var(--process--text-color);
 }
 
+.bg-g {
+    background-color: #08f4391a;
+    color: #01b509;
+}
+
 #edit-vehicle-details {
     cursor: pointer;
     transition: all ease .4s;

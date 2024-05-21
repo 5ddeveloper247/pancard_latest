@@ -464,7 +464,11 @@ function editTutorialResponse(response){
 
 $(document).ready(function () {
     getSettingsPageData();
-
+    
+    $('#disableUser').select2({
+        placeholder: 'Search User ID',
+        allowClear: true // Optionally allow clearing the selection
+    });
     
 });
  

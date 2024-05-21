@@ -218,6 +218,57 @@ function updateUserBalanceResponse(response){
 }
 
 
+function getStateCityWrtCodeData () {
+
+    var pinCode = $("#user_pin").val();
+    if(pinCode != ''){
+        let type = 'POST';
+        let url = '/getStateCityWrtCodeData';
+        let message = '';
+        let form = '';
+        let data = new FormData();
+        data.append("pinCode", pinCode);
+        // PASSING DATA TO FUNCTION
+        SendAjaxRequestToServer(type, url, data, '', getStateCityWrtCodeDataResponse, '', 'submit_button');
+    }
+}
+function getStateCityWrtCodeDataResponse(response){
+
+    var data = response.data;
+
+    var stateId = data.stateId;
+    var cityId = data.cityId;
+    var areaId = data.areaId;
+
+    var cities = data.citiesLov;
+    var areas = data.areasLov;
+    
+    var cityOptions = `<option value="">Choose City</option>`;
+    if(cities.length > 0){
+        $.each(cities, function(index, value) {
+            cityOptions += `<option value="${value.id}">${value.name}</option>`;
+        });
+        $("#user_city").html(cityOptions);
+    }
+
+    var areasOptions = `<option value="">Choose Area</option>`;
+    if(areas.length > 0){
+        $.each(areas, function(index, value) {
+            areasOptions += `<option value="${value.id}">${value.name}</option>`;
+        });
+        $("#user_area").html(areasOptions);
+    }
+
+    if(stateId != ''){
+        $("#user_state").val(stateId);
+    }
+    if(cityId != ''){
+        $("#user_city").val(cityId);
+    }
+    if(areaId != ''){
+        $("#user_area").val(areaId);
+    }
+}
 
 function getCitiesLovData () {
 

@@ -130,12 +130,35 @@ $(document).ready(function () {
         $("#makePuc_section, #notification_section").hide();
         
     });
+
+    $(document).on('change', '#Challan-form', function (e) {
+
+        var challan_val = $(this).val();
+
+        if(challan_val != ''){
+            $(".challan_opt_div").show();
+        }else{
+            $(".challan_opt_div").hide();
+        }
+        
+    });
     
 });
 
 document.getElementById('cameraIcon').addEventListener('click', function() {
-    // Trigger click event on the input field
-    document.getElementById('upload_vehicle').click();
+    
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        // Trigger click event on the input field
+        document.getElementById('upload_vehicle').click();
+    } else {
+        if(upload_option == '1'){
+            document.getElementById('upload_vehicle').click();
+        }else{
+            toastr.error('Not allowed to upload!', '', {
+                timeOut: 3000
+            });
+        }
+    }
 });
 document.getElementById('upload_vehicle').addEventListener('change', function() {
     if (this.files.length > 0) {

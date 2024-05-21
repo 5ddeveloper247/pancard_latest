@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/fonts/fonts.google.css') }}"/>
     <link rel="stylesheet" href="{{ asset('assets_admin/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/select2.min.css') }}" />
 </head>
 <script>
     var base_url = "{{url('/')}}";

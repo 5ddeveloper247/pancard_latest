@@ -277,7 +277,7 @@
                     <div class="form-floating col-6 col-md-4">
                         <div id="cameraIcon" class="upload px-4 d-flex align-items-center justify-content-between">
                             <span id="picturename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Vehicle Photo</span>
-                            <input type="file" accept="image/*" capture="camera" id="upload_vehicle" name="upload_vehicle" multiple="false" style="display: none;">
+                            <input type="file" accept="image/*" {{@$user->upload_option == '0' ? "capture=camera" : ''}} id="upload_vehicle" name="upload_vehicle" multiple="false" style="display: none;">
                             <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z"
@@ -290,7 +290,7 @@
                     </div>
 
                     <div class="row gy-2 gx-0 gap-2 pe-2">
-                        <div class="col-2 challan ms-2 px-2">
+                        <div class="col-2 challan ms-2 px-2 pb-2">
                             <label for="challan">
                                 Challan
                             </label>
@@ -306,18 +306,19 @@
                             </div>
                         </div>
 
-                        <div class="form-floating col">
+                        <div class="form-floating col challan_opt_div" style="display:none;">
                             <input type="number" class="form-control" id="chassis_number" name="chassis_number" maxlength="5" placeholder="name@example.com" />
                             <label class="ps-4" for="chassis_number">Chasis last 5 digits</label>
                         </div>
 
-                        <div class="form-floating col">
+                        <div class="form-floating col challan_opt_div" style="display:none;">
                             <input type="number" class="form-control" id="engine_number" name="engine_number" maxlength="20" placeholder="name@example.com" />
                             <label class="ps-4" for="engine_number">Engine last 5 digits</label>
                         </div>
                     </div>
+                    
 
-                    <div class="form-floating col-8">
+                    <div class="form-floating col-8 challan_opt_div" style="display:none;">
                         <div id="challanIcon" class="upload px-4 d-flex align-items-center justify-content-between">
                         <span id="challanName" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload challan Screenshot</span>
                             <input type="file" accept="image/*" capture="camera" id="upload_challan" name="upload_challan" multiple="false" style="display: none;">
@@ -354,5 +355,7 @@
 @push('script')
 
     <script src="{{ asset('assets_user/customjs/script_home.js') }}"></script>
-	
+	<script>
+        var upload_option = '{{@$user->upload_option}}';
+    </script>
 @endpush

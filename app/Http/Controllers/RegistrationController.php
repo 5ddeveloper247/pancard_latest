@@ -194,7 +194,7 @@ class RegistrationController extends Controller
                 User::where('id', $userId)->update([
                     'otp' => null,
                     'password' => bcrypt($request->new_password),
-                    'status' => 'active',
+                    // 'status' => 'active',
                 ]);
 
                 return response()->json(['status' => 200,'message' => "Password reset successfully!"]);

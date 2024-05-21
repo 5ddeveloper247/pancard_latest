@@ -321,16 +321,18 @@
                     <div class="border rounded-4 w-100 p-2">
                         <div class="d-flex justify-content-between align-items-center pb-1 px-2">
                             <span class="text-start"><small>Vehicle Photo</small></span>
-                            <svg width="15" height="14" viewBox="0 0 15 14" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7.37497 5.2L7.37498 13M7.37498 13L5.46248 10.9M7.37498 13L9.28748 10.9"
-                                    stroke="#515C6F" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M9.925 0.999968L4.825 0.999968C3.02215 0.999968 2.12009 0.999969 1.56036 1.52677C1 2.05477 1 2.90257 1 4.59997L1 5.19997C1 6.89677 1 7.74517 1.56036 8.27257C2.04996 8.73337 2.80094 8.79157 4.1875 8.79877M10.5625 8.79877C11.9491 8.79157 12.7 8.73337 13.1896 8.27257C13.75 7.74517 13.75 6.89677 13.75 5.19997L13.75 4.59997C13.75 2.90257 13.75 2.05417 13.1896 1.52677C12.9984 1.34677 12.7676 1.22857 12.475 1.15057"
-                                    stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
-
+                            
+                            <a id="puc_vehicle_img_down" href="" download>
+                                <svg width="15" height="14" viewBox="0 0 15 14" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.37497 5.2L7.37498 13M7.37498 13L5.46248 10.9M7.37498 13L9.28748 10.9"
+                                        stroke="#515C6F" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M9.925 0.999968L4.825 0.999968C3.02215 0.999968 2.12009 0.999969 1.56036 1.52677C1 2.05477 1 2.90257 1 4.59997L1 5.19997C1 6.89677 1 7.74517 1.56036 8.27257C2.04996 8.73337 2.80094 8.79157 4.1875 8.79877M10.5625 8.79877C11.9491 8.79157 12.7 8.73337 13.1896 8.27257C13.75 7.74517 13.75 6.89677 13.75 5.19997L13.75 4.59997C13.75 2.90257 13.75 2.05417 13.1896 1.52677C12.9984 1.34677 12.7676 1.22857 12.475 1.15057"
+                                        stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </a>
                         </div>
                         <div class="vehicle-photo d-flex align-items-center justify-content-center">
                             <img id="puc_vehicle_img" src="" alt="">
@@ -339,15 +341,17 @@
                     <div class="border rounded-4 w-100 p-2">
                         <div class="d-flex justify-content-between align-items-center pb-1 px-2">
                             <span class="text-start"><small>challan SS</small></span>
-                            <svg width="15" height="14" viewBox="0 0 15 14" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7.37497 5.2L7.37498 13M7.37498 13L5.46248 10.9M7.37498 13L9.28748 10.9"
-                                    stroke="#515C6F" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M9.925 0.999968L4.825 0.999968C3.02215 0.999968 2.12009 0.999969 1.56036 1.52677C1 2.05477 1 2.90257 1 4.59997L1 5.19997C1 6.89677 1 7.74517 1.56036 8.27257C2.04996 8.73337 2.80094 8.79157 4.1875 8.79877M10.5625 8.79877C11.9491 8.79157 12.7 8.73337 13.1896 8.27257C13.75 7.74517 13.75 6.89677 13.75 5.19997L13.75 4.59997C13.75 2.90257 13.75 2.05417 13.1896 1.52677C12.9984 1.34677 12.7676 1.22857 12.475 1.15057"
-                                    stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
+                            <a id="puc_challan_img_down" href="" download>
+                                <svg width="15" height="14" viewBox="0 0 15 14" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.37497 5.2L7.37498 13M7.37498 13L5.46248 10.9M7.37498 13L9.28748 10.9"
+                                        stroke="#515C6F" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path
+                                        d="M9.925 0.999968L4.825 0.999968C3.02215 0.999968 2.12009 0.999969 1.56036 1.52677C1 2.05477 1 2.90257 1 4.59997L1 5.19997C1 6.89677 1 7.74517 1.56036 8.27257C2.04996 8.73337 2.80094 8.79157 4.1875 8.79877M10.5625 8.79877C11.9491 8.79157 12.7 8.73337 13.1896 8.27257C13.75 7.74517 13.75 6.89677 13.75 5.19997L13.75 4.59997C13.75 2.90257 13.75 2.05417 13.1896 1.52677C12.9984 1.34677 12.7676 1.22857 12.475 1.15057"
+                                        stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </a>
 
                         </div>
                         <div class="challan-photo d-flex align-items-center justify-content-center">

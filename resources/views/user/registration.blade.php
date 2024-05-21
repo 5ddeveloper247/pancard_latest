@@ -61,7 +61,7 @@
 
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="user_pin" name="user_pin" placeholder="Pin Code" maxlength="10"/>
+                    <input type="text" class="form-control" id="user_pin" name="user_pin" onchange="getStateCityWrtCodeData();" placeholder="Pin Code" maxlength="10"/>
                     <label class="ps-4" for="user_pin">Shop Pin Code</label>
                 </div>
 

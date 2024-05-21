@@ -105,6 +105,7 @@
             <div class="form-floating col-4 col-md-4 my-2">
                 <select class="form-select users-details-inputs pb-2" id="pucType" name="pucType" required value="">
                     <option value="">Choose</option>
+                    <option value="1000">Challan</option>
                     @foreach($puc_types as $value)
                         <option value="{{$value->id}}">{{$value->name}}</option>
                     @endforeach
@@ -125,7 +126,7 @@
                         <option value="{{$user->id}}">{{$user->name}}</option>
                     @endforeach
                 </select>
-                <label class="ms-2 d-flex align-items-center" for="disableUser">User</label>
+                <!-- <label class="ms-2 d-flex align-items-center" for="disableUser">User</label> -->
             </div>
 
             <div class="form-floating col-12 my-2">

@@ -333,9 +333,11 @@ $(document).on('click', '.showUploadsModal_btn', function (e) {
     var vehicleImg = $(this).attr('data-vehicle-img');
     var challanImg = $(this).attr('data-challan-ss');
     
-    
-    $("#puc_vehicle_img").attr('src', vehicleImg)
-    $("#puc_challan_img").attr('src', challanImg)
+    $("#puc_vehicle_img").attr('src', vehicleImg);
+    $("#puc_challan_img").attr('src', challanImg);
+
+    $("#puc_vehicle_img_down").attr('href', vehicleImg);
+    $("#puc_challan_img_down").attr('href', challanImg);
 
     $("#uploadsModal").modal('show');
 });

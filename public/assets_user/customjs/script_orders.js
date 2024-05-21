@@ -51,7 +51,7 @@ function makePucList(puc_list){
                                 Reason: ${value.rejection_reason}
                             </span>`;
             }else if(value.status == '4'){ // complete
-                status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-3">
+                status_txt = `<span class="text-end bg-g ms-2 ms-sm-5 pe-3">
                                     Completed
                                 </span>`;
             }

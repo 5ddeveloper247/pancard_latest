@@ -35,20 +35,21 @@
                 <div class="form-floating">
                     <input type="email" class="form-control" id="registered_email" name="registered_email" placeholder="name@example.com" maxlength="50"/>
                     <label class="ps-4" for="registered_email">Registered Email</label>
+                    <a class="otp-code fs-5" href="javascript:;" id="otp_btn" onclick="getOtpCode()">Get Code</a>
                 </div>
 
 
                 <div id="user_OTP" class="form-floating">
                     <input type="text" class="form-control" id="one_time_password" name="one_time_password" placeholder="Password" />
                     <label class="px-4 d-flex align-items-center justify-content-between" for="one_time_password">Enter OTP</label>
-                    <a class="otp-code fs-5" href="javascript:;" id="otp_btn" onclick="getOtpCode()">Get Code</a>
+                    <a class="verify-otp fs-5" href="javascript:;" id="verify_otp_btn" onclick="verifyOtpCode()">Verify OTP</a>
                 </div>
 
 
                 <div id="verify-otp" class="form-floating">
                     <input type="text" class="form-control" id="new_password" name="new_password" placeholder="Password" />
                     <label class="px-4 d-flex align-items-center justify-content-between" for="new_password">New Password</label>
-                    <a class="verify-otp fs-5" href="javascript:;" id="verify_otp_btn" onclick="verifyOtpCode()">Verify OTP</a>
+                    
                 </div>
 
                 <button type="button" class="login-btn py-3 d-none d-md-block forget_form_submit" disabled>
