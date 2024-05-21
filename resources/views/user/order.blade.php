@@ -24,7 +24,7 @@
                         aria-selected="false" -->
                 </li>
                 <form class="d-flex order-search-bar" action="javascript:;">
-                    <input class="form-control me-2" type="search" placeholder="Search" style="width:220px;">
+                    <input class="form-control me-2" type="text" id="searchInListing" placeholder="Search" style="width:220px;">
                     <button class="order-search-btn p-0 filter_search" type="button">
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="30" height="30" rx="5" fill="#F7F7F7" />
@@ -668,7 +668,9 @@
                         Charges <br>
                         <b class="text-dark fs-5" id="puc_charges"></b>
                     </div>
+                    <input type="hidden" id="puc_total_charges" name="puc_total_charges" value="0">
                     <input type="hidden" id="puc_type_rate" name="puc_type_rate" value="0">
+                    <input type="hidden" id="puc_challan_rate" name="puc_challan_rate" value="0">
                 </div>
 
                 <div class="py-3 text-center">

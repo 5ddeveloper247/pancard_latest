@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id')->nullable();
             $table->integer('puc_type_id')->nullable();
+            $table->double('puc_type_rate', 8, 2)->nullable();
+            $table->double('puc_challan_rate', 8, 2)->nullable();
             $table->double('puc_charges', 8, 2)->nullable();
             $table->string('registration_number', 100)->nullable();
             $table->string('model', 100)->nullable();
@@ -29,6 +31,9 @@ return new class extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->smallInteger('status')->nullable()->comment('1=>pending, 2=>approved, 3=>reject, 4=>completed');
+            $table->smallInteger('file_view_flag')->nullable()->comment('0=>Un-Read, 1=>Read')->default(0);
+            $table->smallInteger('share_view_flag')->nullable()->comment('0=>Un-Read, 1=>Read')->default(0);
+            $table->smallInteger('download_view_flag')->nullable()->comment('0=>Un-Read, 1=>Read')->default(0);
             $table->string('rejection_reason')->nullable();
             $table->date('date')->nullable();
 

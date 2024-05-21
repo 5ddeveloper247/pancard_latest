@@ -44,8 +44,8 @@
             </li>
         </ul>
         <div class="sub-tabs" id="user-pending-content">
-            <form class="d-flex order-search-bar" role="search">
-                <input class="form-control search-form" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex order-search-bar" role="search" action="javascript:;">
+                <input class="form-control search-form" type="text" id="searchInListing" placeholder="Search" aria-label="Search">
                 <button class="search-in-pending-search-btn p-0" type="submit">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path

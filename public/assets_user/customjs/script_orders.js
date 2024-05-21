@@ -1,4 +1,4 @@
-function getPucPageData(){
+function getPucPageData() {
 
     let type = 'POST';
     let url = '/getPucPageData';
@@ -8,23 +8,24 @@ function getPucPageData(){
     // PASSING DATA TO FUNCTION
     SendAjaxRequestToServer(type, url, data, '', getPucPageDataResponse, '', 'submit_button');
 }
-function getPucPageDataResponse(response){
+
+function getPucPageDataResponse(response) {
 
     var data = response.data;
-    
+
     var puc_list = data['puc_list'];
 
     makePucList(puc_list);
-    
+
 }
 
-function makePucList(puc_list){
+function makePucList(puc_list) {
     var html = '';
-    if(puc_list.length > 0){
-        $.each(puc_list, function(index, value) {
+    if (puc_list.length > 0) {
+        $.each(puc_list, function (index, value) {
             var status_txt = '';
-            if(value.status == '1'){    // pending
-                status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-2">
+            if (value.status == '1') { // pending
+                status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-2 grid-p-searchby">
                                 <svg width="12" height="11" viewBox="0 0 12 11" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path opacity="0.5"
@@ -35,8 +36,8 @@ function makePucList(puc_list){
                                 </svg>
                                 Processing
                             </span>`;
-            }else if(value.status == '3'){  // reject
-                status_txt = `<span class="text-end bg-r ms-2 ms-sm-5 pe-2">
+            } else if (value.status == '3') { // reject
+                status_txt = `<span class="text-end bg-r ms-2 ms-sm-5 pe-2 grid-p-searchby">
                                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g clip-path="url(#clip0_887_44)">
                                         <path opacity="0.5" d="M9.56963 1.08337H3.43038C3.26246 1.08337 3.17904 1.08337 3.10862 1.08987C2.32321 1.16192 1.70029 1.81571 1.63096 2.63958C1.625 2.71379 1.625 2.80208 1.625 2.97758V10.9742C1.625 11.4465 2.19863 11.6475 2.46892 11.2689C2.51082 11.2082 2.56682 11.1586 2.6321 11.1244C2.69739 11.0901 2.77002 11.0722 2.84375 11.0722C2.91748 11.0722 2.99011 11.0901 3.0554 11.1244C3.12069 11.1586 3.17668 11.2082 3.21858 11.2689L3.45313 11.5971C3.52122 11.6958 3.61226 11.7764 3.7184 11.8321C3.82454 11.8878 3.94263 11.9169 4.0625 11.9169C4.18237 11.9169 4.30046 11.8878 4.4066 11.8321C4.51274 11.7764 4.60378 11.6958 4.67188 11.5971C4.73997 11.4985 4.83101 11.4178 4.93715 11.3621C5.04329 11.3064 5.16138 11.2773 5.28125 11.2773C5.40112 11.2773 5.51921 11.3064 5.62535 11.3621C5.73149 11.4178 5.82253 11.4985 5.89063 11.5971C5.95872 11.6958 6.04976 11.7764 6.1559 11.8321C6.26204 11.8878 6.38013 11.9169 6.5 11.9169C6.61987 11.9169 6.73796 11.8878 6.8441 11.8321C6.95024 11.7764 7.04128 11.6958 7.10938 11.5971C7.17747 11.4985 7.26851 11.4178 7.37465 11.3621C7.48079 11.3064 7.59888 11.2773 7.71875 11.2773C7.83862 11.2773 7.95671 11.3064 8.06285 11.3621C8.16899 11.4178 8.26003 11.4985 8.32813 11.5971C8.39622 11.6958 8.48726 11.7764 8.5934 11.8321C8.69954 11.8878 8.81763 11.9169 8.9375 11.9169C9.05737 11.9169 9.17546 11.8878 9.2816 11.8321C9.38774 11.7764 9.47878 11.6958 9.54688 11.5971L9.78142 11.2694C9.82332 11.2087 9.87932 11.1592 9.9446 11.1249C10.0099 11.0906 10.0825 11.0728 10.1563 11.0728C10.23 11.0728 10.3026 11.0906 10.3679 11.1249C10.4332 11.1592 10.4892 11.2087 10.5311 11.2694C10.8019 11.6475 11.375 11.4465 11.375 10.9742V2.97758C11.375 2.80208 11.375 2.71379 11.369 2.63958C11.3003 1.81571 10.6773 1.16192 9.89192 1.08987C9.82042 1.08337 9.737 1.08337 9.56963 1.08337Z" stroke="#FF0000" stroke-width="1.5"></path>
@@ -50,24 +51,26 @@ function makePucList(puc_list){
                                 </svg>
                                 Reason: ${value.rejection_reason}
                             </span>`;
-            }else if(value.status == '4'){ // complete
-                status_txt = `<span class="text-end bg-g ms-2 ms-sm-5 pe-3">
+            } else if (value.status == '4') { // complete
+                status_txt = `<span class="text-end bg-g ms-2 ms-sm-5 pe-3 grid-p-searchby">
                                     Completed
                                 </span>`;
             }
-            html += `<div class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4 mx-md-5 px-md-4">
+            html += `<div class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4 mx-md-5 px-md-4 identify">
                         <div class="d-flex flex-column editPuc_btn" data-id="${value.id}" title="Edit PUC" style="cursor:pointer;">
-                            <span class="fw-bold text-dark">
+                            <span class="fw-bold text-dark grid-p-searchby">
                                 ${value.name}
                             </span>
-                            <span class="text-dark d-flex ">${value.puc_type != null ? value.puc_type.name: ''}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
-                            <span class="text-dark">
+                            <span class="text-dark d-flex grid-p-searchby">${value.puc_type != null ? value.puc_type.name: ''}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
+                            <span class="text-dark grid-p-searchby">
                                 ${value.model}&nbsp;-&nbsp;${value.phone_number}
                             </span>
-                            <span class="text-dark">
-                                Challan (${value.challan}) - ${value.engine_number}, ${value.chasis_number}
+                            <span class="text-dark grid-p-searchby">
+                                Challan (${value.challan !=null?value.challan:'0'}) - 
+                                ${value.engine_number!=null?value.engine_number:'N/A'}, 
+                                ${value.chasis_number!=null?value.chasis_number:'N/A'}
                             </span>
-                            <span class="diff-bg px-2 my-1">
+                            <span class="diff-bg px-2 my-1 grid-p-searchby">
                                 ${value.start_date != null ? value.start_date + ' to ' : ''}${value.end_date != null ? value.end_date : ''}   
                             </span>
                         </div>
@@ -184,7 +187,7 @@ function makePucList(puc_list){
                         </div>
                     </div>`;
         });
-    }else{
+    } else {
         html = `<div class="border rounded-2 text-center py-3 px-3 mb-4 mx-md-5 px-md-4">
                     <p>No record found!</p>
                 </div>`;
@@ -196,12 +199,12 @@ function makePucList(puc_list){
 
 
 $(document).on('click', '.showUploadsModal_btn', function (e) {
-    
+
     var puc_id = $(this).attr('data-puc-id');
     var vehicleImg = $(this).attr('data-vehicle-img');
     var challanImg = $(this).attr('data-challan-ss');
-    
-    
+
+
     $("#puc_vehicle_img").attr('src', vehicleImg)
     $("#puc_challan_img").attr('src', challanImg)
 
@@ -209,7 +212,7 @@ $(document).on('click', '.showUploadsModal_btn', function (e) {
 });
 
 $(document).on('click', '.filter_orders', function (e) {
-    
+
     var param1 = param2 = param3 = '';
     var filterFlag = '1';
 
@@ -219,84 +222,84 @@ $(document).on('click', '.filter_orders', function (e) {
     param1 = $(this).attr('data-filter');
 
     var flag = $(".filter1_orders.active").attr('data-filter');
-    if(flag == 'today'){
+    if (flag == 'today') {
 
         param2 = moment().format('YYYY-MM-DD');
-    
-    }else if(flag == 'yesterday'){
-    
+
+    } else if (flag == 'yesterday') {
+
         param2 = moment().subtract(1, 'days').format('YYYY-MM-DD');
-    
-    }else{
+
+    } else {
         var dateRange = $("#filter_dateRange").val();
 
-        if(dateRange != ''){
+        if (dateRange != '') {
             filterFlag = '2';
             var dateArray = dateRange.split(" - ");
             // Extract start and end dates from the array
             var startDateFormatted = moment(dateArray[0], 'DD-MM-YYYY').format('YYYY-MM-DD');
             var endDateFormatted = moment(dateArray[1], 'DD-MM-YYYY').format('YYYY-MM-DD');
-            
+
             param2 = startDateFormatted;
             param3 = endDateFormatted;
         }
 
     }
-    
-    getPucFilteredData (filterFlag, param1, param2, param3);
+
+    getPucFilteredData(filterFlag, param1, param2, param3);
 });
 
 $(document).on('click', '.filter1_orders', function (e) {
-    
+
     var param1 = param2 = param3 = '';
     var filterFlag = '1';
 
     $(".filter1_orders").removeClass('active');
     $(this).addClass('active');
-    
+
     param1 = $(".filter_orders.active").attr('data-filter');
 
     var flag = $(this).attr('data-filter');
-    if(flag == 'today'){
+    if (flag == 'today') {
 
         param2 = moment().format('YYYY-MM-DD');
-    
-    }else if(flag == 'yesterday'){
-    
+
+    } else if (flag == 'yesterday') {
+
         param2 = moment().subtract(1, 'days').format('YYYY-MM-DD');
-    
+
     }
     $("#filter_dateRange").val('');
-    
-    getPucFilteredData (filterFlag, param1, param2, param3);
+
+    getPucFilteredData(filterFlag, param1, param2, param3);
 });
 
 var flag = false;
 $(document).on('change', '#filter_dateRange', function (e) {
-    if(flag){
+    if (flag) {
         var param1 = param2 = param3 = '';
-        var filterFlag = '2';   // for date range
+        var filterFlag = '2'; // for date range
 
         $(".filter1_orders").removeClass('active');
 
         param1 = $(".filter_orders.active").attr('data-filter');
-        
+
         var dateString = $(this).val();
         var dateArray = dateString.split(" - ");
         // Extract start and end dates from the array
         var startDateFormatted = moment(dateArray[0], 'DD-MM-YYYY').format('YYYY-MM-DD');
         var endDateFormatted = moment(dateArray[1], 'DD-MM-YYYY').format('YYYY-MM-DD');
-        
+
         param2 = startDateFormatted;
         param3 = endDateFormatted;
-      
-        getPucFilteredData (filterFlag, param1, param2, param3);
+
+        getPucFilteredData(filterFlag, param1, param2, param3);
     }
     flag = true;
 });
 
 
-function getPucFilteredData(filterFlag, param1='', param2='', param3=''){
+function getPucFilteredData(filterFlag, param1 = '', param2 = '', param3 = '') {
 
     let type = 'POST';
     let url = '/getPucFilteredData';
@@ -311,55 +314,62 @@ function getPucFilteredData(filterFlag, param1='', param2='', param3=''){
     SendAjaxRequestToServer(type, url, data, '', getPucFilteredResponse, '', 'submit_button');
 }
 
-function getPucFilteredResponse(response){
+function getPucFilteredResponse(response) {
 
     var data = response.data;
-    
+
     var puc_list = data['puc_list'];
 
     makePucList(puc_list);
-    
+
 }
 
-function getPucTypeRate(){
+function getPucTypeRate() {
 
     var puc_type_id = $("#puc_type").val();
     var puc_challan = $("#Challan-form").val();
-    
-    // if(puc_type_id != ''){
-        let type = 'POST';
-        let url = '/getPucTypeRate';
-        let message = '';
-        let form = '';
-        let data = new FormData();
-        data.append("puc_type_id", puc_type_id);
-        data.append("puc_challan", puc_challan);
-        // PASSING DATA TO FUNCTION
-        SendAjaxRequestToServer(type, url, data, '', getPucTypeRateResponse, '', 'submit_button');
-    // }else{
-    //     $("#puc_charges").html(`&#8377; 0`);
-    //     $("#puc_type_rate").val('0');
-    // }
-    
+
+    let type = 'POST';
+    let url = '/getPucTypeRate';
+    let message = '';
+    let form = '';
+    let data = new FormData();
+    data.append("puc_type_id", puc_type_id);
+    data.append("puc_challan", puc_challan);
+    // PASSING DATA TO FUNCTION
+    SendAjaxRequestToServer(type, url, data, '', getPucTypeRateResponse, '', 'submit_button');
 }
-function getPucTypeRateResponse(response){
+
+function getPucTypeRateResponse(response) {
 
     var data = response.data;
     var charges = data['charges'];
+    var pucTypeTotalRate = data['pucTypeTotalRate'];
+    var challanTotalRate = data['challanTotalRate'];
 
-    if(charges != null){
-        $("#puc_charges").html('&#8377; '+charges);
-        $("#puc_type_rate").val(charges);
-    }else{
+    if (charges != null) {
+        $("#puc_charges").html('&#8377; ' + charges);
+        $("#puc_total_charges").val(charges != null ? charges : 0);
+        $("#puc_type_rate").val(pucTypeTotalRate != null ? pucTypeTotalRate : 0);
+        $("#puc_challan_rate").val(challanTotalRate != null ? challanTotalRate : 0);
+    } else {
         $("#puc_charges").html(`&#8377; 0`);
+        $("#puc_total_charges").val('0');
         $("#puc_type_rate").val('0');
+        $("#puc_challan_rate").val('0');
     }
 }
+
+$(document).on('change', '#Challan-form', function (e) {
+
+    getPucTypeRate();
+
+});
 
 $(document).on('click', '.editPuc_btn', function (e) {
 
     var puc_id = $(this).attr('data-id');
-    if(puc_id != ''){
+    if (puc_id != '') {
         e.preventDefault();
         let type = 'POST';
         let url = '/editSpecificPuc';
@@ -367,60 +377,60 @@ $(document).on('click', '.editPuc_btn', function (e) {
         let form = '';
         let data = new FormData();
         data.append('puc_id', puc_id);
-            
+
         // PASSING DATA TO FUNCTION
         SendAjaxRequestToServer(type, url, data, '', editSpecificPucResponse, '', '.editPuc_btn1');
     }
-	
-	
 });
-
 
 function editSpecificPucResponse(response) {
 
     // SHOWING MESSAGE ACCORDING TO RESPONSE
     if (response.status == 200 || response.status == '200') {
-      
+
         var data = response.data;
         var puc_detail = data['puc_detail'];
         resetPucForm();
 
-        if(puc_detail != null){
+        if (puc_detail != null) {
             $("#puc_id").val(puc_detail.id);
             $("#puc_type").val(puc_detail.puc_type_id);
             $("#registration_number").val(puc_detail.registration_number);
             $("#vehicle_model").val(puc_detail.model);
             $("#puc_name").val(puc_detail.name);
             $("#mobile_number").val(puc_detail.phone_number);
-            
+
             $("[name=challan]").val(puc_detail.challan);
             $("#chassis_number").val(puc_detail.chasis_number);
             $("#engine_number").val(puc_detail.engine_number);
 
             $("#picturename").text(puc_detail.vehicle_image);
             $("#challanName").text(puc_detail.challan_image);
-            $("#puc_charges").html("&#8377; "+puc_detail.puc_charges);
-            $("#puc_type_rate").val(puc_detail.puc_charges);
+
+            $("#puc_charges").html("&#8377; " + puc_detail.puc_charges);
+            $("#puc_total_charges").val(puc_detail.puc_charges);
+            $("#puc_type_rate").val(puc_detail.puc_type_rate);
+            $("#puc_challan_rate").val(puc_detail.puc_challan_rate);
         }
 
         $("#main_section").hide();
-        $("#makePuc_section").show(); 
+        $("#makePuc_section").show();
 
     } else {
-        
-        if(response.status == 402){
+
+        if (response.status == 402) {
             error = response.message;
-        }else{
+        } else {
             error = response.responseJSON.message;
         }
-    	
+
         toastr.error(error, '', {
             timeOut: 3000
         });
     }
 }
 
-function resetPucForm(){
+function resetPucForm() {
     let form = $('#puc_create_form');
     form.trigger("reset");
 
@@ -428,29 +438,31 @@ function resetPucForm(){
     $("#challanName").html('Upload Challan Screenshot');
 
     $("#puc_charges").html('&#8377; 0');
+    $("#puc_total_charges").val('0');
     $("#puc_type_rate").val('0');
+    $("#puc_challan_rate").val('0');
 }
 
 $(document).on('click', '#puc_create_submit', function (e) {
 
-	e.preventDefault();
-	let type = 'POST';
-	let url = '/createPucUser';
-	let message = '';
-	let form = $('#puc_create_form');
-	let data = new FormData(form[0]);
-	    
-	// PASSING DATA TO FUNCTION
-	$('[name]').removeClass('is-invalid');
-	SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '.reset_pass_submit');
-	
+    e.preventDefault();
+    let type = 'POST';
+    let url = '/createPucUser';
+    let message = '';
+    let form = $('#puc_create_form');
+    let data = new FormData(form[0]);
+
+    // PASSING DATA TO FUNCTION
+    $('[name]').removeClass('is-invalid');
+    SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '.reset_pass_submit');
+
 });
 
 function resetPasswordProfileResponse(response) {
 
     // SHOWING MESSAGE ACCORDING TO RESPONSE
     if (response.status == 200 || response.status == '200') {
-      
+
         toastr.success(response.message, '', {
             timeOut: 3000
         });
@@ -459,20 +471,20 @@ function resetPasswordProfileResponse(response) {
         getPucPageData();
 
         $("#main_section").show();
-        $("#makePuc_section").hide(); 
+        $("#makePuc_section").hide();
 
     } else {
-        
-        if(response.status == 402){
-            
+
+        if (response.status == 402) {
+
             error = response.message;
 
-        }else{
-            
+        } else {
+
             error = response.responseJSON.message;
             var is_invalid = response.responseJSON.errors;
-        
-            $.each(is_invalid, function(key) {
+
+            $.each(is_invalid, function (key) {
                 // Assuming 'key' corresponds to the form field name
                 var inputField = $('[name="' + key + '"]');
                 var selectField = $('[name="' + key + '"]');
@@ -481,8 +493,8 @@ function resetPasswordProfileResponse(response) {
                 selectField.closest('.form-select').addClass('is-invalid');
             });
         }
-    	
-        
+
+
         toastr.error(error, '', {
             timeOut: 3000
         });
@@ -493,13 +505,13 @@ $(document).on('click', '#backToMainPage', function (e) {
 
     $("#main_section").show();
     $("#makePuc_section").hide();
-    
+
 });
 
 $(document).ready(function () {
-    
+
     getPucPageData();
-    
+
     $('#filter_dateRange').daterangepicker({
         // startDate: moment().startOf('month'),
         // endDate: moment().endOf('month'),
@@ -513,11 +525,11 @@ $(document).ready(function () {
 });
 
 
-document.getElementById('cameraIcon').addEventListener('click', function() {
+document.getElementById('cameraIcon').addEventListener('click', function () {
     // Trigger click event on the input field
     document.getElementById('upload_vehicle').click();
 });
-document.getElementById('upload_vehicle').addEventListener('change', function() {
+document.getElementById('upload_vehicle').addEventListener('change', function () {
     if (this.files.length > 0) {
         // Get the filename of the selected file
         var filename = this.files[0].name;
@@ -529,11 +541,11 @@ document.getElementById('upload_vehicle').addEventListener('change', function() 
     }
 });
 
-document.getElementById('challanIcon').addEventListener('click', function() {
+document.getElementById('challanIcon').addEventListener('click', function () {
     // Trigger click event on the input field
     document.getElementById('upload_challan').click();
 });
-document.getElementById('upload_challan').addEventListener('change', function() {
+document.getElementById('upload_challan').addEventListener('change', function () {
     if (this.files.length > 0) {
         // Get the filename of the selected file
         var filename = this.files[0].name;
@@ -542,5 +554,24 @@ document.getElementById('upload_challan').addEventListener('change', function() 
     } else {
         // No file selected, reset the content of the <span> element
         document.getElementById('challanName').innerText = 'Upload Challan Screenshot';
+    }
+});
+
+$('#searchInListing').on("keyup", function (e)  {     
+    var tr = $('.identify');
+    
+    if ($(this).val().length >= 1) {//character limit in search box.
+        var noElem = true;
+        var val = $.trim(this.value).toLowerCase();
+        el = tr.filter(function() {
+            return $(this).find('.grid-p-searchby').text().toLowerCase().match(val);
+        });
+        if (el.length >= 1) {
+            noElem = false;
+        }
+        tr.not(el).hide().addClass("d-none").removeClass("d-flex");
+		el.fadeIn().addClass("d-flex").removeClass("d-none");
+	} else {
+		tr.fadeIn().addClass("d-flex").removeClass("d-none");
     }
 });

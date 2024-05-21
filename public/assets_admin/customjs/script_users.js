@@ -26,17 +26,17 @@ function updatePendingUsersList(pending_users){
     if(pending_users.length > 0){
         $.each(pending_users, function(index, value) {
             
-            html += `<div class="home-card py-1 px-2 mb-2 my-2">
+            html += `<div class="home-card py-1 px-2 mb-2 my-2 identify">
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
-                                <span class="fw-bold text-dark d-flex edit_user_btn" data-id="${value.id}" style="cursor:pointer;" title="Edit User">
+                                <span class="fw-bold text-dark d-flex grid-p-searchby edit_user_btn" data-id="${value.id}" style="cursor:pointer;" title="Edit User">
                                     ${value.name} <p class="fw-normal m-0">,${value.username}</p>
                                 </span>
-                                <span class="text-dark d-flex ">${value.company_name}, ${value.pin_code}</span>
-                                <span class="text-dark">
+                                <span class="text-dark d-flex grid-p-searchby">${value.company_name}, ${value.pin_code}</span>
+                                <span class="text-dark grid-p-searchby">
                                     ${value.email}, ${value.phone_number}
                                 </span>
-                                <span class="text-dark">
+                                <span class="text-dark grid-p-searchby">
                                     ${value.area.name}, ${value.city.name}, ${value.state.name}
                                 </span>
                             </div>
@@ -630,5 +630,24 @@ document.getElementById('upload_aadhar').addEventListener('change', function() {
     } else {
         // No file selected, reset the content of the <span> element
         document.getElementById('filename').innerText = 'Upload Aadhar';
+    }
+});
+
+$('#searchInListing').on("keyup", function (e)  {     
+    var tr = $('.identify');
+    
+    if ($(this).val().length >= 1) {//character limit in search box.
+        var noElem = true;
+        var val = $.trim(this.value).toLowerCase();
+        el = tr.filter(function() {
+            return $(this).find('.grid-p-searchby').text().toLowerCase().match(val);
+        });
+        if (el.length >= 1) {
+            noElem = false;
+        }
+        tr.not(el).hide().addClass("d-none").removeClass("d-flex");
+		el.fadeIn().addClass("d-flex").removeClass("d-none");
+	} else {
+		tr.fadeIn().addClass("d-flex").removeClass("d-none");
     }
 });

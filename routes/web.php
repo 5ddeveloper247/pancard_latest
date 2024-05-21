@@ -73,6 +73,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/uploadExcelBulkForm', [AdminController::class, 'uploadExcelFrom'])->name('admin.uploadExcelBulkForm');
         
         Route::post('/getAnalyticsPageData', [AdminController::class, 'getAnalyticsPageData'])->name('admin.getAnalyticsPageData');
+        Route::post('/updatePucViewFlags', [AdminController::class, 'updatePucViewFlags'])->name('admin.updatePucViewFlags');
         
         
         
@@ -84,6 +85,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('rejectTransaction', [AdminController::class, 'rejectTransaction']);
         Route::get('walletHistory', [AdminController::class, 'walletHistory']);
         Route::post('getWalletHistoryFilteredData', [AdminController::class, 'getWalletHistoryFilteredData']);
+        
 
     });
     

@@ -100,8 +100,8 @@ function getAnalyticsFilteredResponse(response){
     $("#c_puc_4w_am").html('&#8377;'+data['puc_4w_am']);
     $("#c_puc_4w_fine_am").html('&#8377;'+data['puc_4w_fine_am']);
     
-    $("#c_challans_pay").html('&#8377;0');
-    $("#c_challan_amount").html('&#8377;0');
+    $("#c_challans_qty").html(data['puc_challan_qty']);
+    $("#c_challan_amount").html('&#8377;'+data['puc_challan_am']);
 }
 
 $(document).ready(function () {

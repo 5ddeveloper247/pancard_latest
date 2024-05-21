@@ -110,13 +110,52 @@ class FrontEndController extends Controller
 
     public function home(Request $request)
     {   
+        $userId = Auth::id();
+        
         $data['page'] = 'home';
         $data['user'] = User::where('id', session('user')->id)->first();
         $data['notifications_limited'] = Notifications::limit(1)->orderBy('created_at', 'desc')->get();
         $data['notifications_all'] = Notifications::orderBy('created_at', 'desc')->get();
-        $data['userPucTypes'] = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->orderBy('created_at', 'desc')->get();
-        // $data['user'] = User::where('id', session('user')->id)->with(['pucRates','pucRates.pucType'])->first();
-        // dd($data['user']);
+        // $data['userPucTypes'] = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->orderBy('created_at', 'desc')->get();
+        $settings = Settings::first();
+        
+        if(isset($settings->puc_type) && $settings->puc_type != null){
+
+            if($settings->puc_type == '1000'){ // for challan disable
+                $disableChallan = true;
+                
+                $pucTypes = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->orderBy('created_at', 'desc')->get();
+
+            }else{
+                
+                $disableChallan = false;
+
+                if($settings->disable_user_id != null){
+
+                    $pucTypes = PucUserRates::where('user_id', $userId)
+                                            ->with(['pucType'])->orderBy('created_at', 'desc')
+                                            ->whereNotIn('puc_type_id', function ($query) use ($userId) {
+                                                $query->select('puc_type')
+                                                      ->from('settings')
+                                                      ->where('disable_user_id', $userId);
+                                            })->get();
+                }else{
+                    $pucTypes = PucUserRates::where('user_id', $userId)
+                                            ->with(['pucType'])->orderBy('created_at', 'desc')
+                                            ->whereNotIn('puc_type_id', function ($query) use ($userId) {
+                                                $query->select('puc_type')
+                                                    ->from('settings');
+                                            })->get(); 
+                }
+            }
+        }else{
+            $disableChallan = false;
+            $pucTypes = PucUserRates::where('user_id', session('user')->id)->with(['pucType'])->orderBy('created_at', 'desc')->get();
+        }
+        
+        $data['userPucTypes'] = $pucTypes;
+        $data['disableChallan'] = $disableChallan;
+ 
         return view('user/home')->with($data);
     }
 
@@ -374,13 +413,15 @@ class FrontEndController extends Controller
         $user_id = session('user')->id;
         $puc_type_id = $request->puc_type_id;
         $puc_challan = $request->puc_challan;
-        $charges = 0;
+        $charges = $challanTotalRate = 0;
+        
         $userPucRates = PucUserRates::where('user_id', $user_id)->where('puc_type_id', $puc_type_id)->value('puc_rate');
         $challanRate = User::where('id', $user_id)->value('challan_rate');
         
         if($userPucRates && $puc_challan != ''){
             
-            $charges = $challanRate*$puc_challan;
+            $challanTotalRate = $challanRate*$puc_challan;
+            $charges = $challanTotalRate;
             $charges += $userPucRates;
         
         }else if($userPucRates && $puc_challan == ''){
@@ -389,19 +430,21 @@ class FrontEndController extends Controller
         
         }else if(!$userPucRates && $puc_challan != ''){
         
-            $charges = $challanRate*$puc_challan;
+            $challanTotalRate = $challanRate*$puc_challan;
+            $charges = $challanTotalRate;
         }
         
-        
         $data['charges'] = $charges;
-        
+        $data['pucTypeTotalRate'] = $userPucRates;
+        $data['challanTotalRate'] = $challanTotalRate;
        
         return response()->json(['status' => 200,'message' => "", 'data' => $data]);
     }
 
     public function createPucUser(Request $request)
     {   
-        // dd($request->all());
+        $user_id = Auth::id();
+
         if($request->puc_id == ''){
             $validatedData = $request->validate([
                 'puc_type' => 'required',
@@ -416,6 +459,12 @@ class FrontEndController extends Controller
                 'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
                 'upload_challan' => $request->challan != '' ? 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
             ]);
+            
+            $userBalance = $previous_image = User::where('id', $user_id)->value('balance');
+
+            if($request->puc_total_charges > $userBalance){
+                return response()->json(['status' => 402,'message' => "Insufficient balance, please add balance in your wallet first!"]);
+            }
         }else{
             $validatedData = $request->validate([
                 'puc_type' => 'required',
@@ -433,8 +482,6 @@ class FrontEndController extends Controller
         }
         
         // Process form submission if validation passes
-        $user_id = session('user')->id;
-
         if($request->puc_id != ''){
             $Puc = Puc::where('user_id', $user_id)->where('id', $request->puc_id)->first();
         }else{
@@ -444,7 +491,9 @@ class FrontEndController extends Controller
         // Update the settings with the new values
         $Puc->user_id = $user_id;
         $Puc->puc_type_id = $request->puc_type;
-        $Puc->puc_charges = $request->puc_type_rate;
+        $Puc->puc_type_rate = $request->puc_type_rate;
+        $Puc->puc_challan_rate = $request->puc_challan_rate;
+        $Puc->puc_charges = $request->puc_total_charges;
         $Puc->registration_number = $request->registration_number;
         $Puc->model = $request->vehicle_model;
         $Puc->name = $request->puc_name;
