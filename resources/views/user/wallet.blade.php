@@ -24,7 +24,7 @@
                    
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button id="wallet-tab-bg-color" class="nav-link active py-3 addWalletOnlinebtn" id="pills-online-tab"
+                    <button id="wallet-tab-bg-color" class="nav-link active py-3" id="pills-online-tab"
                         data-bs-toggle="pill" data-bs-target="#pills-online" type="button" role="tab"
                         aria-controls="pills-online" aria-selected="true">Online</button>
                 </li>
@@ -43,7 +43,7 @@
                     </p>
                     <div class="py-3 text-center">
                         <a href="javascript:;" type="submit"
-                            class="vehicle-info-btn w-100 py-3 fw-bolder fs-5">
+                            class="vehicle-info-btn w-100 py-3 fw-bolder fs-5 addWalletOnlinebtn">
                             Add ₹0 to your wallet
                         </a>
                     </div>

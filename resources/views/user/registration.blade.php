@@ -195,7 +195,7 @@
              const userData=JSON.stringify(parsedData.uData)
              const formData=JSON.stringify(parsedData.fData)
              
-            window.location.href = "/register/doPayment/" + parsedData.uData.id;
+            window.location.href = base_url+"/register/doPayment/" + parsedData.uData.id;
         }
 
     </script>

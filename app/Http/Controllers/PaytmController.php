@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Transactions;
 use paytm\paytmchecksum\PaytmChecksum;
 use App\Lib\PaymentEncode;
+use App\Models\ApiSettings;
 
 class PaytmController extends Controller
 {
@@ -25,6 +26,7 @@ class PaytmController extends Controller
 
         $user_id = $id;
 
+        $settings = ApiSettings::first();
         // $registerFormData = $user_data->fData;
         // $createdUserData = $user_data->uData;
         //dd($registerFormData, $createdUserData);
@@ -41,7 +43,7 @@ class PaytmController extends Controller
         $ORDER_ID = strval(rand(10000, 99999999));
         $CUST_ID = "CUST" . $createdUserData->id;
         // Required parameters for Paytm
-        $paramList["MID"] = env('PAYTM_MERCHANT_ID');
+        $paramList["MID"] = isset($settings->merchant_id) ? $settings->merchant_id : '';//env('PAYTM_MERCHANT_ID')
         $paramList["ORDER_ID"] = $ORDER_ID;
         $paramList["CUST_ID"] = $CUST_ID;
         $paramList["INDUSTRY_TYPE_ID"] = "Retail";
@@ -68,6 +70,7 @@ class PaytmController extends Controller
     public function pay($userId)
     {
 
+        $settings = ApiSettings::first();
         $createdUserData = User::find($userId);
         // dd($createdUserData, $registerFormData);
         $paymentEncode = new PaymentEncode();
@@ -79,7 +82,7 @@ class PaytmController extends Controller
         $ORDER_ID = strval(rand(10000, 99999999));
         $CUST_ID = "CUST" . $createdUserData->id;
         // Required parameters for Paytm
-        $paramList["MID"] = env('PAYTM_MERCHANT_ID');
+        $paramList["MID"] = isset($settings->merchant_id) ? $settings->merchant_id : '';//env('PAYTM_MERCHANT_ID');
         $paramList["ORDER_ID"] = $ORDER_ID;
         $paramList["CUST_ID"] = $CUST_ID;
         $paramList["INDUSTRY_TYPE_ID"] = "Retail";
@@ -138,7 +141,7 @@ class PaytmController extends Controller
         // Order::where('order_id', $orderId)->update(['status' => $resultStatus]);
         if ($resultStatus == 'TXN_SUCCESS') {
 
-
+ 
             $newTransaction = Transactions::create([
 
                 'user_id' => $clientId,
@@ -202,7 +205,7 @@ class PaytmController extends Controller
     function addWalletOnline($amount)
     {
 
-
+        $settings = ApiSettings::first();
         // $registerFormData = $user_data->fData;
         // $createdUserData = $user_data->uData;
         //dd($registerFormData, $createdUserData);
@@ -219,7 +222,7 @@ class PaytmController extends Controller
         $ORDER_ID = strval(rand(10000, 99999999));
         $CUST_ID = "CUST" . $createdUserData->id;
         // Required parameters for Paytm
-        $paramList["MID"] = env('PAYTM_MERCHANT_ID');
+        $paramList["MID"] = isset($settings->merchant_id) ? $settings->merchant_id : '';//env('PAYTM_MERCHANT_ID');
         $paramList["ORDER_ID"] = $ORDER_ID;
         $paramList["CUST_ID"] = $CUST_ID;
         $paramList["INDUSTRY_TYPE_ID"] = "Retail";
@@ -491,7 +494,8 @@ class PaytmController extends Controller
 
     function initiateTxnRefund($requestParamList)
     {
-        $CHECKSUM = $this->getRefundChecksumFromArray($requestParamList, env('PAYTM_MERCHANT_KEY'), 0);
+        $settings = ApiSettings::first();
+        $CHECKSUM = $this->getRefundChecksumFromArray($requestParamList, isset($settings->merchant_key) ? $settings->merchant_key : '', 0); //env('PAYTM_MERCHANT_KEY')
         $requestParamList["CHECKSUM"] = $CHECKSUM;
         return $this->callAPI(env('PAYTM_REFUND_URL'), $requestParamList);
     }

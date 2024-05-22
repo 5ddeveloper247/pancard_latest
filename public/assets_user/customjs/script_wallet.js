@@ -208,11 +208,20 @@ function transactionHistoryResponse(response) {
 $('.addWalletOnlinebtn').on('click', function () {
     const walletAmount = $('.transaction_amount').val();
     if (walletAmount == '') {
-        alert('Please enter amount!');
+    
+        toastr.error('Please enter amount first!', '', {
+            timeOut: 3000
+        });
         return false;
-    }
-    else {
-
-        window.location.href = "/user/addwallet/online/pay/" + walletAmount;
+    
+    }else if (walletAmount < 500) {
+    
+        toastr.error('Amount must be minimum 500 or above!', '', {
+            timeOut: 3000
+        });
+        return false;
+    
+    } else {
+        window.location.href = base_url+"/user/addwallet/online/pay/" + walletAmount;
     }
 });

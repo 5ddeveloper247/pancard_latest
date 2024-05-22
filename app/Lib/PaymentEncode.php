@@ -4,6 +4,7 @@
 
 
 namespace App\Lib;
+use App\Models\ApiSettings;
 
 class PaymentEncode
 {
@@ -186,7 +187,8 @@ class PaymentEncode
 
     function initiateTxnRefund($requestParamList)
     {
-        $CHECKSUM = $this->getRefundChecksumFromArray($requestParamList, env('PAYTM_MERCHANT_KEY'), 0);
+        $settings = ApiSettings::first();
+        $CHECKSUM = $this->getRefundChecksumFromArray($requestParamList, isset($settings->merchant_key) ? $settings->merchant_key : '', 0);//env('PAYTM_MERCHANT_KEY')
         $requestParamList["CHECKSUM"] = $CHECKSUM;
         return $this->callAPI(env('PAYTM_REFUND_URL'), $requestParamList);
     }
