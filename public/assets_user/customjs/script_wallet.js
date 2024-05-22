@@ -57,7 +57,7 @@ function getBankDetailsResponse(response) {
     }
 
     $('#selected_bank_details').html(html);
-    
+
 
 }
 
@@ -95,8 +95,8 @@ function addTransactionResponse(response) {
         <h6 class="fw-bolder m-0">----------</h6>
         <h6 class="fw-bolder m-0">----------</h6>
     </div>`;
-    $('#selected_bank_details').html(html);
-    $('.add_transaction_btn').text('Add to your wallet');
+        $('#selected_bank_details').html(html);
+        $('.add_transaction_btn').text('Add to your wallet');
     }
     else {
         error = response.responseJSON.message;
@@ -141,21 +141,21 @@ function formatDate(dateString) {
     const month = date.toLocaleString('default', { month: 'short' });
     const year = date.getFullYear().toString().slice(-2);
     return `${day} ${month} ${year}`;
-  }
+}
 
 function transactionHistoryResponse(response) {
     var history_list = response.data.history;
     var html = '';
-    
+
     if (history_list.length > 0) {
         $.each(history_list, function (index, history) {
 
             var status_html = amount_txt = name_txt = '';
-            if(history.type == '2'){
+            if (history.type == '2') {
                 status_html = ` <span class="fw-bold text-danger">Debited</span>`;
                 amount_txt = `<span class="fw-bolder text-danger"> &minus; &#8377;${history.amount}</span><br>`;
                 name_txt = `<h6>${history.user_puc != null ? history.user_puc.puc_type.name : history.transaction_remarks} </h6>`;
-            }else{
+            } else {
                 if (history.status == '1') {
                     status_html = `<span class="fw-bold text-warning">Pending</span>`;
                     amount_txt = `<span class="fw-bolder text-warning"> &plus; &#8377;${history.amount}</span><br>`;
@@ -192,9 +192,9 @@ function transactionHistoryResponse(response) {
                             ${status_html}
                         </div>
                     </div>`;
-            
+
         });
-    }else{
+    } else {
         html = `<div class="border rounded-2 text-center mt-2 pt-3">
                     <p>No record found!</p>
                 </div>`;
@@ -202,3 +202,17 @@ function transactionHistoryResponse(response) {
 
     $('#transactionhistorydiv').html(html);
 }
+
+
+
+$('.addWalletOnlinebtn').on('click', function () {
+    const walletAmount = $('.transaction_amount').val();
+    if (walletAmount == '') {
+        alert('Please enter amount!');
+        return false;
+    }
+    else {
+
+        window.location.href = "/user/addwallet/online/pay/" + walletAmount;
+    }
+});

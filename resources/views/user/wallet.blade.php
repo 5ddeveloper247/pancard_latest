@@ -20,11 +20,11 @@
                 <li class="nav-item" role="presentation">
                     <form id="add_transaction_form">
                         <input type="hidden" name="selected_bank_id" id="selected_bank_id">
-                   <input type="number" class="form-control" name="transaction_amount" maxlength="6" id="transaction_amount" style="width:120px; height:52px;" placeholder="₹ 500" >
+                   <input type="number" class="form-control transaction_amount" name="transaction_amount" maxlength="6" id="transaction_amount" style="width:120px; height:52px;" placeholder="₹ 500" required >
                    
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button id="wallet-tab-bg-color" class="nav-link active py-3" id="pills-online-tab"
+                    <button id="wallet-tab-bg-color" class="nav-link active py-3 addWalletOnlinebtn" id="pills-online-tab"
                         data-bs-toggle="pill" data-bs-target="#pills-online" type="button" role="tab"
                         aria-controls="pills-online" aria-selected="true">Online</button>
                 </li>
@@ -224,5 +224,6 @@
 
 @push('script')
     <script src="{{ asset('assets_user/customjs/script_wallet.js') }}"></script>
+
 	
 @endpush

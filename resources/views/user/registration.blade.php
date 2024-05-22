@@ -7,13 +7,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>LOGIN</title>
     <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/bootstrap.min.css') }}" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('assets/plugins/fonts/fonts.google.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/plugins/fonts/fonts.google.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets_user/css/style.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}" />
 </head>
 <script>
     var base_url = "{{url('/')}}";
 </script>
+
 <body>
     <header>
         <svg width="100%" height="36vh" viewBox="0 0 1200 295" preserveAspectRatio="none" fill="none"
@@ -33,35 +34,41 @@
 
             <form class="row g-3 register pt-4" id="registration_form" novalidate="">
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Name" maxlength="50"/>
+                    <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Name"
+                        maxlength="50" />
                     <label class="ps-4" for="user_name">Name</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="username_auto" name="username_auto" value="{{$username_auto}}" readonly/>
+                    <input type="text" class="form-control" id="username_auto" name="username_auto"
+                        value="{{$username_auto}}" readonly />
                     <label class="ps-4" for="username_auto">Username (Auto generated)</label>
                 </div>
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Company Name" maxlength="50"/>
+                    <input type="text" class="form-control" id="company_name" name="company_name"
+                        placeholder="Company Name" maxlength="50" />
                     <label class="ps-4" for="company_name">Company Name</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="number" class="form-control" id="user_phone" name="user_phone" placeholder="123" maxlength="15"/>
+                    <input type="number" class="form-control" id="user_phone" name="user_phone" placeholder="123"
+                        maxlength="15" />
                     <label class="ps-4" for="user_phone">Mobile No</label>
                 </div>
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="email" class="form-control" id="user_email" name="user_email" placeholder="name@example.com" maxlength="50"/>
+                    <input type="email" class="form-control" id="user_email" name="user_email"
+                        placeholder="name@example.com" maxlength="50" />
                     <label class="ps-4" for="user_email">Email</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="user_pin" name="user_pin" onchange="getStateCityWrtCodeData();" placeholder="Pin Code" maxlength="10"/>
+                    <input type="text" class="form-control" id="user_pin" name="user_pin"
+                        onchange="getStateCityWrtCodeData();" placeholder="Pin Code" maxlength="10" />
                     <label class="ps-4" for="user_pin">Shop Pin Code</label>
                 </div>
 
@@ -70,7 +77,7 @@
                     <select class="form-select" id="user_state" name="user_state" onchange="getCitiesLovData();">
                         <option value="">Choose State</option>
                         @foreach($states as $value)
-                            <option value="{{$value->id}}">{{$value->name}}</option>
+                        <option value="{{$value->id}}">{{$value->name}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -93,15 +100,19 @@
 
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="text" class="form-control" id="user_landmark" name="user_landmark" placeholder="123" maxlength="50"/>
+                    <input type="text" class="form-control" id="user_landmark" name="user_landmark" placeholder="123"
+                        maxlength="50" />
                     <label class="ps-4" for="user_landmark">Landmark</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
                     <div id="cameraIcon" class="upload px-4 d-flex align-items-center justify-content-between">
-                        <span id="picturename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Picture</span>
-                        <input type="file" accept="image/*" capture="camera" id="upload_picture" name="upload_picture" multiple="false" style="display: none;">
+                        <span id="picturename"
+                            style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload
+                            Picture</span>
+                        <input type="file" accept="image/*" capture="camera" id="upload_picture" name="upload_picture"
+                            multiple="false" style="display: none;">
                         <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z"
@@ -116,8 +127,11 @@
 
                 <div class="form-floating col-6 col-md-4">
                     <div id="aadharUploadIcon" class="upload px-4 d-flex align-items-center justify-content-between">
-                        <span id="filename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Aadhar</span>
-                        <input type="file" id="upload_aadhar" name="upload_aadhar" multiple="false" style="display: none;">
+                        <span id="filename"
+                            style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload
+                            Aadhar</span>
+                        <input type="file" id="upload_aadhar" name="upload_aadhar" multiple="false"
+                            style="display: none;">
                         <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z"
@@ -158,25 +172,34 @@
         </div>
     </div>
 
-	
+
 
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/popper/popper.min.js') }}" crossorigin="anonymous"></script>
-	<script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}" crossorigin="anonymous"></script>
-	<script src="{{ asset('assets/plugins/toastr/toastr.min.js') }}"></script>
-	<script src="{{ asset('assets/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets_user/js/main.js') }}"></script>
     <script src="{{ asset('assets_user/customjs/common.js') }}"></script>
     <script src="{{ asset('assets_user/customjs/script_registration.js') }}"></script>
-  
+
     <script>
-        function tologin() {
+        // function tologin() {
             
-            window.location.href = "{{route('login')}}";
+        //     window.location.href = "{{route('login')}}";
             
+        //
+
+        function toDoPayment(datax){
+              const parsedData= JSON.parse(datax)
+             const userData=JSON.stringify(parsedData.uData)
+             const formData=JSON.stringify(parsedData.fData)
+             
+            window.location.href = "/register/doPayment/" + parsedData.uData.id;
         }
+
     </script>
-	
+
 </body>
 
 </html>

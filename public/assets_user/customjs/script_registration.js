@@ -1,7 +1,7 @@
-function getStateCityWrtCodeData () {
+function getStateCityWrtCodeData() {
 
     var pinCode = $("#user_pin").val();
-    if(pinCode != ''){
+    if (pinCode != '') {
         let type = 'POST';
         let url = '/getStateCityWrtCodeData';
         let message = '';
@@ -12,7 +12,7 @@ function getStateCityWrtCodeData () {
         SendAjaxRequestToServer(type, url, data, '', getStateCityWrtCodeDataResponse, '', 'submit_button');
     }
 }
-function getStateCityWrtCodeDataResponse(response){
+function getStateCityWrtCodeDataResponse(response) {
 
     var data = response.data;
 
@@ -22,37 +22,37 @@ function getStateCityWrtCodeDataResponse(response){
 
     var cities = data.citiesLov;
     var areas = data.areasLov;
-    
+
     var cityOptions = `<option value="">Choose City</option>`;
-    if(cities.length > 0){
-        $.each(cities, function(index, value) {
+    if (cities.length > 0) {
+        $.each(cities, function (index, value) {
             cityOptions += `<option value="${value.id}">${value.name}</option>`;
         });
         $("#user_city").html(cityOptions);
     }
 
     var areasOptions = `<option value="">Choose Area</option>`;
-    if(areas.length > 0){
-        $.each(areas, function(index, value) {
+    if (areas.length > 0) {
+        $.each(areas, function (index, value) {
             areasOptions += `<option value="${value.id}">${value.name}</option>`;
         });
         $("#user_area").html(areasOptions);
     }
 
-    if(stateId != ''){
+    if (stateId != '') {
         $("#user_state").val(stateId);
     }
-    if(cityId != ''){
+    if (cityId != '') {
         $("#user_city").val(cityId);
     }
-    if(areaId != ''){
+    if (areaId != '') {
         $("#user_area").val(areaId);
     }
 }
-function getCitiesLovData () {
+function getCitiesLovData() {
 
     var state_id = $("#user_state").val();
-    if(state_id != ''){
+    if (state_id != '') {
         let type = 'POST';
         let url = '/getCitiesLovData';
         let message = '';
@@ -61,19 +61,19 @@ function getCitiesLovData () {
         data.append("state_id", state_id);
         // PASSING DATA TO FUNCTION
         SendAjaxRequestToServer(type, url, data, '', getCitiesLovDataResponse, '', 'submit_button');
-    }else{
+    } else {
         $("#user_city").val('').html('<option value="">Choose City</option>');
         $("#user_area").val('').html('<option value="">Choose Area</option>');
     }
 }
-function getCitiesLovDataResponse(response){
+function getCitiesLovDataResponse(response) {
 
     var data = response.data;
     var cities = data.cities;
-    
+
     var cityOptions = `<option value="">Choose City</option>`;
-    if(cities.length > 0){
-        $.each(cities, function(index, value) {
+    if (cities.length > 0) {
+        $.each(cities, function (index, value) {
             cityOptions += `<option value="${value.id}">${value.name}</option>`;
         });
     }
@@ -81,10 +81,10 @@ function getCitiesLovDataResponse(response){
     $("#user_area").val('').html('<option value="">Choose Area</option>');
 }
 
-function getAreasLovData () {
+function getAreasLovData() {
 
     var city_id = $("#user_city").val();
-    if(city_id != ''){
+    if (city_id != '') {
         let type = 'POST';
         let url = '/getAreasLovData';
         let message = '';
@@ -93,18 +93,18 @@ function getAreasLovData () {
         data.append("city_id", city_id);
         // PASSING DATA TO FUNCTION
         SendAjaxRequestToServer(type, url, data, '', getAreasLovDataResponse, '', 'submit_button');
-    }else{
+    } else {
         $("#user_area").val('').html('<option value="">Choose Area</option>');
     }
 }
-function getAreasLovDataResponse(response){
+function getAreasLovDataResponse(response) {
 
     var data = response.data;
     var areas = data.areas;
-    
+
     var areasOptions = `<option value="">Choose Area</option>`;
-    if(areas.length > 0){
-        $.each(areas, function(index, value) {
+    if (areas.length > 0) {
+        $.each(areas, function (index, value) {
             areasOptions += `<option value="${value.id}">${value.name}</option>`;
         });
     }
@@ -113,24 +113,27 @@ function getAreasLovDataResponse(response){
 
 $(document).on('click', '.register_form_submit', function (e) {
 
-	e.preventDefault();
-	let type = 'POST';
-	let url = '/registerUser';
-	let message = '';
-	let form = $('#registration_form');
-	let data = new FormData(form[0]);
-	    
-	// PASSING DATA TO FUNCTION
-	$('[name]').removeClass('is-invalid');
-	SendAjaxRequestToServer(type, url, data, '', registerUserResponse, '', '.register_form_submit');
-	
+    e.preventDefault();
+    let type = 'POST';
+    let url = '/registerUser';
+    let message = '';
+    let form = $('#registration_form');
+    let data = new FormData(form[0]);
+
+    // PASSING DATA TO FUNCTION
+    $('[name]').removeClass('is-invalid');
+    SendAjaxRequestToServer(type, url, data, '', registerUserResponse, '', '.register_form_submit');
+
 });
+
+
 
 function registerUserResponse(response) {
 
     // SHOWING MESSAGE ACCORDING TO RESPONSE
+    console.log(response);
     if (response.status == 200 || response.status == '200') {
-      
+
         toastr.success(response.message, '', {
             timeOut: 3000
         });
@@ -143,17 +146,25 @@ function registerUserResponse(response) {
 
         $("#picturename").text('Upload Picture');
         $("#filename").text('Upload Aadhar');
+        const userData = response.data.userData;
+        const formData = response.data.formData;
+        const dataObj = {
+            uData: userData,
+            fData: formData
+        }
+        const datax = JSON.stringify(dataObj);
+        setTimeout(function () {
 
-        setTimeout(function(){
-            tologin();
-        },3000);
+            toDoPayment(datax);
+            // tologin();
+        }, 3000);
 
     } else {
-        
-    	error = response.responseJSON.message;
+
+        error = response.responseJSON.message;
         var is_invalid = response.responseJSON.errors;
-        
-        $.each(is_invalid, function(key) {
+
+        $.each(is_invalid, function (key) {
             // Assuming 'key' corresponds to the form field name
             var inputField = $('[name="' + key + '"]');
             var selectField = $('[name="' + key + '"]');
@@ -172,14 +183,14 @@ function registerUserResponse(response) {
 
 $(document).ready(function () {
     // getPageData();
- 
+
 });
 
-document.getElementById('cameraIcon').addEventListener('click', function() {
+document.getElementById('cameraIcon').addEventListener('click', function () {
     // Trigger click event on the input field
     document.getElementById('upload_picture').click();
 });
-document.getElementById('upload_picture').addEventListener('change', function() {
+document.getElementById('upload_picture').addEventListener('change', function () {
     if (this.files.length > 0) {
         // Get the filename of the selected file
         var filename = this.files[0].name;
@@ -191,11 +202,11 @@ document.getElementById('upload_picture').addEventListener('change', function() 
     }
 });
 
-document.getElementById('aadharUploadIcon').addEventListener('click', function() {
+document.getElementById('aadharUploadIcon').addEventListener('click', function () {
     // Trigger click event on the input field
     document.getElementById('upload_aadhar').click();
 });
-document.getElementById('upload_aadhar').addEventListener('change', function() {
+document.getElementById('upload_aadhar').addEventListener('change', function () {
     if (this.files.length > 0) {
         // Get the filename of the selected file
         var filename = this.files[0].name;

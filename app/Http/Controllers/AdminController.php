@@ -24,6 +24,7 @@ use App\Models\PucUserRates;
 use App\Models\Puc;
 use App\Models\Banks;
 use App\Models\Transactions;
+use App\Http\Controllers\PaytmController;
 
 
 
@@ -34,10 +35,14 @@ class AdminController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    protected $paytm;
+
+    // Use dependency injection to bring in the PaymentEncode class
+    public function __construct(PaytmController $paytm)
     {
-        // $this->middleware('auth');
+        $this->paytm = $paytm;
     }
+
 
     public function index(Request $request)
     {
@@ -69,7 +74,8 @@ class AdminController extends Controller
         return view('admin/settings')->with($data);
     }
 
-    public function analytics(){
+    public function analytics()
+    {
         $data['page'] = 'Analytics';
         return view('admin/analytics')->with($data);
     }
@@ -87,11 +93,12 @@ class AdminController extends Controller
         echo json_encode($data);
     }
 
-    public function getBankDetails(Request $request){
+    public function getBankDetails(Request $request)
+    {
 
         $bank_id = $request->bank_id;
-        $data['bank_detail'] = Banks::where('id',$bank_id)->first();
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+        $data['bank_detail'] = Banks::where('id', $bank_id)->first();
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
     // public function addTransaction(Request $request){
     //     $validatedData = $request->validate([
@@ -116,10 +123,11 @@ class AdminController extends Controller
 
     // }
 
-    public function getTransactionHistory(){
+    public function getTransactionHistory()
+    {
         $user_id = Auth::id();
-        $data['history'] = Transactions::where('user_id',$user_id)->orderBy('created_at', 'desc')->get();
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+        $data['history'] = Transactions::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
     public function addBank(Request $request)
@@ -182,46 +190,50 @@ class AdminController extends Controller
         }
     }
 
-    public function pendingTransactionsList(Request $request){
-        
-        $data['pendingTransactionsList'] = Transactions::where('status','1')->with(['createdByUser','bankName'])->get();
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    public function pendingTransactionsList(Request $request)
+    {
+
+        $data['pendingTransactionsList'] = Transactions::where('status', '1')->with(['createdByUser', 'bankName'])->get();
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
-    public function walletHistory(Request $request){
-        
-        $data['walletHistory'] = Transactions::with(['createdByUser','bankName'])->orderBy('created_at', 'desc')->get();
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+    public function walletHistory(Request $request)
+    {
+
+        $data['walletHistory'] = Transactions::with(['createdByUser', 'bankName'])->orderBy('created_at', 'desc')->get();
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
-    
-    public function getWalletHistoryFilteredData(Request $request){
-        
+
+    public function getWalletHistoryFilteredData(Request $request)
+    {
+
         $filterFlag = $request->filterFlag;
         $param1 = $request->param1;
         $param2 = $request->param2;
 
-        if($filterFlag == '1'){
+        if ($filterFlag == '1') {
             $transactions = Transactions::whereDate('created_at', '=', $param1)         // for today  & yesterday
-                                        ->with(['createdByUser','bankName'])
-                                        ->orderBy('created_at', 'desc')->get();
-        }else if($filterFlag == '2'){
+                ->with(['createdByUser', 'bankName'])
+                ->orderBy('created_at', 'desc')->get();
+        } else if ($filterFlag == '2') {
             $transactions = Transactions::whereYear('created_at', date('Y'))        // for today  & yesterday
-                                        ->whereMonth('created_at', $param1)
-                                        ->with(['createdByUser','bankName'])
-                                        ->orderBy('created_at', 'desc')->get();
-        }else if($filterFlag == '3'){
+                ->whereMonth('created_at', $param1)
+                ->with(['createdByUser', 'bankName'])
+                ->orderBy('created_at', 'desc')->get();
+        } else if ($filterFlag == '3') {
             $transactions = Transactions::whereDate('created_at', '>=', $param1)    // for start date
-                                        ->whereDate('created_at', '<=', $param2)    // for end date
-                                        ->with(['createdByUser','bankName'])
-                                        ->orderBy('created_at', 'desc')->get();
+                ->whereDate('created_at', '<=', $param2)    // for end date
+                ->with(['createdByUser', 'bankName'])
+                ->orderBy('created_at', 'desc')->get();
         }
 
         $data['walletHistory'] = $transactions;
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
-    public function completeTransaction(Request $request){
-        
+    public function completeTransaction(Request $request)
+    {
+
         $transaction_id = $request->transaction_id;
 
         $transaction = Transactions::where('id', $transaction_id)->with(['createdByUser'])->first();
@@ -235,7 +247,7 @@ class AdminController extends Controller
             'balance' => $newBalance,
         ]);
         $transaction_updated = Transactions::where('id', $transaction_id)->first();
-        $userData= User::where('id', $userDetail['id'])->first();
+        $userData = User::where('id', $userDetail['id'])->first();
         $bankData = Banks::where('id', $transaction_updated->bank_id)->first();
         $mailData['bankData'] = $bankData;
         $mailData['userName'] = $userData->name;
@@ -247,17 +259,18 @@ class AdminController extends Controller
         // to username, to email, from username, subject, body html
         sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Transaction Approved', $body); // send_to_name, send_to_email, email_from_name, subject, body
 
-        return response()->json(['status' => 200,'message' => "Transaction Completed Successfully!"]);
+        return response()->json(['status' => 200, 'message' => "Transaction Completed Successfully!"]);
     }
 
-    public function rejectTransaction(Request $request){
-        
+    public function rejectTransaction(Request $request)
+    {
+
         $transaction_id = $request->transaction_id;
         Transactions::where('id', $transaction_id)->update([
             'status' => '2',
         ]);
         $transaction_updated = Transactions::where('id', $transaction_id)->first();
-        $userData= User::where('id', $transaction_updated['user_id'])->first();
+        $userData = User::where('id', $transaction_updated['user_id'])->first();
         $bankData = Banks::where('id', $transaction_updated->bank_id)->first();
         $mailData['bankData'] = $bankData;
         $mailData['userName'] = $userData->name;
@@ -268,7 +281,7 @@ class AdminController extends Controller
         $userEmailsSend[] = $userData->email;
         // to username, to email, from username, subject, body html
         sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Transaction Rejected', $body); // send_to_name, send_to_email, email_from_name, subject, body
-        return response()->json(['status' => 200,'message' => "Transaction Rejected Successfully!"]);
+        return response()->json(['status' => 200, 'message' => "Transaction Rejected Successfully!"]);
     }
 
 
@@ -431,25 +444,24 @@ class AdminController extends Controller
     }
 
     public function deleteSpecificNotification(Request $request)
-    {   
+    {
         $notif_id = $request->id;
         $notification = Notifications::where('id', $notif_id)->delete();
         $data['notifications'] = Notifications::orderBy('created_at', 'desc')->get();
-        return response()->json(['status' => 200,'message' => "Notification Deleted Successfully!", 'data' => $data]);
+        return response()->json(['status' => 200, 'message' => "Notification Deleted Successfully!", 'data' => $data]);
     }
 
     public function editSpecificNotification(Request $request)
-    {   
-        
+    {
+
         $notif_id = $request->id;
         $data['notification'] = Notifications::where('id', $notif_id)->first();
-        return response()->json(['status' => 200,'message' => "", 'data' => $data]);
-        
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
 
     public function storeTutorialSettings(Request $request)
-    {   
+    {
         $req_file = 'uploadThumbnail';
         $path = '/assets/uploads/tutorials/thumbnail';
 
@@ -468,7 +480,7 @@ class AdminController extends Controller
         }
 
         // Process form submission if validation passes
-        if($request->tutorial_id == null){
+        if ($request->tutorial_id == null) {
             $Tutorials = new Tutorials();
         } else {
             $Tutorials = Tutorials::find($request->tutorial_id);
@@ -488,9 +500,9 @@ class AdminController extends Controller
         }
 
         $previous_image = Tutorials::where('id', $request->tutorial_id)->value('thumbnail');
-       
+
         if ($request->hasFile($req_file)) {
-            if($request->tutorial_id != null){
+            if ($request->tutorial_id != null) {
                 deleteImage(str_replace(url('/'), '', $previous_image));
             }
             $uploadedFile = $request->file($req_file);
@@ -575,11 +587,11 @@ class AdminController extends Controller
             $transaction->save();
 
             $newTransactionId = $transaction->id;
-            $transaction_updated = Transactions::where('id', $newTransactionId)->with(['createdByUser','bankName'])->first();
-            $userData= $transaction_updated->createdByUser;
+            $transaction_updated = Transactions::where('id', $newTransactionId)->with(['createdByUser', 'bankName'])->first();
+            $userData = $transaction_updated->createdByUser;
 
             $mailData['bankData'] = $transaction_updated->bankName;
-            
+
             $mailData['userName'] = $userData->name;
             $date = new \DateTime($transaction_updated->date);
             $transaction_updated->date = $date->format('d-m-Y');
@@ -588,12 +600,12 @@ class AdminController extends Controller
             $body = view('emails.admin_credit_debit', $mailData);
             $userEmailsSend[] = $userData->email;
             // to username, to email, from username, subject, body html
-            if($transaction_updated->type == 1){
-            sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Balance Added', $body); // send_to_name, send_to_email, email_from_name, subject, body
+            if ($transaction_updated->type == 1) {
+                sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Balance Added', $body); // send_to_name, send_to_email, email_from_name, subject, body
             }
-            if($transaction_updated->type == 2){
+            if ($transaction_updated->type == 2) {
                 sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Balance Deducted', $body); // send_to_name, send_to_email, email_from_name, subject, body
-                }
+            }
 
             $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
 
@@ -606,6 +618,16 @@ class AdminController extends Controller
 
         return response()->json(['status' => 200, 'data' => $data]);
     }
+
+
+
+
+
+
+
+
+
+
 
 
     public function registerUser(Request $request)
@@ -667,6 +689,11 @@ class AdminController extends Controller
             $Users = User::find($request->user_id);
         }
 
+
+        //Handle register Payment
+
+
+
         // Update the settings with the new values
         $Users->type = 'user';
         $Users->name = $request->user_name;
@@ -688,7 +715,7 @@ class AdminController extends Controller
         $previous_image = User::where('id', $request->user_id)->value('profile_picture');
 
         if ($request->hasFile($req_file)) {
-            if($request->user_id != null){
+            if ($request->user_id != null) {
                 deleteImage($previous_image);
             }
             $uploadedFile = $request->file($req_file);
@@ -702,9 +729,9 @@ class AdminController extends Controller
         $req_file1 = 'upload_aadhar';
         $path1 = '/assets/uploads/aadhar';
         $previous_image1 = User::where('id', $request->user_id)->value('aadhar');
-        
+
         if ($request->hasFile($req_file1)) {
-            if($request->user_id != null){
+            if ($request->user_id != null) {
                 deleteImage($previous_image1);
             }
             $uploadedFile = $request->file($req_file1);
@@ -725,6 +752,25 @@ class AdminController extends Controller
 
         // Save the changes
         $Users->save();
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // save PUC Type Rates against user
         $pucTypeIds = $request->input('puc_type_ids');
@@ -776,7 +822,7 @@ class AdminController extends Controller
     {
 
         $user_id = $request->id;
-        
+
         User::where('id', $user_id)->update([
             'status' => 'inactive',
         ]);
@@ -847,13 +893,13 @@ class AdminController extends Controller
             ]);
             $emailTitle = 'PUC Completed';
         } else if ($status_flag == '3') {
-            
+
             Puc::where('id', $puc_id)->update([
                 'status' => '3', // rejected status
                 'rejection_reason' => $rejection_reason, // rejected status
             ]);
 
-            if($userDetail != null){
+            if ($userDetail != null) {
                 $balance = $userDetail->balance;
                 $newBalance = $balance + $pucDetail->puc_charges;
                 $emailTitle = 'PUC Rejected';
@@ -874,13 +920,12 @@ class AdminController extends Controller
                 $transaction->status = '3';
                 $transaction->date = date('Y-m-d');
                 $transaction->save();
-
             }
         }
-        
+
         $pucDetail = Puc::where('id', $puc_id)->with(['user', 'pucType'])->first();
         $pucDetail->pucTypeName = $pucDetail->pucType->name;
-    
+
         // send email code
         $body = view('emails.puc_order', $pucDetail);
         $userEmailsSend[] = $pucDetail->user->email;
@@ -941,7 +986,7 @@ class AdminController extends Controller
         $uploadedFile = $request->file('uploadFile');
         // Save the uploaded file to a temporary location
         $pdfFilePath = $uploadedFile->storeAs('temp', $uploadedFile->getClientOriginalName());
-        
+
         // Extract text from the PDF file
         // $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
         // if (config('app.env') == 'local') {
@@ -949,11 +994,11 @@ class AdminController extends Controller
         //     $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
         //     $text = Pdf::getText($request->file('uploadFile'), $binpath);
         // } else { // on dev or prod
-            // dd(storage_path('/pdftotext'));
-            $binpath = storage_path('/pdftotext');
-            // dd($binpath);
-            // $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
-            $text = Pdf::getText(storage_path('app/' . $pdfFilePath), $binpath);
+        // dd(storage_path('/pdftotext'));
+        $binpath = storage_path('/pdftotext');
+        // dd($binpath);
+        // $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
+        $text = Pdf::getText(storage_path('app/' . $pdfFilePath), $binpath);
         // }
         // Delete the temporary PDF file
         unlink(storage_path('app/' . $pdfFilePath));
@@ -980,10 +1025,10 @@ class AdminController extends Controller
             $req_file = 'uploadFile';
             $path = '/assets/uploads/puc/pdf_files';
             $previous_file = Puc::where('id', $request->puc_id)->value('certificate_pdf');
-            
+
             // dd($previous_file);
             if ($request->hasFile($req_file)) {
-                if($previous_file){
+                if ($previous_file) {
                     deleteImage($previous_file);
                 }
 
@@ -1010,8 +1055,8 @@ class AdminController extends Controller
     }
 
     public function uploadExcelFrom(Request $request)
-    {       
-        
+    {
+
         $validatedData = $request->validate([
             'uploadFile.*' => 'required|mimes:pdf,PDF',
             'uploadFile' => 'max:10|min:1',
@@ -1022,11 +1067,11 @@ class AdminController extends Controller
 
         $tempArray = [];
         $dataArray = [];
-        
+
         // Process uploaded files
         if ($request->hasFile('uploadFile')) {
             foreach ($request->file('uploadFile') as $key => $file) {
-                
+
                 // Get the original file name
                 $filename = $file->getClientOriginalName();
                 $filenameWithoutExtension = pathinfo($filename, PATHINFO_FILENAME);
@@ -1039,9 +1084,9 @@ class AdminController extends Controller
 
                 // Extract text from the PDF file
                 $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
-                if (config('app.env')=='local') {
-                    $text = Pdf::getText($file,$binpath);
-                }else{ // on dev or prod
+                if (config('app.env') == 'local') {
+                    $text = Pdf::getText($file, $binpath);
+                } else { // on dev or prod
                     $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
                 }
                 // Delete the temporary PDF file
@@ -1052,53 +1097,53 @@ class AdminController extends Controller
 
                 // Extracted dates
                 $dates = $matches[0];
-                
+
                 foreach ($dates as $key => $date) {
                     $dateString = Carbon::createFromFormat('d/m/Y', $date);
                     // Extract the time portion
                     $dateFormated = $dateString->format('Y-m-d');
-                    if($key == 0){
+                    if ($key == 0) {
                         $startDate = $dateFormated;
-                    }elseif($key == 1){
+                    } elseif ($key == 1) {
                         $endDate = $dateFormated;
                     }
                 }
 
-                if((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != ''){
-                    
-                    
+                if ((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != '') {
+
+
                     $existPuc = Puc::where('registration_number', $filenameWithoutExtension)->first();
 
-                    if(isset($existPuc->id)){
+                    if (isset($existPuc->id)) {
                         $req_file = 'uploadFile';
                         $path = '/assets/uploads/puc/pdf_files';
                         $previous_file = Puc::where('id', $existPuc->id)->value('certificate_pdf');
-                        
-                        if($previous_file){
+
+                        if ($previous_file) {
                             deleteImage(str_replace(url('/'), '', $previous_file));
-                        }  
+                        }
 
                         // dd($previous_file);
                         $uploadedFile = $file;
 
                         $savedFile = saveSingleImage($uploadedFile, $path);
-                        $full_path = url('/').$savedFile;
-                        
+                        $full_path = url('/') . $savedFile;
+
                         Puc::where('id', $existPuc->id)->update([
-                            'status' => '4', 
-                            'start_date' => $startDate, 
-                            'end_date' => $endDate, 
-                            'certificate_pdf' => $full_path, 
-                            'updated_at' => date('Y-m-d H:i:s'), 
+                            'status' => '4',
+                            'start_date' => $startDate,
+                            'end_date' => $endDate,
+                            'certificate_pdf' => $full_path,
+                            'updated_at' => date('Y-m-d H:i:s'),
                         ]);
 
                         $tempArray['error'] = '200';
                         $tempArray['msg'] = 'Success';
-                    }else{
+                    } else {
                         $tempArray['error'] = '402';
                         $tempArray['msg'] = 'Not Found';
                     }
-                }else{
+                } else {
                     $tempArray['error'] = '402';
                     $tempArray['msg'] = "PDF file not have proper dates try another file";
                 }
@@ -1106,13 +1151,13 @@ class AdminController extends Controller
                 $tempArray = [];
             }
 
-            return response()->json(['status' => 200,'message' => "Upload Completed!", 'data' => $dataArray]);
-        }else{
-            return response()->json(['status' => 402,'message' => "No File Received!", 'data' => $dataArray]);
+            return response()->json(['status' => 200, 'message' => "Upload Completed!", 'data' => $dataArray]);
+        } else {
+            return response()->json(['status' => 402, 'message' => "No File Received!", 'data' => $dataArray]);
         }
     }
 
-    
+
     public function getAnalyticsPageData(Request $request)
     {
 
@@ -1123,86 +1168,84 @@ class AdminController extends Controller
         $puc_2w = $puc_2w_fine = $puc_3w = $puc_3w_fine = $puc_4w = $puc_4w_fine = 0;
         $puc_2w_am = $puc_2w_fine_am = $puc_3w_am = $puc_3w_fine_am = $puc_4w_am = $puc_4w_fine_am = 0;
 
-        if($filter_flag == '0'){
+        if ($filter_flag == '0') {
             $data['pending_users'] = User::where('type', 'user')->where('status', 'inactive')->count();
-            $data['active_users'] = User::where('type', 'user')->whereIn('status', ['active','approved'])->count();
+            $data['active_users'] = User::where('type', 'user')->whereIn('status', ['active', 'approved'])->count();
 
             $puc_list = Puc::get();
-        }else if($filter_flag == '1'){  // for today and yesterday filter
+        } else if ($filter_flag == '1') {  // for today and yesterday filter
             $data['pending_users'] = User::where('type', 'user')
-                                        ->where('status', 'inactive')
-                                        ->whereDate('created_at', '=', $param1)
-                                        ->count();
+                ->where('status', 'inactive')
+                ->whereDate('created_at', '=', $param1)
+                ->count();
 
             $data['active_users'] = User::where('type', 'user')
-                                        ->whereDate('created_at', '=', $param1)
-                                        ->whereIn('status', ['active','approved'])
-                                        ->count();
+                ->whereDate('created_at', '=', $param1)
+                ->whereIn('status', ['active', 'approved'])
+                ->count();
             $puc_list = Puc::whereDate('date', '=', $param1)->get();
-
-        }else if($filter_flag == '2'){          // for month filter
+        } else if ($filter_flag == '2') {          // for month filter
 
             $data['pending_users'] = User::where('type', 'user')
-                                        ->where('status', 'inactive')
-                                        ->whereYear('created_at', date('Y'))
-                                        ->whereMonth('created_at', '=', $param1)
-                                        ->count();
+                ->where('status', 'inactive')
+                ->whereYear('created_at', date('Y'))
+                ->whereMonth('created_at', '=', $param1)
+                ->count();
 
             $data['active_users'] = User::where('type', 'user')
-                                        ->whereIn('status', ['active','approved'])
-                                        ->whereYear('created_at', date('Y'))
-                                        ->whereMonth('created_at', '=', $param1)
+                ->whereIn('status', ['active', 'approved'])
+                ->whereYear('created_at', date('Y'))
+                ->whereMonth('created_at', '=', $param1)
 
-                                        ->count();
+                ->count();
             $puc_list = Puc::whereYear('date', date('Y'))->whereMonth('date', '=', $param1)->get();
-
-        }else if($filter_flag == '3'){          // for date range filter
+        } else if ($filter_flag == '3') {          // for date range filter
 
             $data['pending_users'] = User::where('type', 'user')
-                                        ->where('status', 'inactive')
-                                        ->whereDate('created_at', '>=', $param1)    // for start date
-                                        ->whereDate('created_at', '<=', $param2)    // for end date
-                                        ->count();
+                ->where('status', 'inactive')
+                ->whereDate('created_at', '>=', $param1)    // for start date
+                ->whereDate('created_at', '<=', $param2)    // for end date
+                ->count();
 
             $data['active_users'] = User::where('type', 'user')
-                                        ->whereIn('status', ['active','approved'])
-                                        ->whereDate('created_at', '>=', $param1)    // for start date
-                                        ->whereDate('created_at', '<=', $param2)    // for end date
-                                        ->count();
+                ->whereIn('status', ['active', 'approved'])
+                ->whereDate('created_at', '>=', $param1)    // for start date
+                ->whereDate('created_at', '<=', $param2)    // for end date
+                ->count();
             $puc_list = Puc::whereDate('date', '>=', $param1)->whereDate('date', '<=', $param2)->get();
         }
 
-// dd($puc_list);
+        // dd($puc_list);
 
-        if($puc_list){
-            foreach($puc_list as $key => $value){
-                if($value->puc_type_id == 1){
-                    $puc_2w = $puc_2w + 1; 
-                    $puc_2w_am = $puc_2w_am + $value->puc_charges; 
+        if ($puc_list) {
+            foreach ($puc_list as $key => $value) {
+                if ($value->puc_type_id == 1) {
+                    $puc_2w = $puc_2w + 1;
+                    $puc_2w_am = $puc_2w_am + $value->puc_charges;
                 }
-                if($value->puc_type_id == 2){
-                    $puc_2w_fine = $puc_2w_fine + 1; 
-                    $puc_2w_fine_am = $puc_2w_fine_am + $value->puc_charges; 
+                if ($value->puc_type_id == 2) {
+                    $puc_2w_fine = $puc_2w_fine + 1;
+                    $puc_2w_fine_am = $puc_2w_fine_am + $value->puc_charges;
                 }
-                if($value->puc_type_id == 3){
-                    $puc_3w = $puc_3w + 1; 
-                    $puc_3w_am = $puc_3w_am + $value->puc_charges; 
+                if ($value->puc_type_id == 3) {
+                    $puc_3w = $puc_3w + 1;
+                    $puc_3w_am = $puc_3w_am + $value->puc_charges;
                 }
-                if($value->puc_type_id == 4){
-                    $puc_3w_fine = $puc_3w_fine + 1; 
-                    $puc_3w_fine_am = $puc_3w_fine_am + $value->puc_charges; 
+                if ($value->puc_type_id == 4) {
+                    $puc_3w_fine = $puc_3w_fine + 1;
+                    $puc_3w_fine_am = $puc_3w_fine_am + $value->puc_charges;
                 }
-                if($value->puc_type_id == 5){
-                    $puc_4w = $puc_4w + 1; 
-                    $puc_4w_am = $puc_4w_am + $value->puc_charges; 
+                if ($value->puc_type_id == 5) {
+                    $puc_4w = $puc_4w + 1;
+                    $puc_4w_am = $puc_4w_am + $value->puc_charges;
                 }
-                if($value->puc_type_id == 6){
-                    $puc_4w_fine = $puc_4w_fine + 1; 
-                    $puc_4w_fine_am = $puc_4w_fine_am + $value->puc_charges; 
+                if ($value->puc_type_id == 6) {
+                    $puc_4w_fine = $puc_4w_fine + 1;
+                    $puc_4w_fine_am = $puc_4w_fine_am + $value->puc_charges;
                 }
             }
         }
-        
+
         $data['puc_2w'] = $puc_2w;
         $data['puc_2w_fine'] = $puc_2w_fine;
         $data['puc_3w'] = $puc_3w;
@@ -1218,73 +1261,73 @@ class AdminController extends Controller
         $data['puc_4w_fine_am'] = $puc_4w_fine_am;
 
         // dd($data);
-        return response()->json(['status' => 200,'message' => "", "data"=> $data]);
+        return response()->json(['status' => 200, 'message' => "", "data" => $data]);
     }
 
 
-    
 
-//     public function processExcel(Request $request)
-//     {
-//         // Validate the request
-//         $request->validate([
-//             'excel_file' => 'required|mimes:xlsx',
-//         ]);
 
-//         // Get the uploaded file from the request
-//         $excelFile = $request->file('excel_file');
+    //     public function processExcel(Request $request)
+    //     {
+    //         // Validate the request
+    //         $request->validate([
+    //             'excel_file' => 'required|mimes:xlsx',
+    //         ]);
 
-//         // Read the Excel file
-//         $data = Excel::toArray([], $excelFile);
+    //         // Get the uploaded file from the request
+    //         $excelFile = $request->file('excel_file');
 
-//         // Access the first sheet data (assuming the Excel file has only one sheet)
-//         $sheetData = $data[0];
-        
-//         print_r("<pre>");
-//         print_r($sheetData);
-//         exit();
-        
-//         // Loop through the data and process as needed
-//         foreach ($sheetData as $key => $row) {
-            
-//             if($key > 0 && $row[0] != ''){
-//                 // $dateValue = $row[0];
-//                 // $unixTimestamp = ($dateValue - 25569) * 86400; // Convert Excel date number to Unix timestamp
+    //         // Read the Excel file
+    //         $data = Excel::toArray([], $excelFile);
 
-//                 // $date = Carbon::createFromTimestamp($unixTimestamp);
+    //         // Access the first sheet data (assuming the Excel file has only one sheet)
+    //         $sheetData = $data[0];
 
-//                 // $formattedDate = $date->format('Y-m-d');
+    //         print_r("<pre>");
+    //         print_r($sheetData);
+    //         exit();
 
-//                 // echo $formattedDate."<br>";
+    //         // Loop through the data and process as needed
+    //         foreach ($sheetData as $key => $row) {
 
-//                 // print_r("<pre>");
-//                 // print_r($row);
-//                 // exit();
+    //             if($key > 0 && $row[0] != ''){
+    //                 // $dateValue = $row[0];
+    //                 // $unixTimestamp = ($dateValue - 25569) * 86400; // Convert Excel date number to Unix timestamp
 
-//                 // $State = new States();
+    //                 // $date = Carbon::createFromTimestamp($unixTimestamp);
 
-//                 // $State->id = $row[0];
-//                 // $State->name = $row[1];
-//                 // $State->status = '1';
-//                 // $State->save();
+    //                 // $formattedDate = $date->format('Y-m-d');
 
-//                 // $Cities = new Cities();
+    //                 // echo $formattedDate."<br>";
 
-//                 // $Cities->id = $row[0];
-//                 // $Cities->name = $row[1];
-//                 // $Cities->state_id = $row[2];
-//                 // $Cities->status = '1';
-//                 // $Cities->save();
+    //                 // print_r("<pre>");
+    //                 // print_r($row);
+    //                 // exit();
 
-//                 // $Areas = new Areas();
-//                 // $Areas->id = $row[0];
-//                 // $Areas->name = $row[1];
-//                 // $Areas->city_id = $row[2];
-//                 // $Areas->status = '1';
-//                 // $Areas->save();
-                
-//             }
-//         }
-//         return true;
-//     }
+    //                 // $State = new States();
+
+    //                 // $State->id = $row[0];
+    //                 // $State->name = $row[1];
+    //                 // $State->status = '1';
+    //                 // $State->save();
+
+    //                 // $Cities = new Cities();
+
+    //                 // $Cities->id = $row[0];
+    //                 // $Cities->name = $row[1];
+    //                 // $Cities->state_id = $row[2];
+    //                 // $Cities->status = '1';
+    //                 // $Cities->save();
+
+    //                 // $Areas = new Areas();
+    //                 // $Areas->id = $row[0];
+    //                 // $Areas->name = $row[1];
+    //                 // $Areas->city_id = $row[2];
+    //                 // $Areas->status = '1';
+    //                 // $Areas->save();
+
+    //             }
+    //         }
+    //         return true;
+    //     }
 }
