@@ -205,6 +205,8 @@ function resetPasswordProfileResponse(response) {
 
 $(document).ready(function () {
     
+    $('#registration_form :input').not('#user_pin').prop('disabled', true);
+
     $(document).on('click', '#tutorials_btn', function (e) {
 
         $("#profile_section").hide();

@@ -245,18 +245,20 @@ function pendingTransactionsListResponse(response) {
             var companyName = list.created_by_user.company_name;
             var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
 
-            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4">
+            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4 identify">
                             <div class="d-flex align-items-center justify-content-between ">
                                 <div class="d-flex flex-column">
-                                    <span class="fw-bold text-dark">
+                                    <span class="fw-bold text-dark grid-p-searchby">
                                         ${list.created_by_user.name}
                                     </span>
-                                    <span class="text-dark d-flex ">Date: ${formattedDate}</span>
-                                    <span class="text-dark">
+                                    <span class="text-dark d-flex grid-p-searchby">Date: ${formattedDate}</span>
+                                    <span class="text-dark grid-p-searchby">
                                         Bank Account: ${bank}
                                     </span>
-                                    <span class="text-dark d-flex align-items-center utr-code-bg px-1">
-                                        UTR: ${list.transaction_number} <span class="ps-2"> <svg width="10" height="11" viewBox="0 0 10 11"
+                                    <span class="text-dark d-flex align-items-center utr-code-bg px-1 grid-p-searchby">
+                                        UTR: ${list.transaction_number} 
+                                        <span class="ps-2"> 
+                                            <svg width="10" height="11" viewBox="0 0 10 11"
                                                 fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M2.33336 5.09092C2.33336 3.80547 2.33336 3.16228 2.72403 2.76319C3.11425 2.36365 3.74314 2.36365 5.00003 2.36365H6.33336C7.59025 2.36365 8.21914 2.36365 8.60936 2.76319C9.00003 3.16228 9.00003 3.80547 9.00003 5.09092V7.36365C9.00003 8.6491 9.00003 9.29228 8.60936 9.69137C8.21914 10.0909 7.59025 10.0909 6.33336 10.0909H5.00003C3.74314 10.0909 3.11425 10.0909 2.72403 9.69137C2.33336 9.29228 2.33336 8.6491 2.33336 7.36365V5.09092Z"
@@ -282,7 +284,7 @@ function pendingTransactionsListResponse(response) {
                                                     fill="#515C6F" />
                                             </svg>
                                         </button>
-                                        <button type="button" class="modal-btn-price py-1 px-2 ms-2">
+                                        <button type="button" class="modal-btn-price py-1 px-2 ms-2 grid-p-searchby">
                                             ₹${list.amount}
                                         </button>
                                     </div>
@@ -291,7 +293,7 @@ function pendingTransactionsListResponse(response) {
                             </div>
                             <div class="d-flex flex-nowrap justify-content-between">
                                 <div>
-                                    <span class="diff-bg px-2 py-1 mx-md-3 mr-1 my-1 text-primary text-nowrap">
+                                    <span class="diff-bg px-2 py-1 mx-md-3 mr-1 my-1 text-primary text-nowrap grid-p-searchby">
                                         <b>${list.created_by_user.username}</b>(${truncatedCompanyName})
                                     </span>
                                 </div>
@@ -479,7 +481,7 @@ function updateWalletHistoryList(walletHistoryList){
             var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
     
     
-            html += `<div class="d-flex justify-content-between border rounded-2 my-2">
+            html += `<div class="d-flex justify-content-between border rounded-2 my-2 identify">
                         <div class="d-flex align-items-center pt-3 ps-3 pb-2">
                             <svg width="68" height="68" viewBox="0 0 48 48" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -490,18 +492,18 @@ function updateWalletHistoryList(walletHistoryList){
                                     d="M27.5714 13.5556H10.4286V11.4222H26.1429V10H10.4286C10.0497 10 9.68633 10.1498 9.41842 10.4166C9.15051 10.6833 9 11.045 9 11.4222V26.3556C9 26.7328 9.15051 27.0945 9.41842 27.3612C9.68633 27.6279 10.0497 27.7778 10.4286 27.7778H27.5714C27.9503 27.7778 28.3137 27.6279 28.5816 27.3612C28.8495 27.0945 29 26.7328 29 26.3556V14.9778C29 14.6006 28.8495 14.2388 28.5816 13.9721C28.3137 13.7054 27.9503 13.5556 27.5714 13.5556ZM10.4286 26.3556V14.9778H27.5714V17.1111H21.8571C21.4783 17.1111 21.1149 17.261 20.847 17.5277C20.5791 17.7944 20.4286 18.1561 20.4286 18.5333V22.8C20.4286 23.1772 20.5791 23.5389 20.847 23.8057C21.1149 24.0724 21.4783 24.2222 21.8571 24.2222H27.5714V26.3556H10.4286ZM27.5714 18.5333V22.8H21.8571V18.5333H27.5714Z"
                                     fill="#515C6F" />
                             </svg>
-                            <div class="d-flex flex-column">
+                            <div class="d-flex flex-column grid-p-searchby">
                                 ${name_txt}
                                 <small>${formatDate(walletHistory.created_at)}</small>
-                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap">
+                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap grid-p-searchby">
                                     <b>${walletHistory.created_by_user.username}</b>(${truncatedCompanyName})
                                 </span>
                             </div>
                         </div>
-                        <div class="pt-3 pe-3 pb-2 d-flex flex-column align-items-end">
+                        <div class="pt-3 pe-3 pb-2 d-flex flex-column align-items-end grid-p-searchby">
                             ${amount_txt}
                             ${status}
-                            <button type="button" class="btn added-by-admin px-2 py-0 mt-1">
+                            <button type="button" class="btn added-by-admin px-2 py-0 mt-1 grid-p-searchby">
                                 ${walletHistory.transaction_remarks}
                             </button>
                         </div>
@@ -611,3 +613,22 @@ function getWalletHistoryFilteredDataResponse(response){
     updateWalletHistoryList(walletHistoryList)
     
 }
+
+$('#searchInListing').on("keyup", function (e)  {     
+    var tr = $('.identify');
+    
+    if ($(this).val().length >= 1) {//character limit in search box.
+        var noElem = true;
+        var val = $.trim(this.value).toLowerCase();
+        el = tr.filter(function() {
+            return $(this).find('.grid-p-searchby').text().toLowerCase().match(val);
+        });
+        if (el.length >= 1) {
+            noElem = false;
+        }
+        tr.not(el).hide().addClass("d-none");
+		el.fadeIn().removeClass("d-none");
+	} else {
+		tr.fadeIn().removeClass("d-none");
+    }
+});

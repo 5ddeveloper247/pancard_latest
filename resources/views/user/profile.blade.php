@@ -181,12 +181,20 @@
                     </button>
                 </div>
                 @foreach($tutorials as $value)
-                <div class="border rounded-3 my-3">
-                    <img src="{{ $value->thumbnail != null ? $value->thumbnail : asset('assets_user/images/Rectangle 443.png') }}" width="100%" alt="" style="border-radius:10px;">
-                    <h5>
-                        <a href="{{ $value->url}}" target="_blank">{{ $value->title}}</a>
-                    </h5>
-                </div>
+                    <div class="d-flex justify-content-between border rounded-2 my-2">
+                        <div class="d-flex align-items-center py-2 edit_tutorial" data-id="2">
+                            <a href="{{ $value->url}}" target="_blank" style="height: 70px;width: 110px;">
+                                <img src="{{ $value->thumbnail != null ? $value->thumbnail : asset('assets_user/images/Rectangle 443.png') }}" alt="" style="height: 100%; width: 100%; border-radius: 6px;">
+                            </a>
+                            <div class="d-flex flex-column ps-2">
+                                <h6 class="m-0">
+                                {{ $value->title}}
+                                </h6>
+                                <small>{{ \Carbon\Carbon::parse($value->date)->format('d-M-Y') }}</small>
+                                <span class="notifications-list-date px-2">{{ \Carbon\Carbon::parse($value->date)->format('h:i A') }}</span>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
                 
                 
@@ -308,7 +316,7 @@
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <div id="cameraIcon" class="upload px-4 d-flex align-items-center justify-content-between">
+                            <div id="" class="upload px-4 d-flex align-items-center justify-content-between"><!-- cameraIcon -->
                                 <span id="picturename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Picture</span>
                                 <input type="file" accept="image/*" capture="camera" id="upload_picture" name="upload_picture" multiple="false" style="display: none;">
                                 <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -324,7 +332,7 @@
 
 
                         <div class="form-floating col-6 col-md-4">
-                            <div id="aadharUploadIcon" class="upload px-4 d-flex align-items-center justify-content-between">
+                            <div id="" class="upload px-4 d-flex align-items-center justify-content-between"><!-- aadharUploadIcon -->
                                 <span id="filename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Aadhar</span>
                                 <input type="file" id="upload_aadhar" name="upload_aadhar" multiple="false" style="display: none;">
                                 <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">

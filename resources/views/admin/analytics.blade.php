@@ -92,8 +92,8 @@
         </div>
 
         <div class="analytics-card-content px-4 py-2 d-flex flex-column align-items-center ">
-            <span class="analytics-card-content-heading" id="c_challans_pay">0</span>
-            <p class="text-center m-0 analytics-card-content-paragraph pt-2">Challan Payment</p>
+            <span class="analytics-card-content-heading" id="c_challans_qty">0</span>
+            <p class="text-center m-0 analytics-card-content-paragraph pt-2">Challan Quantity</p>
         </div>
 
         <div class="analytics-card-content px-4 py-2 d-flex flex-column align-items-center ">

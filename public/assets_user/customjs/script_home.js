@@ -3,34 +3,34 @@ function getPucTypeRate(){
     var puc_type_id = $("#puc_type").val();
     var puc_challan = $("#Challan-form").val();
     
-    // if(puc_type_id != ''){
-        let type = 'POST';
-        let url = '/getPucTypeRate';
-        let message = '';
-        let form = '';
-        let data = new FormData();
-        data.append("puc_type_id", puc_type_id);
-        data.append("puc_challan", puc_challan);
-        
-        // PASSING DATA TO FUNCTION
-        SendAjaxRequestToServer(type, url, data, '', getPucTypeRateResponse, '', 'submit_button');
-    // }else{
-    //     $("#puc_charges").html(`&#8377; 0`);
-    //     $("#puc_type_rate").val('0');
-    // }
+    let type = 'POST';
+    let url = '/getPucTypeRate';
+    let message = '';
+    let form = '';
+    let data = new FormData();
+    data.append("puc_type_id", puc_type_id);
+    data.append("puc_challan", puc_challan);
     
+    // PASSING DATA TO FUNCTION
+    SendAjaxRequestToServer(type, url, data, '', getPucTypeRateResponse, '', 'submit_button');
 }
 function getPucTypeRateResponse(response){
 
     var data = response.data;
     var charges = data['charges'];
+    var pucTypeTotalRate = data['pucTypeTotalRate'];
+    var challanTotalRate = data['challanTotalRate'];
 
     if(charges != null){
         $("#puc_charges").html('&#8377; '+charges);
-        $("#puc_type_rate").val(charges);
+        $("#puc_total_charges").val(charges != null ? charges : 0);
+        $("#puc_type_rate").val(pucTypeTotalRate != null ? pucTypeTotalRate : 0);
+        $("#puc_challan_rate").val(challanTotalRate != null ? challanTotalRate : 0);
     }else{
         $("#puc_charges").html(`&#8377; 0`);
+        $("#puc_total_charges").val('0');
         $("#puc_type_rate").val('0');
+        $("#puc_challan_rate").val('0');
     }
 }
 $(document).on('change', '#Challan-form', function (e) {
@@ -90,7 +90,6 @@ function resetPasswordProfileResponse(response) {
             });
         }
     	
-        
         toastr.error(error, '', {
             timeOut: 3000
         });
@@ -103,17 +102,26 @@ $(document).ready(function () {
     
     $(document).on('click', '#makeNewPuc_btn', function (e) {
         
-        let form = $('#puc_create_form');
-        form.trigger("reset");
-
-        $("#picturename").html('Upload Vehicle Photo');
-        $("#challanName").html('Upload Challan Screenshot');
-
-        $("#puc_charges").html('&#8377; 0');
-        $("#puc_type_rate").val('0');
-
-        $("#main_section, #notification_section").hide();
-        $("#makePuc_section").show();
+        if(user_balance > 0){
+            let form = $('#puc_create_form');
+            form.trigger("reset");
+    
+            $("#picturename").html('Upload Vehicle Photo');
+            $("#challanName").html('Upload Challan Screenshot');
+    
+            $("#puc_charges").html('&#8377; 0');
+            $("#puc_total_charges").val('0');
+            $("#puc_type_rate").val('0');
+            $("#puc_challan_rate").val('0');
+    
+            $("#main_section, #notification_section").hide();
+            $("#makePuc_section").show();
+        }else{
+            toastr.error('Insufficient balance, please add balance in your wallet first!', '', {
+                timeOut: 3000
+            });
+        }
+        
         
     });
 

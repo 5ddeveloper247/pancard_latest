@@ -74,6 +74,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/uploadExcelBulkForm', [AdminController::class, 'uploadExcelFrom'])->name('admin.uploadExcelBulkForm');
 
         Route::post('/getAnalyticsPageData', [AdminController::class, 'getAnalyticsPageData'])->name('admin.getAnalyticsPageData');
+        Route::post('/updatePucViewFlags', [AdminController::class, 'updatePucViewFlags'])->name('admin.updatePucViewFlags');
 
 
 
@@ -148,4 +149,3 @@ Route::post('/payment/status/addwallet', [PaytmController::class, 'paymentCallba
 Route::get('/register/doPayment/{id}', [PaytmController::class, 'doPayment'])->name('register.doPayment');
 Route::get('/user/addwallet/online/pay/{amount}', [PaytmController::class, 'addWalletOnline'])->name('user.addwallet.online.pay');
 //----------------------------------------Paytm GP Routes ends-----------------------------------------------------
-

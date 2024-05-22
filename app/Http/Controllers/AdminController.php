@@ -755,7 +755,7 @@ class AdminController extends Controller
 
 
 
-     
+
 
 
 
@@ -988,18 +988,13 @@ class AdminController extends Controller
         $pdfFilePath = $uploadedFile->storeAs('temp', $uploadedFile->getClientOriginalName());
 
         // Extract text from the PDF file
-        // $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
-        // if (config('app.env') == 'local') {
-        //     dd('safds');
-        //     $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
-        //     $text = Pdf::getText($request->file('uploadFile'), $binpath);
-        // } else { // on dev or prod
-        // dd(storage_path('/pdftotext'));
-        $binpath = storage_path('/pdftotext');
-        // dd($binpath);
-        // $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
-        $text = Pdf::getText(storage_path('app/' . $pdfFilePath), $binpath);
-        // }
+        if (config('app.env') == 'local') {
+            $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
+            $text = Pdf::getText($request->file('uploadFile'), $binpath);
+        } else { // on dev or prod
+            $binpath = storage_path('/pdftotext');
+            $text = Pdf::getText(storage_path('app/' . $pdfFilePath), $binpath);
+        }
         // Delete the temporary PDF file
         unlink(storage_path('app/' . $pdfFilePath));
 
@@ -1167,6 +1162,7 @@ class AdminController extends Controller
 
         $puc_2w = $puc_2w_fine = $puc_3w = $puc_3w_fine = $puc_4w = $puc_4w_fine = 0;
         $puc_2w_am = $puc_2w_fine_am = $puc_3w_am = $puc_3w_fine_am = $puc_4w_am = $puc_4w_fine_am = 0;
+        $puc_challan_qty = $puc_challan_am = 0;
 
         if ($filter_flag == '0') {
             $data['pending_users'] = User::where('type', 'user')->where('status', 'inactive')->count();
@@ -1243,6 +1239,11 @@ class AdminController extends Controller
                     $puc_4w_fine = $puc_4w_fine + 1;
                     $puc_4w_fine_am = $puc_4w_fine_am + $value->puc_charges;
                 }
+
+                if ($value->challan != null) {
+                    $puc_challan_qty = $puc_challan_qty + 1;
+                    $puc_challan_am = $puc_challan_am + $value->puc_challan_rate;
+                }
             }
         }
 
@@ -1260,8 +1261,33 @@ class AdminController extends Controller
         $data['puc_4w_am'] = $puc_4w_am;
         $data['puc_4w_fine_am'] = $puc_4w_fine_am;
 
+        $data['puc_challan_qty'] = $puc_challan_qty;
+        $data['puc_challan_am'] = $puc_challan_am;
         // dd($data);
         return response()->json(['status' => 200, 'message' => "", "data" => $data]);
+    }
+
+    public function updatePucViewFlags(Request $request)
+    {
+
+        $puc_id = $request->puc_id;
+        $flag_type = $request->flag_type;
+
+        if ($flag_type == '1') {
+            Puc::where('id', $puc_id)->update([
+                'file_view_flag' => '1',
+            ]);
+        } else if ($flag_type == '3') {
+            Puc::where('id', $puc_id)->update([
+                'share_view_flag' => '1',
+            ]);
+        } else if ($flag_type == '4') {
+            Puc::where('id', $puc_id)->update([
+                'download_view_flag' => '1',
+            ]);
+        }
+
+        return response()->json(['status' => 200, 'message' => ""]);
     }
 
 

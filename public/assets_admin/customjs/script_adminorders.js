@@ -1,3 +1,12 @@
+var rejectionReasonOptions = `<option value="">Choose Reason</option>
+                                <option value="Photo not clear">Photo not clear</option>
+                                <option value="Fine not clear">Fine not clear</option>
+                                <option value="Fule not updated in RTO">Fule not updated in RTO</option>
+                                <option value="Vehicle type mismatch">Vehicle type mismatch</option>
+                                <option value="Challan found">Challan found</option>
+                                <option value="Challan id mismatch">Challan id mismatch</option>
+                                <option value="Offline Vehicle">Offline Vehicle</option>
+                                <option value="Others">Others</option>`;
 function getPucPageData(){
 
     let type = 'POST';
@@ -41,18 +50,20 @@ function makePucPendingListing(puc_list){
                 }
             }
 
-            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4">
+            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4 identify">
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
-                                <span class="fw-bold text-dark">
+                                <span class="fw-bold text-dark grid-p-searchby">
                                 ${value.name}
                                 </span>
-                                <span class="text-dark d-flex ">${value.puc_type.name}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
-                                <span class="text-dark">
+                                <span class="text-dark d-flex grid-p-searchby">${value.puc_type.name}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
+                                <span class="text-dark grid-p-searchby">
                                     ${value.model}&nbsp;-&nbsp;${value.phone_number}
                                 </span>
-                                <span class="text-dark">
-                                Challan (${value.challan}) - ${value.engine_number}, ${value.chasis_number}
+                                <span class="text-dark grid-p-searchby">
+                                    Challan (${value.challan !=null?value.challan:'0'}) - 
+                                    ${value.engine_number!=null?value.engine_number:'N/A'}, 
+                                    ${value.chasis_number!=null?value.chasis_number:'N/A'}
                                 </span>
                                 <div class="d-flex justify-content-md-center justify-content-between">
                                 </div>
@@ -63,7 +74,7 @@ function makePucPendingListing(puc_list){
                                 <div class="d-flex align-items-center justify-content-end">
                                     <!-- Button trigger modal -->
 
-                                    <button type="button" class="modal-btn-completed py-1 px-2 ms-1">
+                                    <button type="button" class="${value.share_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} py-1 px-2 ms-1 updateViewFlag_btn" data-id="${value.id}" data-flag-type="3">
                                         <svg width="20" height="19" viewBox="0 0 20 19" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -77,7 +88,7 @@ function makePucPendingListing(puc_list){
                                                 stroke="#0D9E00" />
                                         </svg>
                                     </button>
-                                    <button type="button" class="modal-btn-completed uploadPdf_btn py-1 px-2 ms-1" data-id="${value.id}" data-file="${value.certificate_pdf}">
+                                    <button type="button" class="${value.certificate_pdf != null ? 'modal-btn-completed' : 'modal-btn-neutral'} uploadPdf_btn py-1 px-2 ms-1" id="uploadPdf_btn_${value.id}" data-id="${value.id}" data-file="${value.certificate_pdf}">
                                         <svg width="22" height="21" viewBox="0 0 22 21" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -95,7 +106,7 @@ function makePucPendingListing(puc_list){
                                                 stroke="#0D9E00" />
                                         </svg>
                                     </button>
-                                    <button type="button" class="modal-btn-completed showUploadsModal_btn py-1 px-2 ms-1" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}">
+                                    <button type="button" class="${value.file_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} showUploadsModal_btn py-1 px-2 ms-1 updateViewFlag_btn" data-id="${value.id}" data-flag-type="1" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}">
                                         <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path opacity="0.5" d="M18.8571 11.3333H13.619" stroke="#515C6F"
@@ -121,17 +132,13 @@ function makePucPendingListing(puc_list){
                         </div>
                         <div class="d-flex flex-nowrap justify-content-between">
                             <div>
-                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap" onclick="getUserInfo(${value.user.id})">
+                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap grid-p-searchby" onclick="getUserInfo(${value.user.id})">
                                     <b>${value.user.username}</b>(${truncatedCompanyName})
                                 </span>
                             </div>
                             <div class="d-flex flex-nowrap">
                                 <select class="form-select pending-dropdown py-0 my-1 ms-2 reasonSelect_txt" id="" style=""><!-- width: 180px; -->
-                                    <option value="">Choose Reason</option>
-                                    <option value="Photo not clear">Photo not clear</option>
-                                    <option value="Vehicle Not found">Vehicle Not found</option>
-                                    <option value="Fine not paid">Fine not paid</option>
-                                    <option value="Wrong vehicle selected">Wrong vehicle selected</option>
+                                    ${rejectionReasonOptions}
                                 </select>
                                 <span class="states-btns ms-1 my-1 text-white text-nowrap">
                                     <button type="button" class="btn action-btns btn-danger px-2 py-0 rejectPuc_btn" data-id="${value.id}" data-reason="${value.id}">
@@ -146,12 +153,12 @@ function makePucPendingListing(puc_list){
                             </div>
                         </div>
                         ${value.start_date != null ? `<div class="d-flex flex-nowrap justify-content-between">
-                                                        <div> <span class="diff-bg-date px-2 my-1">
+                                                        <div> <span class="diff-bg-date px-2 my-1 grid-p-searchby">
                                                                 ${startDate} to ${endDate}
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <span class="diff-bg-date px-2 my-1">${remainingDaysText}</span>
+                                                            <span class="diff-bg-date px-2 my-1 grid-p-searchby">${remainingDaysText}</span>
                                                         </div>
                                                     </div>` : ""}
                     </div>`;
@@ -191,18 +198,20 @@ function makePucOrderHistoryListing(puc_list){
             }
            
 
-            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4" >
+            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4 identify" >
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
-                                <span class="fw-bold text-dark">
+                                <span class="fw-bold text-dark grid-p-searchby">
                                     ${value.name}
                                 </span>
-                                <span class="text-dark d-flex ">${value.puc_type.name}&nbsp;-&nbsp;<b>${value.registration_number}</b></span>
-                                <span class="text-dark">
+                                <span class="text-dark d-flex grid-p-searchby">${value.puc_type.name}&nbsp;-&nbsp;<b>${value.registration_number}</b></span>
+                                <span class="text-dark grid-p-searchby">
                                     ${value.model}&nbsp;-&nbsp;${value.phone_number}
                                 </span>
-                                <span class="text-dark">
-                                    Challan (${value.challan}) - ${value.engine_number}, ${value.chasis_number}
+                                <span class="text-dark grid-p-searchby">
+                                    Challan (${value.challan !=null?value.challan:'0'}) - 
+                                    ${value.engine_number!=null?value.engine_number:'N/A'}, 
+                                    ${value.chasis_number!=null?value.chasis_number:'N/A'}
                                 </span>
                                 <div class="d-flex justify-content-md-center justify-content-between"></div>
 
@@ -210,8 +219,7 @@ function makePucOrderHistoryListing(puc_list){
 
                             <div class="d-flex flex-column">
                                 <div class="d-flex align-items-center justify-content-end">
-                                    <!-- Button trigger modal -->
-                                    <button type="button" class="modal-btn-neutral py-1 px-2">
+                                    <button type="button" class="${value.download_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} py-1 px-2 updateViewFlag_btn" data-id="${value.id}" data-flag-type="4">
                                         <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M11 7.82864L11 19.7144M11 19.7144L8.08567 16.5144M11 19.7144L13.9142 16.5144"
@@ -221,15 +229,25 @@ function makePucOrderHistoryListing(puc_list){
                                                 d="M14.8857 1.42861L7.11423 1.42861C4.36703 1.42861 2.99246 1.42862 2.13955 2.23136C1.28566 3.03593 1.28566 4.32782 1.28566 6.91433L1.28566 7.82862C1.28566 10.4142 1.28566 11.707 2.13955 12.5107C2.8856 13.2128 4.02995 13.3015 6.1428 13.3125M15.8571 13.3125C17.9699 13.3015 19.1143 13.2128 19.8603 12.5107C20.7142 11.707 20.7142 10.4142 20.7142 7.82861L20.7142 6.91433C20.7142 4.32781 20.7142 3.03501 19.8603 2.23136C19.5689 1.95707 19.2173 1.77696 18.7714 1.6581"
                                                 stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
                                         </svg>
+                                        <svg class="tick-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M3.56667 6.13333L5.76667 7.96667L8.7 4.3M6.13333 11.2667C5.45921 11.2667 4.7917 11.1339 4.16889 10.8759C3.54609 10.6179 2.98019 10.2398 2.50352 9.76315C2.02684 9.28647 1.64873 8.72058 1.39075 8.09777C1.13278 7.47497 1 6.80745 1 6.13333C1 5.45921 1.13278 4.7917 1.39075 4.16889C1.64873 3.54609 2.02684 2.98019 2.50352 2.50352C2.98019 2.02684 3.54609 1.64873 4.16889 1.39075C4.7917 1.13278 5.45921 1 6.13333 1C7.49478 1 8.80046 1.54083 9.76315 2.50352C10.7258 3.46621 11.2667 4.77189 11.2667 6.13333C11.2667 7.49478 10.7258 8.80046 9.76315 9.76315C8.80046 10.7258 7.49478 11.2667 6.13333 11.2667Z"
+                                                stroke="#0D9E00" />
+                                        </svg>
                                     </button>
-                                    <button type="button" class="modal-btn-neutral py-1 px-2 ms-1">
+                                    <button type="button" class="${value.share_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} py-1 px-2 ms-1 updateViewFlag_btn" data-id="${value.id}" data-flag-type="3">
                                         <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M13.6654 13.1353L19.49 7.35834L19.5638 7.27345C19.6731 7.12545 19.7258 6.94267 19.7122 6.75865C19.6987 6.57463 19.6198 6.40172 19.49 6.27165L13.6654 0.497273L13.5851 0.428048C13.1188 0.0753947 12.4323 0.414987 12.4323 1.04062V3.82266L12.1409 3.84226C7.52604 4.21058 4.82292 7.15589 4.1779 12.4979C4.095 13.1837 4.87473 13.6134 5.37986 13.1588C7.23332 11.4896 9.14895 10.4525 11.1371 10.0372C11.4557 9.97059 11.7756 9.91965 12.0982 9.88439L12.4323 9.85435V12.592L12.4388 12.6991C12.5165 13.2908 13.2276 13.569 13.6654 13.1353ZM12.2355 5.14446L13.7275 5.04389V2.38854L18.1909 6.81369L13.7275 11.2414V8.42414L11.9712 8.58349H11.9609C9.75511 8.82251 7.67369 9.71328 5.70885 11.1983C6.09482 9.44945 6.75409 8.13418 7.62059 7.19246C8.69562 6.02348 10.1981 5.30903 12.2355 5.14446ZM3.52381 1.5918C2.66503 1.5918 1.84142 1.93583 1.23417 2.54819C0.626917 3.16056 0.285767 3.9911 0.285767 4.85711V15.3061C0.285767 16.1721 0.626917 17.0027 1.23417 17.615C1.84142 18.2274 2.66503 18.5714 3.52381 18.5714H13.8856C14.7443 18.5714 15.568 18.2274 16.1752 17.615C16.7825 17.0027 17.1236 16.1721 17.1236 15.3061V14C17.1236 13.8268 17.0554 13.6607 16.9339 13.5382C16.8125 13.4157 16.6478 13.3469 16.476 13.3469C16.3042 13.3469 16.1395 13.4157 16.0181 13.5382C15.8966 13.6607 15.8284 13.8268 15.8284 14V15.3061C15.8284 15.8257 15.6237 16.324 15.2593 16.6915C14.895 17.0589 14.4008 17.2653 13.8856 17.2653H3.52381C3.00854 17.2653 2.51438 17.0589 2.15003 16.6915C1.78567 16.324 1.58098 15.8257 1.58098 15.3061V4.85711C1.58098 4.33751 1.78567 3.83918 2.15003 3.47176C2.51438 3.10434 3.00854 2.89793 3.52381 2.89793H7.40947C7.58122 2.89793 7.74595 2.82912 7.8674 2.70665C7.98885 2.58418 8.05708 2.41807 8.05708 2.24487C8.05708 2.07166 7.98885 1.90556 7.8674 1.78308C7.74595 1.66061 7.58122 1.5918 7.40947 1.5918H3.52381Z"
                                                 fill="#515C6F" />
                                         </svg>
+                                        <svg class="tick-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M3.56667 6.13333L5.76667 7.96667L8.7 4.3M6.13333 11.2667C5.45921 11.2667 4.7917 11.1339 4.16889 10.8759C3.54609 10.6179 2.98019 10.2398 2.50352 9.76315C2.02684 9.28647 1.64873 8.72058 1.39075 8.09777C1.13278 7.47497 1 6.80745 1 6.13333C1 5.45921 1.13278 4.7917 1.39075 4.16889C1.64873 3.54609 2.02684 2.98019 2.50352 2.50352C2.98019 2.02684 3.54609 1.64873 4.16889 1.39075C4.7917 1.13278 5.45921 1 6.13333 1C7.49478 1 8.80046 1.54083 9.76315 2.50352C10.7258 3.46621 11.2667 4.77189 11.2667 6.13333C11.2667 7.49478 10.7258 8.80046 9.76315 9.76315C8.80046 10.7258 7.49478 11.2667 6.13333 11.2667Z"
+                                                stroke="#0D9E00" />
+                                        </svg>
                                     </button>
-                                    <button type="button" class="modal-btn-completed uploadPdf_btn py-1 px-2 ms-1" data-id="${value.id}" data-file="${value.certificate_pdf}">
+                                    <button type="button" class="${value.certificate_pdf != null ? 'modal-btn-completed' : 'modal-btn-neutral'} uploadPdf_btn py-1 px-2 ms-1" id="uploadPdf_btn_${value.id}" data-id="${value.id}" data-file="${value.certificate_pdf}">
                                         <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M11.0001 13.1714V1.28571M11.0001 1.28571L13.9144 4.48571M11.0001 1.28571L8.08582 4.48571"
@@ -240,12 +258,11 @@ function makePucOrderHistoryListing(puc_list){
                                                 stroke="#515C6F" stroke-width="1.5" stroke-linecap="round" />
                                         </svg>
                                         <svg class="tick-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M3.56667 6.13333L5.76667 7.96667L8.7 4.3M6.13333 11.2667C5.45921 11.2667 4.7917 11.1339 4.16889 10.8759C3.54609 10.6179 2.98019 10.2398 2.50352 9.76315C2.02684 9.28647 1.64873 8.72058 1.39075 8.09777C1.13278 7.47497 1 6.80745 1 6.13333C1 5.45921 1.13278 4.7917 1.39075 4.16889C1.64873 3.54609 2.02684 2.98019 2.50352 2.50352C2.98019 2.02684 3.54609 1.64873 4.16889 1.39075C4.7917 1.13278 5.45921 1 6.13333 1C7.49478 1 8.80046 1.54083 9.76315 2.50352C10.7258 3.46621 11.2667 4.77189 11.2667 6.13333C11.2667 7.49478 10.7258 8.80046 9.76315 9.76315C8.80046 10.7258 7.49478 11.2667 6.13333 11.2667Z"
+                                            <path d="M3.56667 6.13333L5.76667 7.96667L8.7 4.3M6.13333 11.2667C5.45921 11.2667 4.7917 11.1339 4.16889 10.8759C3.54609 10.6179 2.98019 10.2398 2.50352 9.76315C2.02684 9.28647 1.64873 8.72058 1.39075 8.09777C1.13278 7.47497 1 6.80745 1 6.13333C1 5.45921 1.13278 4.7917 1.39075 4.16889C1.64873 3.54609 2.02684 2.98019 2.50352 2.50352C2.98019 2.02684 3.54609 1.64873 4.16889 1.39075C4.7917 1.13278 5.45921 1 6.13333 1C7.49478 1 8.80046 1.54083 9.76315 2.50352C10.7258 3.46621 11.2667 4.77189 11.2667 6.13333C11.2667 7.49478 10.7258 8.80046 9.76315 9.76315C8.80046 10.7258 7.49478 11.2667 6.13333 11.2667Z"
                                                 stroke="#0D9E00" />
                                         </svg>
                                     </button>
-                                    <button type="button" class="modal-btn-completed showUploadsModal_btn py-1 px-2 ms-1" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}">
+                                    <button type="button" class="${value.file_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} showUploadsModal_btn py-1 px-2 ms-1 updateViewFlag_btn" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}" data-id="${value.id}" data-flag-type="1">
                                         <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path opacity="0.5" d="M18.8571 11.3333H13.619" stroke="#515C6F"
                                                 stroke-width="1.5" stroke-linecap="round" />
@@ -269,17 +286,13 @@ function makePucOrderHistoryListing(puc_list){
                         </div>
                         <div class="d-flex flex-nowrap justify-content-between">
                             <div>
-                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap" onclick="getUserInfo(${value.user.id})" style="cursor:pointer;">
+                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap grid-p-searchby" onclick="getUserInfo(${value.user.id})" style="cursor:pointer;">
                                     <b>${value.user.username}</b>(${truncatedCompanyName})
                                 </span>
                             </div>
                             <div class="d-flex flex-nowrap ${value.status == '1' ? 'd-block' : 'd-none'}">
                                 <select class="form-select pending-dropdown py-0 my-1 ms-2 reasonSelect_txt" id="" style=""><!-- width: 180px; -->
-                                    <option value="">Choose Reason</option>
-                                    <option value="Photo not clear">Photo not clear</option>
-                                    <option value="Vehicle Not found">Vehicle Not found</option>
-                                    <option value="Fine not paid">Fine not paid</option>
-                                    <option value="Wrong vehicle selected">Wrong vehicle selected</option>
+                                    ${rejectionReasonOptions}
                                 </select>
                                 <span class="states-btns ms-1 my-1 text-white text-nowrap">
                                     <button type="button" class="btn action-btns btn-danger px-2 py-0 rejectPuc_btn" data-id="${value.id}" data-reason="${value.id}">
@@ -293,23 +306,29 @@ function makePucOrderHistoryListing(puc_list){
                                 </span>
                             </div>
                             <div class="d-flex flex-nowrap ${value.status == '3' ? 'd-block' : 'd-none'}">
-                                <span class="states-btns  ms-1 my-1 text-nowrap" style="color:red;">
+                                <span class="states-btns  ms-1 my-1 text-nowrap grid-p-searchby" style="color:red;">
                                     Rejected, Reason: ${value.rejection_reason}
                                 </span>
                             </div>
                             <div class="d-flex flex-nowrap ${value.status == '4' ? 'd-block' : 'd-none'}">
-                                <span class="states-btns  ms-1 my-1 text-nowrap" style="color:green;">
-                                    Completed
+                                <select class="form-select pending-dropdown py-0 my-1 ms-2 reasonSelect_txt" id="" style=""><!-- width: 180px; -->
+                                    ${rejectionReasonOptions}
+                                </select>
+                                <span class="states-btns ms-1 my-1 text-white text-nowrap">
+                                    <button type="button" class="btn action-btns btn-danger px-2 py-0 rejectPuc_btn" data-id="${value.id}" data-reason="${value.id}">
+                                        Reject
+                                    </button>
                                 </span>
                             </div>
                         </div>
                         ${value.start_date != null ? `<div class="d-flex flex-nowrap justify-content-between">
-                                                        <div> <span class="diff-bg-date px-2 my-1">
+                                                        <div> 
+                                                            <span class="diff-bg-date px-2 my-1 grid-p-searchby">
                                                                 ${startDate} to ${endDate}
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <span class="diff-bg-date px-2 my-1">${remainingDaysText}</span>
+                                                            <span class="diff-bg-date px-2 my-1 grid-p-searchby">${remainingDaysText}</span>
                                                         </div>
                                                     </div>` : ""}
                         
@@ -324,8 +343,6 @@ function makePucOrderHistoryListing(puc_list){
     $("#orderHistory_container").html(html);
     
 }
-
-
 
 $(document).on('click', '.showUploadsModal_btn', function (e) {
     
@@ -411,12 +428,6 @@ function changePucStatusResponse(response){
 
     getPucPageData();
 }
-
-
-
-
-
-
 
 $(document).on('click', '.filter_today', function (e) {
     
@@ -544,7 +555,7 @@ $(document).on('click', '.uploadPdf_btn', function (e) {
     var puc_id = $(this).attr('data-id');
     var pdf_file = $(this).attr('data-file');
     
-    if(pdf_file == 'null'){
+    // if(pdf_file == 'null'){
         tempPucId = puc_id;
 
         let form = $('#uploadPdf_form');
@@ -554,11 +565,11 @@ $(document).on('click', '.uploadPdf_btn', function (e) {
         $("#filename").text('Click here to upload file');
         
         $("#uploadPdfModal").modal('show');
-    }else{
-        toastr.error('File already uploaded!', '', {
-            timeOut: 3000
-        });
-    }
+    // }else{
+    //     toastr.error('File already uploaded!', '', {
+    //         timeOut: 3000
+    //     });
+    // }
 });
 
 $(document).on('click', '#uploadPdf_submit', function (e) {
@@ -705,6 +716,34 @@ function makeBulkUploadResponseList(responseList){
     $("#bulkUpload_container").html(html);
 }
 
+$(document).on('click', '.updateViewFlag_btn', function (e) {
+
+    var puc_id = $(this).attr('data-id');
+    var flag_type = $(this).attr('data-flag-type');
+
+    $(this).removeClass('modal-btn-neutral');
+    $(this).addClass('modal-btn-completed');
+
+	e.preventDefault();
+	let type = 'POST';
+	let url = '/admin/updatePucViewFlags';
+	let message = '';
+	let form = $('#uploadPdf_form');
+	let data = new FormData();
+    data.append('puc_id', puc_id);
+    data.append('flag_type', flag_type);
+	    
+	// PASSING DATA TO FUNCTION
+	SendAjaxRequestToServer(type, url, data, '', updatePucViewFlagsResponse, '', '#uploadPdf_submit1');
+	
+});
+
+function updatePucViewFlagsResponse(response) {
+
+    console.log(response);
+    
+}
+
 $(document).on('click', '.bulkupload-reset', function (e) {
 
     let form = $('#uploadBulk_form');
@@ -718,6 +757,7 @@ $(document).on('click', '.bulkupload-reset', function (e) {
     $("#uploadBulkIcon").removeClass('bulk-upload-selected-width');
     $("#uploadBulk_submit").prop('disabled', true);
 });
+
 
 $(document).ready(function () {
     
@@ -736,6 +776,7 @@ $(document).ready(function () {
 
 
 });
+
 
 
 document.getElementById('uploadIcon').addEventListener('click', function() {
@@ -779,4 +820,23 @@ document.getElementById('uploadBilkFile').addEventListener('change', function() 
         $("#uploadBulk_submit").prop('disabled', true);
     }
     
+});
+
+$('#searchInListing').on("keyup", function (e)  {     
+    var tr = $('.identify');
+    
+    if ($(this).val().length >= 1) {//character limit in search box.
+        var noElem = true;
+        var val = $.trim(this.value).toLowerCase();
+        el = tr.filter(function() {
+            return $(this).find('.grid-p-searchby').text().toLowerCase().match(val);
+        });
+        if (el.length >= 1) {
+            noElem = false;
+        }
+        tr.not(el).hide().addClass("d-none").removeClass("d-flex");
+		el.fadeIn().removeClass("d-none");
+	} else {
+		tr.fadeIn().removeClass("d-none");
+    }
 });

@@ -29,8 +29,8 @@
                     Add/List option
                 </button>
             </li>
-            <form class="d-flex order-search-bar px-1" role="search">
-                <input class="form-control search-form" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex order-search-bar px-1" role="search"action="javascript:;">
+                <input class="form-control search-form" type="search" id="searchInListing" placeholder="Search" aria-label="Search">
                 <button class="order-search-btn p-0" type="submit">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
@@ -103,7 +103,7 @@
 
         </div>
         <div id="add-list-option" style="display: none;">
-            <ul class="nav nav-pills d-flex flex-nowrap align-items-center justify-content-between gap-0 gap-md-1 my-3"
+            <!-- <ul class="nav nav-pills d-flex flex-nowrap align-items-center justify-content-between gap-0 gap-md-1 my-3"
                 id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button id="nav-sub-links-for-days"
@@ -137,7 +137,7 @@
                         Date Range
                     </button>
                 </li>
-            </ul>
+            </ul> -->
             <div class="border rounded-2 px-2">
                 <p class="py-1 bank-details-heading">Add bank Account</p>
                 <form class="row g-3 register mb-2" id="add_bank_form" novalidate="">
@@ -225,8 +225,8 @@
                     </button>
                 </li>
             </ul>
-            <form class="d-flex order-search-bar" role="search">
-                <input class="form-control search-form" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex order-search-bar" role="search" action="javascript:;">
+                <input class="form-control search-form" type="text" id="searchInListing" placeholder="Search" aria-label="Search">
                 <button class="search-in-pending-search-btn p-0" type="submit">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
                         xmlns="http://www.w3.org/2000/svg">

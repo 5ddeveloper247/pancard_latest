@@ -290,7 +290,7 @@
                     </div>
 
                     <div class="row gy-2 gx-0 gap-2 pe-2">
-                        <div class="col-2 challan ms-2 px-2 pb-2">
+                        <div class="col-2 challan ms-2 px-2 pb-2 {{@$disableChallan == true ? 'd-none' : 'd-block'}}">
                             <label for="challan">
                                 Challan
                             </label>
@@ -338,7 +338,9 @@
                             Charges <br>
                             <b class="text-dark fs-5" id="puc_charges"></b>
                         </div>
+                        <input type="hidden" id="puc_total_charges" name="puc_total_charges" value="0">
                         <input type="hidden" id="puc_type_rate" name="puc_type_rate" value="0">
+                        <input type="hidden" id="puc_challan_rate" name="puc_challan_rate" value="0">
                     </div>
 
                     <div class="py-3 text-center">
@@ -357,5 +359,6 @@
     <script src="{{ asset('assets_user/customjs/script_home.js') }}"></script>
 	<script>
         var upload_option = '{{@$user->upload_option}}';
+        var user_balance = '{{@$user->balance}}';
     </script>
 @endpush
