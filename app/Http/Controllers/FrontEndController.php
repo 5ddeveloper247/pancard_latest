@@ -58,10 +58,24 @@ class FrontEndController extends Controller
     {
         
         $validatedData = $request->validate([
-            'username' => 'required|exists:users,username',
+            // 'username' => 'required|exists:users,username',
+            'username' => 'required|string',
         ]);
+
+        $login = $request->input('username');
+        $password = $request->input('password');
+
+        // Check if the login field is an email
+        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            // Login using email
+            $credentials = ['email' => $login, 'password' => $password];
+            $user = User::where('email', $request->username)->first();
+        } else {
+            // Login using username
+            $credentials = ['username' => $login, 'password' => $password];
+            $user = User::where('username', $request->username)->first();
+        }
         
-        $user = User::where('username', $request->username)->first();
 
         if($user){
 
@@ -72,8 +86,8 @@ class FrontEndController extends Controller
             
             }else{
                 
-                $credentials = $request->only('username', 'password');
-    
+                // $credentials = $request->only('username', 'password');
+                
                 if (Auth::attempt($credentials)) {
                     
                     if ($user->status != 'inactive') {
@@ -92,7 +106,7 @@ class FrontEndController extends Controller
                 return redirect('login');
             }
         }else{
-            $request->session()->flash('error', 'Something went wrong!');
+            $request->session()->flash('error', 'Invalid Credentials!');
             return redirect('login');
         }
     }
