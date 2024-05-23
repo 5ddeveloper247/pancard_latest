@@ -1,3 +1,4 @@
+
 @extends('layouts.master.admin_template.master')
 
 @push('css')
@@ -190,7 +191,7 @@
                     <div id="aadharUploadIcon" class="upload px-4 d-flex align-items-center justify-content-between py-3">
                         <span id="filename" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload Aadhar</span>
                         <input type="file" id="upload_aadhar" name="upload_aadhar" multiple="false" style="display: none;">
-                        <svg class="click-your-selfie-svg" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="click-your-selfie-svg adhar-eye" width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path opacity="0.5" d="M0 8C0 9.64 0.425 10.191 1.275 11.296C2.972 13.5 5.818 16 10 16C14.182 16 17.028 13.5 18.725 11.296C19.575 10.192 20 9.639 20 8C20 6.36 19.575 5.809 18.725 4.704C17.028 2.5 14.182 0 10 0C5.818 0 2.972 2.5 1.275 4.704C0.425 5.81 0 6.361 0 8Z" fill="#515C6F"></path>
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M6.25 7.75C6.25 6.75544 6.64509 5.80161 7.34835 5.09835C8.05161 4.39509 9.00544 4 10 4C10.9946 4 11.9484 4.39509 12.6517 5.09835C13.3549 5.80161 13.75 6.75544 13.75 7.75C13.75 8.74456 13.3549 9.69839 12.6517 10.4017C11.9484 11.1049 10.9946 11.5 10 11.5C9.00544 11.5 8.05161 11.1049 7.34835 10.4017C6.64509 9.69839 6.25 8.74456 6.25 7.75ZM7.75 7.75C7.75 7.15326 7.98705 6.58097 8.40901 6.15901C8.83097 5.73705 9.40326 5.5 10 5.5C10.5967 5.5 11.169 5.73705 11.591 6.15901C12.0129 6.58097 12.25 7.15326 12.25 7.75C12.25 8.34674 12.0129 8.91903 11.591 9.34099C11.169 9.76295 10.5967 10 10 10C9.40326 10 8.83097 9.76295 8.40901 9.34099C7.98705 8.91903 7.75 8.34674 7.75 7.75Z" fill="#515C6F"></path>
                         </svg>
@@ -243,7 +244,39 @@
                 </div>
             </form>
         </div>
-        
+        <!-- modal to view user image starts -->
+        <div class="modal fade" id="viewprifileimageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog h-75 d-flex align-items-center justify-content-center">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between">
+                    <h2 class="modal-title fs-4 text-dark fw-bolder" id="staticBackdropLabel">Profile Image</h2>
+                    <div class="d-flex">
+                       
+                        <button type="button" class="border-0 mx-1" data-bs-dismiss="modal" aria-label="Close"><svg
+                                width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect x="0.5" y="0.5" width="29" height="29" rx="4.5" fill="#EC1C34" fill-opacity="0.1"
+                                    stroke="#EC1C34" />
+                                <path d="M6.85718 22.2857L22.2857 6.85712M6.85718 6.85712L22.2857 22.2857"
+                                    stroke="#EC1C34" stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body d-flex gap-3 align-items-center justify-content-center">
+                    <div class="border rounded-4 w-100 p-2">
+                        
+                        <div class="vehicle-photo d-flex align-items-center justify-content-center">
+                            <img id="user_profile_img" src="" alt="">
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- modal to view user image ends -->
         <div class="sub-tabs" id="transfer-users" style="display: none;">
             <form class="row g-3 register my-0 mx-md-0" id="user-approve-block-form" novalidate="">
                 <div class="form-floating col-12 my-2">

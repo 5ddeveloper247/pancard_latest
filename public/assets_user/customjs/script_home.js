@@ -196,3 +196,8 @@ document.getElementById('upload_challan').addEventListener('change', function() 
     }
 });
 
+$('#registration_number').on('input', function() {
+    $(this).val($(this).val().toUpperCase());
+});
+
+

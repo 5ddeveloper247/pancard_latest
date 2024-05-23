@@ -256,7 +256,7 @@
 
                     <div class="form-floating col-6 col-md-4">
                         <input type="text" class="form-control" id="registration_number" name="registration_number" maxlength="15" placeholder="DG5S8FU"/>
-                        <label class="ps-4" for="registration_number">Registeration No</label>
+                        <label class="ps-4" for="registration_number">Registration No</label>
                     </div>
 
                     <div class="form-floating col-6 col-md-4">
@@ -270,7 +270,7 @@
                     </div>
 
                     <div class="form-floating col-6 col-md-4">
-                        <input type="number" class="form-control" id="mobile_number" name="mobile_number" maxlength="15" placeholder="name@example.com" />
+                        <input type="number" class="form-control" id="mobile_number" name="mobile_number" maxlength="10" placeholder="name@example.com" />
                         <label class="ps-4" for="mobile_number">Mobile No</label>
                     </div>
 
@@ -297,11 +297,9 @@
                             <div class="form-floating">
                                 <select id="Challan-form" class="form-select" name="challan">
                                     <option value="">choose</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
+                                   @for($i=1;$i<=20;$i++)
+                                   <option value="{{$i}}">{{$i}}</option>
+                                   @endfor
                                 </select>
                             </div>
                         </div>
@@ -312,7 +310,7 @@
                         </div>
 
                         <div class="form-floating col challan_opt_div" style="display:none;">
-                            <input type="number" class="form-control" id="engine_number" name="engine_number" maxlength="20" placeholder="name@example.com" />
+                            <input type="number" class="form-control" id="engine_number" name="engine_number" maxlength="5" placeholder="name@example.com" />
                             <label class="ps-4" for="engine_number">Engine last 5 digits</label>
                         </div>
                     </div>

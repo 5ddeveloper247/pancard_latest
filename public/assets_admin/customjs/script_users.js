@@ -359,8 +359,7 @@ function registerUserResponse(response) {
             timeOut: 3000
         });
 
-        let form = $('#registration_form');
-        form.trigger("reset");
+        resetUserRegisterForm();
 
         var data = response.data;
         username_auto = data.username_auto;
@@ -393,21 +392,26 @@ function registerUserResponse(response) {
     }
 }
 
-$(document).on('click', '.create-user', function (e) {
-
+function resetUserRegisterForm(){
     let form = $('#registration_form');
     form.trigger("reset");
+    $("#user_id").val('');
+    $(".adhar-eye").show();
     $("#username_auto").val(username_auto);
     $("#picturename").text('Upload Picture');
     $("#filename").text('Upload Aadhar');
     $("#user_type").val('retailer');
 	$(".block_user_btn").hide();
+}
+$(document).on('click', '.create-user', function (e) {
+
+    resetUserRegisterForm();
 });
 
 $(document).on('click', '.edit_user_btn', function (e) {
 
     var user_id = $(this).attr('data-id');
-    
+   
 	e.preventDefault();
 	let type = 'POST';
 	let url = '/admin/editUser';
@@ -429,7 +433,6 @@ function editUserResponse(response) {
     
     getCitiesLovDataResponse(response);
     getAreasLovDataResponse(response);
-    
     if(user_detail != null){
         $("#user_id").val(user_detail['id']);
         $("#user_name").val(user_detail['name']);
@@ -447,7 +450,13 @@ function editUserResponse(response) {
         $("#user_type").val(user_detail['user_type']);
         $("#user_challan_amount").val(user_detail['challan_rate']);
         $("#upload_option").val(user_detail['upload_option']);
-        
+        $('#user_profile_img').attr('src', user_detail['profile_picture']);
+        if($('#user_id').val() == ''){
+            $('.adhar-eye').show();
+        }
+        else{
+            $('.adhar-eye').hide();
+        }
         var puc_rates = user_detail['puc_rates'];
         if(puc_rates.length > 0){
             $.each(puc_rates, function(index, value) {
@@ -458,6 +467,22 @@ function editUserResponse(response) {
         $(".create-user").addClass('active');
         $(".sub-tabs").hide();
         $("#user-approve-block").show();
+
+        if (user_detail['status'] === 'inactive') {
+       
+            $(".block_user_btn").text('Block User');
+            $(".register_form_submit").text('Approve');
+       
+        }else if(user_detail['status'] === 'active'){
+       
+            $(".block_user_btn").text('Block User');
+            $(".register_form_submit").text('Update');
+        }else if(user_detail['status'] === 'blocked'){
+       
+            $(".block_user_btn").text('Unblock/Active User');
+            $(".register_form_submit").text('Approve');
+        }
+
         $(".block_user_btn").show();
 
     }
@@ -486,7 +511,7 @@ $(document).on('click', '.block_user_btn', function (e) {
 function blockUserResponse(response) {
 
     var data = response.data;
-    
+    getUsersPageData();
     toastr.success(response.message, '', {
         timeOut: 3000
     });
@@ -504,6 +529,7 @@ function blockUserResponse(response) {
     $(".block_user_btn").hide();
     // success response action 
     getUsersPageData();
+    
     
 }
 
@@ -601,7 +627,16 @@ $(document).ready(function () {
 
 document.getElementById('cameraIcon').addEventListener('click', function() {
     // Trigger click event on the input field
-    document.getElementById('upload_picture').click();
+    var user_id =  $("#user_id").val();
+    if(user_id == ''){
+
+        document.getElementById('upload_picture').click();
+    }
+    else{
+       
+        $("#viewprifileimageModal").modal('show');
+
+    }
 });
 
 document.getElementById('upload_picture').addEventListener('change', function() {
@@ -618,7 +653,12 @@ document.getElementById('upload_picture').addEventListener('change', function() 
 
 document.getElementById('aadharUploadIcon').addEventListener('click', function() {
     // Trigger click event on the input field
-    document.getElementById('upload_aadhar').click();
+    var user_id =  $("#user_id").val();
+    if(user_id == ''){
+
+        document.getElementById('upload_aadhar').click();
+        
+    }
 });
 
 document.getElementById('upload_aadhar').addEventListener('change', function() {

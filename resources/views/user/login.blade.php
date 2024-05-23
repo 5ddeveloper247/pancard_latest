@@ -46,14 +46,14 @@
                 <div class="form-floating">
                     <input type="text" class="form-control" id="username" name="username" value="{{ old('username') }}"
                         placeholder="Username" />
-                    <label class="ps-4" for="username">Username</label>
+                    <label class="ps-4" for="username">Email/Username</label>
                 </div>
 
 
                 <div id="user_password" class="form-floating">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
                     <label class="ps-4" for="password">Password</label>
-                    <svg class="showPassword" width="20" height="16" viewBox="0 0 20 16" zfill="none"
+                    <svg class="showPassword" id="showPassword" width="20" height="16" viewBox="0 0 20 16" zfill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path opacity="0.5"
                             d="M0 8C0 9.64 0.425 10.191 1.275 11.296C2.972 13.5 5.818 16 10 16C14.182 16 17.028 13.5 18.725 11.296C19.575 10.192 20 9.639 20 8C20 6.36 19.575 5.809 18.725 4.704C17.028 2.5 14.182 0 10 0C5.818 0 2.972 2.5 1.275 4.704C0.425 5.81 0 6.361 0 8Z"
@@ -110,5 +110,15 @@
 
 	@endpush
 </body>
-
+<script>
+     document.getElementById('showPassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('password');
+            const passwordFieldType = passwordField.getAttribute('type');
+            if (passwordFieldType === 'password') {
+                passwordField.setAttribute('type', 'text');
+            } else {
+                passwordField.setAttribute('type', 'password');
+            }
+        });
+</script>
 </html>

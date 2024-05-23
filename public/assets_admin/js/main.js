@@ -73,3 +73,5 @@ $(document).on('click', '.settings-tutorials', function() {
     $('#notifications').hide();
     $('#tutorial').show();
 });
+
+

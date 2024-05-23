@@ -543,7 +543,7 @@ class AdminController extends Controller
 
     public function getUsersPageData(Request $request)
     {
-        $data['pending_users'] = User::where('status', 'inactive')->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
+        $data['pending_users'] = User::whereIn('status', ['inactive','blocked'])->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
         $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
 
         return response()->json(['status' => 200, 'data' => $data]);
@@ -823,12 +823,25 @@ class AdminController extends Controller
 
         $user_id = $request->id;
 
-        User::where('id', $user_id)->update([
-            'status' => 'inactive',
-        ]);
+        $user = User::where('id', $user_id)->first();
+        if($user->status == 'blocked'){
+            $user->status = 'active';
+            $user->save();
+            return response()->json(['status' => 200, 'message' => "Unblock User Successfully"]);
+        }
+        if($user->status == 'active'){
+            $user->status = 'blocked';
+            $user->save();
+            return response()->json(['status' => 200, 'message' => "Block User Successfully"]);
+        }
+        if($user->status == 'inactive'){
+            $user->status = 'blocked';
+            $user->save();
+            return response()->json(['status' => 200, 'message' => "Block User Successfully"]);
+        }
 
         // dd($request->all());
-        return response()->json(['status' => 200, 'message' => "Block User Successfully"]);
+       
     }
 
     public function getUserFilteredData(Request $request)
