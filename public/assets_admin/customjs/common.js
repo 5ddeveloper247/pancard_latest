@@ -23,6 +23,26 @@ $(document).ready(function(){
         fadeOut: 10,
         positionClass : "toast-top-center"
     };
+
+    // Show the UI blocker when an AJAX request starts
+    $(document).ajaxStart(function() {
+        $('#uiBlocker').show();
+    });
+
+    // Hide the UI blocker when an AJAX request completes (whether it succeeds or fails)
+    $(document).ajaxStop(function() {
+        setTimeout(function(){
+            $('#uiBlocker').hide();
+        },500);
+    });
+
+    // Alternatively, you can use ajaxComplete for specific handling
+    $(document).ajaxComplete(function(event, xhr, settings) {
+        setTimeout(function(){
+            $('#uiBlocker').hide();
+        },500);
+        
+    });
 });
 
 function SendAjaxRequestToServer(
