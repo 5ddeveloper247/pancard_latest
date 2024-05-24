@@ -319,7 +319,7 @@
                     <div class="form-floating col-8 challan_opt_div" style="display:none;">
                         <div id="challanIcon" class="upload px-4 d-flex align-items-center justify-content-between">
                         <span id="challanName" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload challan Screenshot</span>
-                            <input type="file" accept="image/*" capture="camera" id="upload_challan" name="upload_challan" multiple="false" style="display: none;">
+                            <input type="file" accept="image/*"  id="upload_challan" name="upload_challan" multiple="false" style="display: none;">
                             <svg width="19" height="18" viewBox="0 0 19 18" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9.49995 11.4V1M9.49995 1L12.05 3.8M9.49995 1L6.94995 3.8" stroke="#515C6F"

@@ -912,6 +912,10 @@ class AdminController extends Controller
                 'rejection_reason' => $rejection_reason, // rejected status
             ]);
 
+            $rejected_puc = Puc::where('id', $puc_id)->first();
+            $rejected_puc->vehicle_image = Null;
+            $rejected_puc->save();
+
             if ($userDetail != null) {
                 $balance = $userDetail->balance;
                 $newBalance = $balance + $pucDetail->puc_charges;

@@ -62,8 +62,8 @@ class RegistrationController extends Controller
             'user_state' => 'required',
             'user_city' => 'required',
             'user_area' => 'required',
-            'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-            'upload_aadhar' => 'required|max:4096',
+            'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
+            'upload_aadhar' => 'required|max:400',
         ]);
 
         // Process form submission if validation passes

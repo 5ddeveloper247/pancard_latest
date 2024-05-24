@@ -470,8 +470,8 @@ class FrontEndController extends Controller
                 // 'challan' => 'required',
                 'chassis_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
                 'engine_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
-                'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-                'upload_challan' => $request->challan != '' ? 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+                'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
+                'upload_challan' => $request->challan != '' ? 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400' : 'nullable|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
             ]);
             
             $userBalance = $previous_image = User::where('id', $user_id)->value('balance');

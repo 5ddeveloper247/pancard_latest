@@ -16,8 +16,10 @@ $('#transaction_amount').on('input', function () {
     var transaction_amount = $(this).val();
     if (transaction_amount == '') {
         $('.add_transaction_btn').text('Add to your wallet');
+        $('.addWalletOnlinebtn').text('Add to your wallet');
     }
     $('.add_transaction_btn').text('Add ₹' + transaction_amount + ' to your wallet');
+    $('.addWalletOnlinebtn').text('Add ₹' + transaction_amount + ' to your wallet');
 
 });
 
@@ -224,4 +226,21 @@ $('.addWalletOnlinebtn').on('click', function () {
     } else {
         window.location.href = base_url+"/user/addwallet/online/pay/" + walletAmount;
     }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.copy-icon').forEach(icon => {
+        icon.addEventListener('click', function () {
+            const textToCopy = this.getAttribute('data-copy');
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                toastr.success('text copied', '', {
+        timeOut: 3000
+    });
+            }).catch(err => {
+                toastr.error('failed to copy text', '', {
+        timeOut: 3000
+    });
+            });
+        });
+    });
 });
