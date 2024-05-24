@@ -24,7 +24,7 @@
                         aria-selected="false" -->
                 </li>
                 <form class="d-flex order-search-bar" action="javascript:;">
-                    <input class="form-control me-2" type="text" id="searchInListing" placeholder="Search" style="width:220px;">
+                    <input class="form-control me-2" type="text" id="searchInListing" placeholder="Search">
                     <button class="order-search-btn p-0 filter_search" type="button">
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="30" height="30" rx="5" fill="#F7F7F7" />
@@ -45,7 +45,7 @@
                     <button type="button" id="tab-bg-color" class="nav-link filter1_orders" data-filter="yesterday">Yesterday</button>
                 </li>
                 <form action="javascript:;">
-                    <input class="form-control me-2" data-filter="3" id="filter_dateRange" type="text" placeholder="Choose Range" readonly style="width:220px;">
+                    <input class="form-control me-2" data-filter="3" id="filter_dateRange" type="text" placeholder="Choose Range" readonly>
                     <!-- <button class="order-search-btn p-0" type="button">
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="30" height="30" rx="5" fill="#F7F7F7" />
@@ -684,31 +684,48 @@
     </section>
 
     <!-- ====================================POPUP=================================== -->
-    <div class="modal fade bottom-to-top" id="uploadsModal" data-bs-backdrop="static" data-bs-keyboard="false"
-        tabindex="-1" aria-labelledby="uploadsModalLabel" aria-hidden="true">
-        <div class="modal-dialog h-75 d-flex align-items-center justify-content-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title fs-4 text-dark fw-bolder" id="staticBackdropLabel">Uploaded Files</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex gap-3 align-items-center justify-content-center">
-                    <div class="border rounded-4 w-100 p-2">
-                        <span class="text-start fw-semibold">Vehicle Photo</span>
-                        <div class="vehicle-photo d-flex align-items-center justify-content-center">
-                            <img id="puc_vehicle_img" src="{{ asset('assets_user/images/bike 1.png') }}" alt="">
-                        </div>
+    <!-- Initial Modal -->
+<div class="modal fade bottom-to-top" id="uploadsModal" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="uploadsModalLabel" aria-hidden="true">
+    <div class="modal-dialog h-75 d-flex align-items-center justify-content-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-4 text-dark fw-bolder" id="staticBackdropLabel">Uploaded Files</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex gap-3 align-items-center justify-content-center">
+                <div class="border rounded-4 w-100 p-2">
+                    <span class="text-start fw-semibold">Vehicle Photo</span>
+                    <div class="vehicle-photo d-flex align-items-center justify-content-center">
+                        <img id="puc_vehicle_img" class="clickable-img" src="{{ asset('assets_user/images/bike 1.png') }}" alt="">
                     </div>
-                    <div class="border rounded-4 w-100 p-2">
-                        <span class="text-start fw-semibold">challan SS</span>
-                        <div class="challan-photo d-flex align-items-center justify-content-center">
-                            <img id="puc_challan_img" src="{{ asset('assets_user/images/bike 1.png') }}" alt="">
-                        </div>
+                </div>
+                <div class="border rounded-4 w-100 p-2">
+                    <span class="text-start fw-semibold">challan SS</span>
+                    <div class="challan-photo d-flex align-items-center justify-content-center">
+                        <img id="puc_challan_img" class="clickable-img" src="{{ asset('assets_user/images/bike 1.png') }}" alt="">
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Second Modal for Displaying Clicked Image -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-4 text-dark fw-bolder" id="imageModalLabel">Image Preview</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center">
+                <img id="modalImage" src="" alt="" style="height: 70vh; width:100%">
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('script')

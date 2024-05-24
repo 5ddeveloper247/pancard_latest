@@ -21,39 +21,35 @@
             <img src="{{ asset('assets_user/images/loading-spinner.gif') }}" alt="Loading..." style="height:150px; width:150px;"/>
         </div>
     </div>
-    <header>
-        <svg width="100%" height="36vh" viewBox="0 0 1200 295" preserveAspectRatio="none" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 0H1200V295C751.666 195.473 497.978 198.823 0 295V0Z" fill="#003EDE" width="100%" />
-        </svg>
-        <img src="{{ asset('assets_user/images/main logo-01 3.png') }}" width="120" alt="" />
-    </header>
-
-    <div class="d-grid align-items-center justify-content-center">
-        <div class="form-heading d-grid align-items-center justify-content-center pt-lg-4">
-            <h1>Password Reset-</h1>
-            <span>Please put your registered e-mail for OTP</span>
+    <div class="d-flex flex-column justify-content-center px-4 pt-md-5 pt-3">
+        <div class="d-flex align-items-center justify-content-md-center">
+            <img class="img-fluid" src="{{ asset('assets_user/images/NewLogo.png') }}" />
+            <img class="img-fluid px-1" src="{{ asset('assets_user/images/PUCZONE.png') }}" />
         </div>
-
+        <div class="form-heading d-grid align-items-center justify-content-md-center pt-lg-5">
+            <h1 class="mt-2">Password Reset</h1>
+        </div>
+    </div>
+    <div class="d-grid align-items-center justify-content-center">
         <div class="container px-4 pt-0">
-            <form class="row g-3 login-form pt-md-0" id="forgetpassword_form" novalidate="">
+            <form class="row g-3 login-form pt-5" id="forgetpassword_form" novalidate="">
                 <div class="form-floating">
                     <input type="email" class="form-control" id="registered_email" name="registered_email" placeholder="name@example.com" maxlength="50"/>
-                    <label class="ps-4" for="registered_email">Registered Email</label>
-                    <a class="otp-code fs-5" href="javascript:;" id="otp_btn" onclick="getOtpCode()">Get Code</a>
+                    <label class="ms-2" for="registered_email">Registered Email</label>
+                    <a class="otp-code fs-5 me-2" href="javascript:;" id="otp_btn" onclick="getOtpCode()">Get Code</a>
                 </div>
 
 
                 <div id="user_OTP" class="form-floating">
                     <input type="text" class="form-control" id="one_time_password" name="one_time_password" placeholder="Password" />
-                    <label class="px-4 d-flex align-items-center justify-content-between" for="one_time_password">Enter OTP</label>
-                    <a class="verify-otp fs-5" href="javascript:;" id="verify_otp_btn" onclick="verifyOtpCode()">Verify OTP</a>
+                    <label class="ms-2 d-flex align-items-center justify-content-between" for="one_time_password">Enter OTP</label>
+                    <a class="verify-otp fs-5 me-2" href="javascript:;" id="verify_otp_btn" onclick="verifyOtpCode()">Verify OTP</a>
                 </div>
 
 
                 <div id="verify-otp" class="form-floating">
                     <input type="text" class="form-control" id="new_password" name="new_password" placeholder="Password" />
-                    <label class="px-4 d-flex align-items-center justify-content-between" for="new_password">New Password</label>
+                    <label class="ms-2 d-flex align-items-center justify-content-between" for="new_password">New Password</label>
                     
                 </div>
 
