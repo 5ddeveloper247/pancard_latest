@@ -197,6 +197,7 @@ document.getElementById('upload_picture').addEventListener('change', function ()
         var maxSize = 400 * 1024; // 400 KB in bytes
 
         if (fileSize > maxSize) {
+            $("#upload_picture").val('');
             document.getElementById('picturename').innerText = 'Upload Picture';
             toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
                 timeOut: 3000
