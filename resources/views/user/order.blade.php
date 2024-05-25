@@ -687,7 +687,7 @@
     <!-- Initial Modal -->
 <div class="modal fade bottom-to-top" id="uploadsModal" data-bs-backdrop="static" data-bs-keyboard="false"
     tabindex="-1" aria-labelledby="uploadsModalLabel" aria-hidden="true">
-    <div class="modal-dialog h-75 d-flex align-items-center justify-content-center">
+    <div class="modal-dialog h-100 d-flex align-items-center justify-content-center">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title fs-4 text-dark fw-bolder" id="staticBackdropLabel">Uploaded Files</h2>

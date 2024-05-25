@@ -840,3 +840,24 @@ $('#searchInListing').on("keyup", function (e)  {
 		tr.fadeIn().removeClass("d-none");
     }
 });
+document.addEventListener('DOMContentLoaded', function () {
+    const uploadsModalElement = document.getElementById('uploadsModal');
+    const imageModalElement = document.getElementById('imageModal');
+    const uploadsModal = new bootstrap.Modal(uploadsModalElement);
+    const imageModal = new bootstrap.Modal(imageModalElement);
+    const modalImage = document.getElementById('modalImage');
+
+    document.querySelectorAll('.clickable-img').forEach(img => {
+        img.addEventListener('click', function () {
+            const imgSrc = this.getAttribute('src');
+            modalImage.setAttribute('src', imgSrc);
+            uploadsModal.hide();
+            imageModal.show();
+        });
+    });
+
+    // Reopen the first modal when the second modal is closed
+    imageModalElement.addEventListener('hidden.bs.modal', function () {
+        uploadsModal.show();
+    });
+});

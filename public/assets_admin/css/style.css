@@ -436,7 +436,7 @@ label {
 }
 
 .challan-photo img, .vehicle-photo img{
-    width: 200px;
+    width: 160px;
     height: 130px;
 } 
 
@@ -528,7 +528,6 @@ label {
 
 .analytics-card-content {
     border-radius: 10px;
-    min-width: 90px;
     max-width: 200px;
 }
 
