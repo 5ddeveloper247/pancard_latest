@@ -52,7 +52,7 @@ function makePucList(puc_list) {
                                 Reason: ${value.rejection_reason}
                             </span>`;
             } else if (value.status == '4') { // complete
-                status_txt = `<span class="text-end bg-g ms-2 ms-sm-5 pe-3 grid-p-searchby">
+                status_txt = `<span class="text-end bg-g ms-2 ms-sm-5 px-3 grid-p-searchby">
                                     Completed
                                 </span>`;
             }
@@ -75,7 +75,7 @@ function makePucList(puc_list) {
                             </span>
                         </div>
 
-                        <div class="d-flex flex-column">
+                        <div class="d-flex flex-column align-items-center">
                             <div class="d-flex align-items-center justify-content-end">
                                 
                                 <button type="button" class="modal-btn ${value.status != '4' ? 'd-none' : ''}">
@@ -574,4 +574,24 @@ $('#searchInListing').on("keyup", function (e)  {
 	} else {
 		tr.fadeIn().addClass("d-flex").removeClass("d-none");
     }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const uploadsModal = new bootstrap.Modal(document.getElementById('uploadsModal'));
+    const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+    const modalImage = document.getElementById('modalImage');
+
+    document.querySelectorAll('.clickable-img').forEach(img => {
+        img.addEventListener('click', function () {
+            const imgSrc = this.getAttribute('src');
+            modalImage.setAttribute('src', imgSrc);
+            uploadsModal.hide();
+            imageModal.show();
+        });
+    });
+
+    // Reopen the first modal when the second modal is closed
+    document.getElementById('imageModal').addEventListener('hidden.bs.modal', function () {
+        uploadsModal.show();
+    });
 });

@@ -23,7 +23,7 @@
                     </button>
                 </div>
 
-                <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4 px-md-5">
+                <div class="diff-bg d-flex align-items-center justify-content-between py-3 px-3 mb-4">
                     <span class="fw-bold">
                         <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -240,7 +240,7 @@
                 
             </div>
             <div class="container-fluid vehicle-details-container g-0" id="makePuc_section">
-                <button type="button" class="view-btn py-1 px-3" id="backToMainPage">
+                <button type="button" class="view-btn py-1 px-3 d-none" id="backToMainPage">
                     <&nbsp;Back to profile
                 </button>
                 <form class="row g-3 register pt-4" id="puc_create_form" novalidate>
@@ -256,22 +256,22 @@
 
                     <div class="form-floating col-6 col-md-4">
                         <input type="text" class="form-control" id="registration_number" name="registration_number" maxlength="15" placeholder="DG5S8FU"/>
-                        <label class="ps-4" for="registration_number">Registration No</label>
+                        <label class="ms-2" for="registration_number">Registration No</label>
                     </div>
 
                     <div class="form-floating col-6 col-md-4">
                         <input type="text" class="form-control" id="vehicle_model" name="vehicle_model" maxlength="20" placeholder="name@example.com" />
-                        <label class="ps-4" for="vehicle_model">Vehicle model</label>
+                        <label class="ms-2" for="vehicle_model">Vehicle model</label>
                     </div>
 
                     <div class="form-floating col-6 col-md-4">
                         <input type="text" class="form-control" id="puc_name" name="puc_name" maxlength="50" placeholder="123"/>
-                        <label class="ps-4" for="puc_name">Name</label>
+                        <label class="ms-2" for="puc_name">Name</label>
                     </div>
 
                     <div class="form-floating col-6 col-md-4">
                         <input type="number" class="form-control" id="mobile_number" name="mobile_number" maxlength="10" placeholder="name@example.com" />
-                        <label class="ps-4" for="mobile_number">Mobile No</label>
+                        <label class="ms-2" for="mobile_number">Mobile No</label>
                     </div>
 
                     <div class="form-floating col-6 col-md-4">
@@ -290,7 +290,7 @@
                     </div>
 
                     <div class="row gy-2 gx-0 gap-2 pe-2">
-                        <div class="col-2 challan ms-2 px-2 pb-2 {{@$disableChallan == true ? 'd-none' : 'd-block'}}">
+                        <div class="col-md-2 col-3 challan ms-2 px-2 pb-2 {{@$disableChallan == true ? 'd-none' : 'd-block'}}">
                             <label for="challan">
                                 Challan
                             </label>
@@ -306,12 +306,12 @@
 
                         <div class="form-floating col challan_opt_div" style="display:none;">
                             <input type="number" class="form-control" id="chassis_number" name="chassis_number" maxlength="5" placeholder="name@example.com" />
-                            <label class="ps-4" for="chassis_number">Chasis last 5 digits</label>
+                            <label class="ms-2" for="chassis_number">Chasis last 5 digits</label>
                         </div>
 
                         <div class="form-floating col challan_opt_div" style="display:none;">
                             <input type="number" class="form-control" id="engine_number" name="engine_number" maxlength="5" placeholder="name@example.com" />
-                            <label class="ps-4" for="engine_number">Engine last 5 digits</label>
+                            <label class="ms-2" for="engine_number">Engine last 5 digits</label>
                         </div>
                     </div>
                     

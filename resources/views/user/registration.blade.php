@@ -21,14 +21,7 @@
             <img src="{{ asset('assets_user/images/loading-spinner.gif') }}" alt="Loading..." style="height:150px; width:150px;"/>
         </div>
     </div>
-    <header>
-        <svg width="100%" height="36vh" viewBox="0 0 1200 295" preserveAspectRatio="none" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 0H1200V295C751.666 195.473 497.978 198.823 0 295V0Z" fill="#003EDE" width="100%" />
-        </svg>
-        <img src="{{ asset('assets_user/images/main logo-01 3.png') }}" width="120" alt="" />
-    </header>
-
+    
     <div class="d-flex align-items-center justify-content-center">
         <div class="container py-3 py-md-0">
             <div class="register-heading d-md-grid align-items-center justify-content-center">
@@ -41,40 +34,40 @@
                 <div class="form-floating col-6 col-md-4">
                     <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Name"
                         maxlength="50" />
-                    <label class="ps-4" for="user_name">Name</label>
+                    <label class="ms-2" for="user_name">Name</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
                     <input type="text" class="form-control" id="username_auto" name="username_auto"
                         value="{{$username_auto}}" readonly />
-                    <label class="ps-4" for="username_auto">Username (Auto generated)</label>
+                    <label class="ms-2" for="username_auto">Username (Auto generated)</label>
                 </div>
 
                 <div class="form-floating col-6 col-md-4">
                     <input type="text" class="form-control" id="company_name" name="company_name"
                         placeholder="Company Name" maxlength="50" />
-                    <label class="ps-4" for="company_name">Company Name</label>
+                    <label class="ms-2" for="company_name">Company Name</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
                     <input type="number" class="form-control" id="user_phone" name="user_phone" placeholder="123"
                         maxlength="15" />
-                    <label class="ps-4" for="user_phone">Mobile No</label>
+                    <label class="ms-2" for="user_phone">Mobile No</label>
                 </div>
 
                 <div class="form-floating col-6 col-md-4">
                     <input type="email" class="form-control" id="user_email" name="user_email"
                         placeholder="name@example.com" maxlength="50" />
-                    <label class="ps-4" for="user_email">Email</label>
+                    <label class="ms-2" for="user_email">Email</label>
                 </div>
 
 
                 <div class="form-floating col-6 col-md-4">
                     <input type="text" class="form-control" id="user_pin" name="user_pin"
                         onchange="getStateCityWrtCodeData();" placeholder="Pin Code" maxlength="10" />
-                    <label class="ps-4" for="user_pin">Shop Pin Code</label>
+                    <label class="ms-2" for="user_pin">Shop Pin Code</label>
                 </div>
 
                 <div class="form-floating col-6 col-md-4">
@@ -107,7 +100,7 @@
                 <div class="form-floating col-6 col-md-4">
                     <input type="text" class="form-control" id="user_landmark" name="user_landmark" placeholder="123"
                         maxlength="50" />
-                    <label class="ps-4" for="user_landmark">Landmark</label>
+                    <label class="ms-2" for="user_landmark">Landmark</label>
                 </div>
 
 
@@ -153,7 +146,7 @@
                     <div id="retailer" class="form-floating col-12 col-md-6 my-3">
                         <input type="email" readonly class="form-control-plaintext fw-bolder"
                             id="floatingPlaintextInput" placeholder="Retailer (₹499)" value="Retailer (₹499)">
-                        <label class="ps-4" for="floatingPlaintextInput">User Type</label>
+                        <label class="ms-2" for="floatingPlaintextInput">User Type</label>
                     </div>
 
                     <div class="col d-none d-md-block py-3">
@@ -168,7 +161,7 @@
                         class="privacy"> Privacy Policy</span>
                 </span>
 
-                <div class="login-btn-hidden d-block d-md-none py-3">
+                <div class="login-btn-hidden d-block d-md-none pt-3">
                     <button type="button" id="" class="payment-btn w-100 mx-auto py-3 register_form_submit">
                         Pay and Submit
                     </button>

@@ -20,12 +20,12 @@
                     Available Balance <b class="text-primary">₹{{@$user->balance}}</b>
                 </span>
             </div>
-            <ul id="nav-wallet-tab" class="nav nav-pills pt-3 d-flex align-items-center justify-content-between"
+            <ul id="nav-wallet-tab" class="nav nav-pills pt-3 d-flex flex-nowrap align-items-center justify-content-between"
                 id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <form id="add_transaction_form">
                         <input type="hidden" name="selected_bank_id" id="selected_bank_id">
-                   <input type="number" class="form-control transaction_amount" name="transaction_amount" maxlength="6" id="transaction_amount" style="width:120px; height:52px;" placeholder="₹ 500" required >
+                   <input type="number" class="form-control transaction_amount" name="transaction_amount" maxlength="6" id="transaction_amount" style="width:160px; height:52px;" placeholder="₹ 500" required >
                    
                 </li>
                 <li class="nav-item" role="presentation">
@@ -44,7 +44,7 @@
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-online" role="tabpanel"
                     aria-labelledby="pills-online-tab" tabindex="0">
-                    <p class="pt-3">0% charge only on upi payments otherwise 3% charge will be deduct from wallet
+                    <p class="pt-3 mb-0">0% charge only on upi payments otherwise 3% charge will be deduct from wallet
                     </p>
                     <div class="py-3 text-center">
                         <a href="javascript:;" type="submit"
@@ -71,13 +71,13 @@
                         <div class="form-floating col-6 ps-0">
                             <input type="text" class="form-control" id="utr_no" name="utr_no" maxlength="12"
                                 />
-                            <label class="ps-4" for="utr_no">UTR No</label>
+                            <label class="ms-2" for="utr_no">UTR No</label>
                         </div>
 
 
                         <div class="form-floating col-6 pe-0">
                             <input type="date" class="form-control" name="transaction_date" id="transaction_date" placeholder="123" />
-                            <label class="ps-4" for="transaction_date">Transaction Date</label>
+                            <label class="ms-2" for="transaction_date">Transaction Date</label>
                         </div>
                     </div>
 
