@@ -31,7 +31,14 @@
                 <li class="nav-item" role="presentation">
                     <button id="wallet-tab-bg-color" class="nav-link active py-3" id="pills-online-tab"
                         data-bs-toggle="pill" data-bs-target="#pills-online" type="button" role="tab"
-                        aria-controls="pills-online" aria-selected="true">Online</button>
+                        aria-controls="pills-online" aria-selected="true">
+                        @if($payment_gateway_settings == 'on')
+                        Online
+                        @else
+                        History
+                        @endif
+                        </button>
+
                 </li>
                 <li class="nav-item" role="presentation">
                     <button id="wallet-tab-bg-color" class="nav-link py-3" id="pills-manual-tab" data-bs-toggle="pill"
@@ -44,14 +51,18 @@
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-online" role="tabpanel"
                     aria-labelledby="pills-online-tab" tabindex="0">
+                    @if($payment_gateway_settings == 'on')
                     <p class="pt-3">0% charge only on upi payments otherwise 3% charge will be deduct from wallet
                     </p>
                     <div class="py-3 text-center">
+                      
                         <a href="javascript:;" type="submit"
                             class="vehicle-info-btn w-100 py-3 fw-bolder fs-5 addWalletOnlinebtn">
                             Add ₹0 to your wallet
                         </a>
+                       
                     </div>
+                    @endif
                     <h5>
                         Transaction History
                     </h5>

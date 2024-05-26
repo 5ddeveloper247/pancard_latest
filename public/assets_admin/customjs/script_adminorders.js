@@ -106,7 +106,7 @@ function makePucPendingListing(puc_list){
                                                 stroke="#0D9E00" />
                                         </svg>
                                     </button>
-                                    <button type="button" class="${value.file_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} showUploadsModal_btn py-1 px-2 ms-1 updateViewFlag_btn" data-id="${value.id}" data-flag-type="1" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}">
+                                    <button type="button" class="${value.file_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} showUploadsModal_btn py-1 px-2 ms-1 viewuploadsbtn" id="viewFile_btn_${value.id}" data-id="${value.id}" data-flag-type="1" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}">
                                         <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path opacity="0.5" d="M18.8571 11.3333H13.619" stroke="#515C6F"
@@ -262,7 +262,7 @@ function makePucOrderHistoryListing(puc_list){
                                                 stroke="#0D9E00" />
                                         </svg>
                                     </button>
-                                    <button type="button" class="${value.file_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} showUploadsModal_btn py-1 px-2 ms-1 updateViewFlag_btn" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}" data-id="${value.id}" data-flag-type="1">
+                                    <button type="button" class="${value.file_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} showUploadsModal_btn py-1 px-2 ms-1  viewuploadsbtn" id="viewFile_btn_${value.id}" data-challan-ss="${value.challan_image}" data-vehicle-img="${value.vehicle_image}" data-puc-id="${value.id}" data-id="${value.id}" data-flag-type="1">
                                         <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path opacity="0.5" d="M18.8571 11.3333H13.619" stroke="#515C6F"
                                                 stroke-width="1.5" stroke-linecap="round" />
@@ -344,6 +344,15 @@ function makePucOrderHistoryListing(puc_list){
     
 }
 
+
+
+$(document).on('click', '.viewuploadsbtn', function (e) {
+    var puc_id = $(this).attr('data-puc-id');
+    
+    $('.updateviewstatusbtn').first().attr('data-id', puc_id);
+
+
+});
 $(document).on('click', '.showUploadsModal_btn', function (e) {
     
     var puc_id = $(this).attr('data-puc-id');
@@ -415,10 +424,18 @@ function changePucStatus(statusFlag, param1=''){
     }
 }
 function changePucStatusResponse(response){
+    if(response.status = 402){
+        toastr.error(response.message, '', {
+            timeOut: 3000
+        });
+    }
+    else{
+        toastr.success(response.message, '', {
+            timeOut: 3000
+        });
+    }
 
-    toastr.success(response.message, '', {
-        timeOut: 3000
-    });
+    
 
     var data = response.data;
     
@@ -720,9 +737,15 @@ $(document).on('click', '.updateViewFlag_btn', function (e) {
 
     var puc_id = $(this).attr('data-id');
     var flag_type = $(this).attr('data-flag-type');
-
-    $(this).removeClass('modal-btn-neutral');
-    $(this).addClass('modal-btn-completed');
+    
+    if(flag_type == 1){
+        $("#viewFile_btn_"+puc_id).removeClass('modal-btn-neutral');
+        $("#viewFile_btn_"+puc_id).addClass('modal-btn-completed');
+    }
+    else{
+        $(this).removeClass('modal-btn-neutral');
+        $(this).addClass('modal-btn-completed');
+    }
 
 	e.preventDefault();
 	let type = 'POST';
@@ -740,7 +763,7 @@ $(document).on('click', '.updateViewFlag_btn', function (e) {
 
 function updatePucViewFlagsResponse(response) {
 
-    console.log(response);
+    // console.log(response);
     
 }
 

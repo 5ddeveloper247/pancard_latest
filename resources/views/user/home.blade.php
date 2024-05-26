@@ -290,6 +290,22 @@
                     </div>
 
                     <div class="row gy-2 gx-0 gap-2 pe-2">
+                        @if(@empty($user->challan_rate))
+                        <div class="d-none col-2 challan ms-2 px-2 pb-2 {{@$disableChallan == true ? 'd-none' : 'd-block'}}">
+                            <label for="challan">
+                                Challan
+                            </label>
+                            <div class="form-floating">
+                                <select id="Challan-form" class="form-select" name="challan">
+                                    <option value="">choose</option>
+                                   @for($i=1;$i<=20;$i++)
+                                   <option value="{{$i}}">{{$i}}</option>
+                                   @endfor
+                                </select>
+                            </div>
+                        </div>
+                        
+                        @else
                         <div class="col-2 challan ms-2 px-2 pb-2 {{@$disableChallan == true ? 'd-none' : 'd-block'}}">
                             <label for="challan">
                                 Challan
@@ -303,6 +319,7 @@
                                 </select>
                             </div>
                         </div>
+                        @endif
 
                         <div class="form-floating col challan_opt_div" style="display:none;">
                             <input type="number" class="form-control" id="chassis_number" name="chassis_number" maxlength="5" placeholder="name@example.com" />

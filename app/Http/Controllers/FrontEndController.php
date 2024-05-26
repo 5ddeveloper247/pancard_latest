@@ -20,6 +20,7 @@ use App\Models\PucUserRates;
 use App\Models\Puc;
 use App\Models\Banks;
 use App\Models\Transactions;
+use App\Models\ApiSettings;
 
 
 
@@ -186,6 +187,7 @@ class FrontEndController extends Controller
         $data['page'] = 'wallet';
         $data['banks'] = Banks::where('enable',1)->orderBy('created_at', 'desc')->get();
         $data['user'] = User::where('id', session('user')->id)->first();
+        $data['payment_gateway_settings'] = ApiSettings::first()->value('status');
         return view('user/wallet')->with($data);
     }
 
@@ -204,6 +206,15 @@ class FrontEndController extends Controller
            
         ],
         ['selected_bank_id.required' => 'Select bank from dropdown first']);
+
+        $utr = $request->utr_no;
+        $utr_check = Transactions::where('transaction_number',$utr)->where('status', 3)->first();
+        if(isset($utr_check->id)){
+            return response()->json(['status' => 402,'message' => "Utr number already used!"]);  
+        }
+        
+       
+       
        
         $transaction = new Transactions;
         $transaction->type = '1'; // 1=>credit, 2=>debit

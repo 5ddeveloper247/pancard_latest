@@ -227,6 +227,7 @@ function pendingTransactionsList() {
 
 function pendingTransactionsListResponse(response) {
     var transaction_list = response.data.pendingTransactionsList;
+    
     var html = '';
     
     if(transaction_list.length > 0){
@@ -246,6 +247,7 @@ function pendingTransactionsListResponse(response) {
             var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
 
             html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4 identify">
+            
                             <div class="d-flex align-items-center justify-content-between ">
                                 <div class="d-flex flex-column">
                                     <span class="fw-bold text-dark grid-p-searchby">
@@ -255,10 +257,10 @@ function pendingTransactionsListResponse(response) {
                                     <span class="text-dark grid-p-searchby">
                                         Bank Account: ${bank}
                                     </span>
-                                    <span class="text-dark d-flex align-items-center utr-code-bg px-1 grid-p-searchby">
+                                    <span class="text-dark d-flex align-items-center  utr-code-bg px-1 grid-p-searchby">
                                         UTR: ${list.transaction_number} 
                                         <span class="ps-2"> 
-                                            <svg width="10" height="11" viewBox="0 0 10 11"
+                                            <svg width="10" height="11" viewBox="0 0 10 11" class="copy-icon" data-copy="${list.transaction_number}"
                                                 fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M2.33336 5.09092C2.33336 3.80547 2.33336 3.16228 2.72403 2.76319C3.11425 2.36365 3.74314 2.36365 5.00003 2.36365H6.33336C7.59025 2.36365 8.21914 2.36365 8.60936 2.76319C9.00003 3.16228 9.00003 3.80547 9.00003 5.09092V7.36365C9.00003 8.6491 9.00003 9.29228 8.60936 9.69137C8.21914 10.0909 7.59025 10.0909 6.33336 10.0909H5.00003C3.74314 10.0909 3.11425 10.0909 2.72403 9.69137C2.33336 9.29228 2.33336 8.6491 2.33336 7.36365V5.09092Z"
@@ -276,14 +278,14 @@ function pendingTransactionsListResponse(response) {
                                 <div class="d-flex flex-column">
                                     <div class="d-flex align-items-center justify-content-end">
                                         <!-- Button trigger modal -->
-                                        <button type="button" class="modal-btn-neutral py-1 px-2">
+                                        <a href="tel:${list.created_by_user.phone_number} type="button" class="modal-btn-neutral py-1 px-2">
                                             <svg width="17" height="21" viewBox="0 0 17 21" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M5.26403 0.163832C6.3436 0.0150705 7.25136 0.675594 7.68089 1.53412L8.73741 3.64664C9.32355 4.81893 8.98674 6.19445 8.09836 7.05979C7.5735 7.5705 7.04603 8.15402 6.74012 8.66893C6.71986 8.70563 6.71354 8.74841 6.72231 8.7894C7.00517 10.3221 8.04388 11.8364 8.9705 12.9223C9.01711 12.974 9.07793 13.0109 9.14537 13.0283C9.21282 13.0458 9.2839 13.0429 9.34974 13.0202L11.4319 12.3696C11.9928 12.1943 12.595 12.2033 13.1505 12.3952C13.7059 12.5871 14.1852 12.9519 14.5182 13.4361L16.0252 15.6283C16.4337 16.2228 16.6406 17.0295 16.3274 17.8052C16.0477 18.4982 15.5066 19.4976 14.5224 20.1624C13.5009 20.8517 12.1018 21.1136 10.2711 20.4861C8.22565 19.7842 6.29331 18.0242 4.69098 15.7734C3.07922 13.5084 1.75241 10.6793 0.947838 7.72921C0.187267 4.94412 0.646124 3.06888 1.72622 1.8615C2.76808 0.696547 4.26093 0.301594 5.26403 0.163832ZM6.50912 2.11974C6.26974 1.6415 5.84284 1.40526 5.44212 1.46026C4.55112 1.58283 3.43541 1.9144 2.7026 2.73417C2.00803 3.51098 1.52717 4.87917 2.21022 7.38455C2.9776 10.1964 4.24103 12.8835 5.75746 15.0138C7.28331 17.1578 9.01712 18.6716 10.6954 19.2473C12.1909 19.7601 13.1521 19.5065 13.789 19.077C14.4626 18.6218 14.877 17.8985 15.1127 17.3149C15.2206 17.0478 15.174 16.7021 14.9456 16.37L13.4386 14.1784C13.2642 13.9247 13.0132 13.7336 12.7223 13.633C12.4314 13.5324 12.1159 13.5277 11.8221 13.6195L9.73998 14.27C9.11769 14.4644 8.41684 14.291 7.97422 13.7724C7.00989 12.6425 5.78103 10.9098 5.43374 9.02669C5.36736 8.67377 5.43139 8.30875 5.61393 7.9995C6.01098 7.33217 6.63955 6.65174 7.18379 6.12164C7.71546 5.60412 7.86631 4.83412 7.56565 4.23226L6.50912 2.11974Z"
                                                     fill="#515C6F" />
                                             </svg>
-                                        </button>
+                                        </a>
                                         <button type="button" class="modal-btn-price py-1 px-2 ms-2 grid-p-searchby">
                                             ₹${list.amount}
                                         </button>
@@ -293,7 +295,7 @@ function pendingTransactionsListResponse(response) {
                             </div>
                             <div class="d-flex flex-nowrap justify-content-between">
                                 <div>
-                                    <span class="diff-bg px-2 py-1 mx-md-3 mr-1 my-1 text-primary text-nowrap grid-p-searchby">
+                                    <span class="diff-bg px-2 py-1 mx-md-3 mr-1 my-1 text-primary text-nowrap grid-p-searchby transaction_username" data-user="${list.created_by_user.id}">
                                         <b>${list.created_by_user.username}</b>(${truncatedCompanyName})
                                     </span>
                                 </div>
@@ -321,10 +323,48 @@ function pendingTransactionsListResponse(response) {
                     <p>No record found!</p>
                 </div>`;
     }
-
+    
     $('#wallet-pending-content').html(html);
 
     
+}
+
+$(document).on('click', '.transaction_username', function (e) {
+
+    var id = $(this).attr('data-user');
+
+    let type = 'POST';
+    let url = '/admin/getUserInfoData';
+   
+    let data = new FormData();
+    data.append("user_id", id);
+    // PASSING DATA TO FUNCTION
+    SendAjaxRequestToServer(type, url, data, '', getUserInfoDataResponse, '', '');
+
+});
+
+
+function getUserInfoDataResponse(response){
+
+    var data = response.data;
+    var user_info = data['user_info'];
+    
+    if(user_info != null){
+        $('#user_name').text(user_info.name);
+        $('#username').text(user_info.username);
+        $('#company_name').text(user_info.company_name);
+        $('#user_email').text(user_info.email);
+        $('#user_phone').text(user_info.phone_number);
+        $('#user_state').text(user_info.state.name);
+        $('#user_city').text(user_info.city.name);
+        $('#user_area').text(user_info.area.name);
+        $('#user_landmark').text(user_info.landmark);
+        $('#user_balance').text(user_info.balance);
+        $('#user_usertype').text(user_info.user_type);
+        $('#user_status').text(user_info.status);
+    }
+
+    $("#userDetailModal").modal('show')
 }
 var temptransactionId = '';
 
@@ -495,7 +535,7 @@ function updateWalletHistoryList(walletHistoryList){
                             <div class="d-flex flex-column grid-p-searchby">
                                 ${name_txt}
                                 <small>${formatDate(walletHistory.created_at)}</small>
-                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap grid-p-searchby">
+                                <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap grid-p-searchby transaction_username" data-user="${walletHistory.created_by_user.id}">
                                     <b>${walletHistory.created_by_user.username}</b>(${truncatedCompanyName})
                                 </span>
                             </div>
@@ -631,4 +671,21 @@ $('#searchInListing').on("keyup", function (e)  {
 	} else {
 		tr.fadeIn().removeClass("d-none");
     }
+});
+
+$(document).on('click', '.copy-icon', function (e) {
+   
+        
+                const textToCopy = this.getAttribute('data-copy');
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    toastr.success('text copied', '', {
+            timeOut: 3000
+        });
+                }).catch(err => {
+                    toastr.error('failed to copy text', '', {
+            timeOut: 3000
+       
+            });
+        });
+
 });
