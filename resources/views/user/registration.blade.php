@@ -146,9 +146,9 @@
                     <div id="retailer" class="form-floating col-12 col-md-6 my-3">
                     <!-- Retailer (₹499) -->
                         <input type="email" readonly class="form-control-plaintext fw-bolder"
-                            id="floatingPlaintextInput" placeholder="Retailer (₹499)" value="{{$retailer_rate}}">
-                        <!-- <label class="ms-2" for="floatingPlaintextInput">User Type</label> -->
-                        <label class="ps-4" for="floatingPlaintextInput">Retailer Rate(₹)</label>
+                            id="floatingPlaintextInput" placeholder="Retailer (₹499)" value="Retailer (₹{{$retailer_rate}})">
+                        <label class="ms-2" for="floatingPlaintextInput">User Type</label>
+                        <!-- <label class="ps-4" for="floatingPlaintextInput">Retailer Rate(₹)</label> -->
                     </div>
 
                     <div class="col d-none d-md-block py-3">
