@@ -7,9 +7,9 @@
 	
 <!-- =====ANALYTICS-TAB====== -->
 <section>
-    <ul class="nav nav-pills d-flex flex-nowrap align-items-center justify-content-between gap-0 gap-md-1 mt-3 mb-2 px-2 tab-padding"
+    <ul class="nav nav-pills d-flex flex-md-nowrap flex-wrap align-items-center justify-content-md-between justify-content-start gap-0 gap-md-1 mt-3 mb-2 px-2 tab-padding"
         id="pills-tab" role="tablist">
-        <li class="nav-item px-1" role="presentation">
+        <li class="nav-item px-1 my-1" role="presentation">
             <button id="nav-sub-links" id="settings-general"
                 class="settings-general nav-link text-nowrap px-3 px-md-3 d-flex flex-column align-items-center justify-content-center active"
                 id="pills-settings-general-tab" data-bs-toggle="pill" data-bs-target="#pills-settings-general"
@@ -17,7 +17,7 @@
                 General
             </button>
         </li>
-        <li class="nav-item px-1" role="presentation">
+        <li class="nav-item px-1 my-1" role="presentation">
             <button id="nav-sub-links" id="settings-pg"
                 class="settings-pg nav-link text-nowrap px-3 px-md-3  d-flex flex-column align-items-center justify-content-center"
                 id="pills-settings-pg-tab" data-bs-toggle="pill" data-bs-target="#pills-settings-pg" type="button"
@@ -25,7 +25,7 @@
                 PG
             </button>
         </li>
-        <li class="nav-item px-1" role="presentation">
+        <li class="nav-item px-1 my-1" role="presentation">
             <button id="nav-sub-links"
                 class="settings-notifications nav-link text-nowrap px-3 px-md-3  d-flex flex-column align-items-center justify-content-center"
                 id="pills-settings-notifications-tab" data-bs-toggle="pill"
@@ -34,7 +34,7 @@
                 Notification
             </button>
         </li>
-        <li class="nav-item px-1" role="presentation">
+        <li class="nav-item px-1 my-1" role="presentation">
             <button id="nav-sub-links"
                 class="settings-tutorials nav-link text-nowrap px-3 px-md-3  d-flex flex-column align-items-center justify-content-center"
                 id="pills-settings-tutorials-tab" data-bs-toggle="pill" data-bs-target="#pills-settings-tutorials"
@@ -42,7 +42,7 @@
                 Tutorials
             </button>
         </li>
-        <li class="nav-item px-1" role="presentation">
+        <li class="nav-item px-1 my-1" role="presentation">
             <!-- <a id="nav-sub-links" href="{{route('admin.logout')}}"
                 class="settings-api nav-link text-nowrap px-3 px-md-3  d-flex flex-column align-items-center justify-content-center"
                 id="pills-settings-api-tab" data-bs-toggle="pill" data-bs-target="#pills-settings-api" type="button"

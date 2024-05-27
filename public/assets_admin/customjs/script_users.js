@@ -89,7 +89,7 @@ function updateActiveUsersList(active_users){
             html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4 identify1">
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
-                                <span class="fw-bold text-dark text-nowrap edit_user_btn grid-p-searchby1" data-id="${value.id}" style="cursor:pointer;" title="Edit User">
+                                <span class="fw-bold text-dark text-md-nowrap text-wrap edit_user_btn grid-p-searchby1" data-id="${value.id}" style="cursor:pointer;" title="Edit User">
                                     ${value.username} (${value.company_name})
                                 </span>
                                 <span class="text-dark grid-p-searchby1">

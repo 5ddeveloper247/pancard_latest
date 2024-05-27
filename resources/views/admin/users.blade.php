@@ -9,9 +9,9 @@
 <!-- =====USERS-TAB====== -->
     <section>
         <!-- =====CREATE-USERS-APPROVE/BLOCK====== -->
-        <ul class="nav nav-pills d-flex flex-nowrap align-items-center justify-content-between gap-0 gap-md-1 mt-3 mb-2 px-2 tab-padding"
+        <ul class="nav nav-pills d-flex flex-md-nowrap flex-wrap align-items-center justify-content-md-between justify-content-start gap-0 gap-md-1 mt-3 mb-2 px-2 tab-padding"
             id="pills-tab" role="tablist">
-            <li class="nav-item px-1" role="presentation">
+            <li class="nav-item px-1 my-1" role="presentation">
                 <button id="nav-sub-links"
                     class="user-pending sub-tabs-user nav-link text-nowrap px-2 px-md-3 active d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="pill" data-bs-target="#pills-user-pending" type="button"
@@ -19,7 +19,7 @@
                     Pending
                 </button>
             </li>
-            <li class="nav-item px-1" role="presentation">
+            <li class="nav-item px-1 my-1" role="presentation">
                 <button id="nav-sub-links" 
                     class="user-list sub-tabs-user nav-link text-nowrap px-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="pill" data-bs-target="#pills-user-list" type="button"
@@ -27,7 +27,7 @@
                     Users List
                 </button>
             </li>
-            <li class="nav-item px-1" role="presentation">
+            <li class="nav-item px-1 my-1" role="presentation">
                 <button id="nav-sub-links"
                     class="create-user sub-tabs-user nav-link text-nowrap px-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="pill" data-bs-target="#pills-user-list" type="button"
@@ -35,7 +35,7 @@
                     Create Users
                 </button>
             </li>
-            <li class="nav-item px-1" role="presentation">
+            <li class="nav-item px-1 my-1" role="presentation">
                 <button id="nav-sub-links"
                     class="transfer-user sub-tabs-user nav-link text-nowrap px-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="pill" data-bs-target="#pills-transfer-user"
@@ -66,7 +66,7 @@
                 id="" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button id="nav-sub-links-for-days"
-                        class="nav-link filter-btns filter_today text-nowrap px-3 d-flex flex-column align-items-center justify-content-center"
+                        class="nav-link filter-btns filter_today text-nowrap px-3 mx-1 d-flex flex-column align-items-center justify-content-center"
                         data-bs-toggle="pill" data-bs-target="#pills-today" type="button"
                         role="tab" aria-controls="pills-today" aria-selected="true">
                         Today
@@ -74,14 +74,14 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button id="nav-sub-links-for-days"
-                        class="nav-link filter-btns filter_yesterday text-nowrap px-3 d-flex flex-column align-items-center justify-content-center"
+                        class="nav-link filter-btns filter_yesterday text-nowrap px-3 mx-1 d-flex flex-column align-items-center justify-content-center"
                         data-bs-toggle="pill" data-bs-target="#pills-yesterday" type="button"
                         role="tab" aria-controls="pills-yesterday" aria-selected="false">
                         Yesterday
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <select class="form-select months-dropdown" id="filter_month">
+                    <select class="form-select months-dropdown mx-1" id="filter_month">
                         <option value="">Choose Month</option>
                         <option value="1">January</option>
                         <option value="2">February</option>
@@ -104,7 +104,7 @@
                         role="tab" aria-controls="pills-date-range" aria-selected="false">
                         Date Range
                     </button> -->
-                    <input type="text" id="filter_dateRange" class="form-control" placeholder="Choose Range" readonly style="display:block;font-size:12px;padding: .485rem .75rem;"/>
+                    <input type="text" id="filter_dateRange" class="form-control mx-1" placeholder="Choose Range" readonly style="display:block;font-size:12px;padding: .485rem .75rem;"/>
                 </li>
             </ul>
             <form class="d-flex order-search-bar mb-3" role="search" action="javascript:;">
@@ -244,7 +244,7 @@
                         </div>
                     </span>
                     <button type="button"
-                        class="btn add-bank-account-btn users-details-inputs w-100 ms-2 px-5 register_form_submit">Approve</button>
+                        class="btn add-bank-account-btn users-details-inputs w-100 ms-2 px-md-5 register_form_submit">Approve</button>
                 </div>
 
                 <div class="form-floating col-12 my-2">
@@ -257,7 +257,7 @@
         <!-- modal to view user image starts -->
         <div class="modal fade" id="viewprifileimageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog h-75 d-flex align-items-center justify-content-center">
+        <div class="modal-dialog h-100 d-flex align-items-center justify-content-center">
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between">
                     <h2 class="modal-title fs-4 text-dark fw-bolder" id="staticBackdropLabel">Profile Image</h2>
