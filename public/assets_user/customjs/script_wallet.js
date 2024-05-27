@@ -16,8 +16,11 @@ $('#transaction_amount').on('input', function () {
     var transaction_amount = $(this).val();
     if (transaction_amount == '') {
         $('.add_transaction_btn').text('Add to your wallet');
+        $('.addWalletOnlinebtn').text('Add to your wallet');
     }
     $('.add_transaction_btn').text('Add ₹' + transaction_amount + ' to your wallet');
+    $('.addWalletOnlinebtn').text('Add ₹' + transaction_amount + ' to your wallet');
+    $('.paymentdisabledalert').text('Add ₹' + transaction_amount + ' to your wallet');
 
 });
 
@@ -99,18 +102,40 @@ function addTransactionResponse(response) {
         $('.add_transaction_btn').text('Add to your wallet');
     }
     else {
-        error = response.responseJSON.message;
-        var is_invalid = response.responseJSON.errors;
+        if(response.status == 402){
+            
+            error = response.message;
 
-        $.each(is_invalid, function (key) {
-            // Assuming 'key' corresponds to the form field name
-            var inputField = $('[name="' + key + '"]');
-            // Add the 'is-invalid' class to the input field's parent or any desired container
-            inputField.closest('.form-control').addClass('is-invalid');
-        });
+        }else{
+            
+            error = response.responseJSON.message;
+            var is_invalid = response.responseJSON.errors;
+        
+            $.each(is_invalid, function(key) {
+                // Assuming 'key' corresponds to the form field name
+                var inputField = $('[name="' + key + '"]');
+                var selectField = $('[name="' + key + '"]');
+                // Add the 'is-invalid' class to the input field's parent or any desired container
+                inputField.closest('.form-control').addClass('is-invalid');
+                selectField.closest('.form-select').addClass('is-invalid');
+            });
+        }
+    	
         toastr.error(error, '', {
             timeOut: 3000
         });
+        // error = response.responseJSON.message;
+        // var is_invalid = response.responseJSON.errors;
+
+        // $.each(is_invalid, function (key) {
+        //     // Assuming 'key' corresponds to the form field name
+        //     var inputField = $('[name="' + key + '"]');
+        //     // Add the 'is-invalid' class to the input field's parent or any desired container
+        //     inputField.closest('.form-control').addClass('is-invalid');
+        // });
+        // toastr.error(error, '', {
+        //     timeOut: 3000
+        // });
     }
 }
 
@@ -203,6 +228,11 @@ function transactionHistoryResponse(response) {
     $('#transactionhistorydiv').html(html);
 }
 
+$('.paymentdisabledalert').click(function(){
+    toastr.error('Can not perform online transactions at the time', '', {
+        timeOut: 3000
+    });
+})
 
 
 $('.addWalletOnlinebtn').on('click', function () {
@@ -224,4 +254,21 @@ $('.addWalletOnlinebtn').on('click', function () {
     } else {
         window.location.href = base_url+"/user/addwallet/online/pay/" + walletAmount;
     }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.copy-icon').forEach(icon => {
+        icon.addEventListener('click', function () {
+            const textToCopy = this.getAttribute('data-copy');
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                toastr.success('text copied', '', {
+        timeOut: 3000
+    });
+            }).catch(err => {
+                toastr.error('failed to copy text', '', {
+        timeOut: 3000
+    });
+            });
+        });
+    });
 });

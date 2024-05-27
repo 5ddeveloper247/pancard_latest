@@ -61,44 +61,44 @@
         <form  class="row g-3 register my-0 mx-md-0" id="general_settings_form"><!-- method="POST" action="{{ route('admin.storeGeneralSettings') }}" -->
             <div class="form-floating col-6 col-md-4 my-2">
                 <input type="text" class="form-control users-details-inputs form-control-sm" 
-                        id="company" name="company" placeholder="Company" required max-length="100" value="">
+                        id="company" name="company" placeholder="Company" required maxlength="100" value="">
                 <label class="ms-2 d-flex align-items-center" for="company">Company</label>
             </div>
             
             <div class="form-floating col-6 col-md-4 my-2">
                 <input type="text" class="form-control users-details-inputs form-control-sm" 
-                        id="websiteTitle" name="websiteTitle" placeholder="Website Title" required max-length="100" value="">
+                        id="websiteTitle" name="websiteTitle" placeholder="Website Title" required maxlength="100" value="">
                 <label class="ms-2 d-flex align-items-center" for="websiteTitle">Website Title</label>
             </div>
             <div class="form-floating col-6 col-md-4 my-2">
                 <input type="number" class="form-control users-details-inputs form-control-sm" 
-                        id="retailerRate" name="retailerRate" placeholder="Retailer ID Rate" required max-length="10" value="">
+                        id="retailerRate" name="retailerRate" placeholder="Retailer ID Rate" required maxlength="6" value="">
                 <label class="ms-2 d-flex align-items-center" for="retailerRate">Retailer ID Rate</label>
             </div>
             <div class="form-floating col-6 col-md-4 my-2">
                 <input type="number" class="form-control users-details-inputs form-control-sm" 
-                        id="distributorRate" name="distributorRate" placeholder="Distributor ID Rate" required max-length="10" value="">
+                        id="distributorRate" name="distributorRate" placeholder="Distributor ID Rate" required maxlength="6" value="">
                 <label class="ms-2 d-flex align-items-center" for="distributorRate">Distributor ID Rate</label>
             </div>
             <div class="form-floating col-6 col-md-4 my-2">
                 <input type="number" class="form-control users-details-inputs form-control-sm" 
-                        id="supDistributorRate" name="supDistributorRate" placeholder="Super Distributor ID Rate" required max-length="10" value="">
+                        id="supDistributorRate" name="supDistributorRate" placeholder="Super Distributor ID Rate" required maxlength="6" value="">
                 <label class="ms-2 d-flex align-items-center" for="supDistributorRate">Super Distributor ID Rate</label>
             </div>
             <div class="form-floating col-6 col-md-4 my-2">
                 <input type="number" class="form-control users-details-inputs form-control-sm" 
-                        id="apiRate" name="apiRate" placeholder="Super API Rate" required max-length="10" value="">
+                        id="apiRate" name="apiRate" placeholder="Super API Rate" required maxlength="6" value="">
                 <label class="ms-2 d-flex align-items-center" for="apiRate">Super API Rate</label>
             </div>
             <h5 class="m-0">Helpline Info</h5>
             <div class="form-floating col-6 col-md-4 my-2">
                 <input type="email" class="form-control users-details-inputs form-control-sm" 
-                        id="helplineEmail" name="helplineEmail" placeholder="Helpline Email" required max-length="100" value="">
+                        id="helplineEmail" name="helplineEmail" placeholder="Helpline Email" required maxlength="100" value="">
                 <label class="ms-2 d-flex align-items-center" for="helplineEmail">Helpline Email</label>
             </div>
             <div class="form-floating col-6 col-md-4 my-2">
                 <input type="number" class="form-control users-details-inputs form-control-sm" 
-                        id="helplineNumber" name="helplineNumber" placeholder="WhatsApp Helpline No" required max-length="15" value="">
+                        id="helplineNumber" name="helplineNumber" placeholder="WhatsApp Helpline No" required maxlength="10" value="">
                 <label class="ms-2 d-flex align-items-center" for="whatsapp-helpline-no">WhatsApp Helpline No</label>
             </div>
             <h5 class="m-0">Option disable</h5>
@@ -110,7 +110,7 @@
                         <option value="{{$value->id}}">{{$value->name}}</option>
                     @endforeach
                 </select>
-                <label class="ms-2 d-flex align-items-center" for="pucType">PUC Type</label>
+                <!-- <label class="ms-2 d-flex align-items-center" for="pucType">PUC Type</label> -->
             </div>
             <div class="form-floating col-4 col-md-4 my-2" role="presentation">
                 <button class="nav-link text-nowrap users-details-inputs w-100 px-2 px-md-3 active d-flex flex-column align-items-center justify-content-center"

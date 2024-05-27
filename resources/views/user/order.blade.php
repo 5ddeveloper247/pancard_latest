@@ -597,7 +597,7 @@
                 </div>
 
                 <div class="form-floating col-6 col-md-4">
-                    <input type="number" class="form-control" id="mobile_number" name="mobile_number" maxlength="15" placeholder="name@example.com" />
+                    <input type="number" class="form-control" id="mobile_number" name="mobile_number" maxlength="10" placeholder="name@example.com" />
                     <label class="ps-4" for="mobile_number">Mobile No</label>
                 </div>
 

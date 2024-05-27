@@ -185,7 +185,7 @@
             <div class="modal-header d-flex justify-content-between">
                 <h2 class="modal-title fs-4 text-dark fw-bolder" id="staticBackdropLabel">Upload PDF</h2>
                 <div class="d-flex">
-                    <button type="button" class="border-0 mx-1" data-bs-dismiss="modal" aria-label="Close">
+                    <!-- <button type="button" class="border-0 mx-1" data-bs-dismiss="modal" aria-label="Close">
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0.5" y="0.5" width="29" height="29" rx="4.5" fill="#0D9E00" fill-opacity="0.1" stroke="#0D9E00" />
                             <g clip-path="url(#clip0_817_821)">
@@ -197,7 +197,7 @@
                                 </clipPath>
                             </defs>
                         </svg>
-                    </button>
+                    </button> -->
                     <button type="button" class="border-0 mx-1" data-bs-dismiss="modal" aria-label="Close"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0.5" y="0.5" width="29" height="29" rx="4.5" fill="#EC1C34" fill-opacity="0.1" stroke="#EC1C34" />
                             <path d="M6.85718 22.2857L22.2857 6.85712M6.85718 6.85712L22.2857 22.2857" stroke="#EC1C34" stroke-width="1.5" stroke-linecap="round" />
@@ -239,7 +239,7 @@
             <div class="modal-header d-flex justify-content-between">
                 <h2 class="modal-title fs-4 text-dark fw-bolder" id="staticBackdropLabel">Uploaded Files</h2>
                 <div class="d-flex">
-                    <button type="button" class="border-0 mx-1" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="border-0 mx-1 updateViewFlag_btn updateviewstatusbtn" data-id=""  data-flag-type="1" data-bs-dismiss="modal" aria-label="Close">
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0.5" y="0.5" width="29" height="29" rx="4.5" fill="#0D9E00" fill-opacity="0.1" stroke="#0D9E00" />
                             <g clip-path="url(#clip0_817_821)">

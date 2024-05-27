@@ -83,18 +83,19 @@ function updateActiveUsersList(active_users){
     
     var html = '';
     if(active_users.length > 0){
+        
         $.each(active_users, function(index, value) {
             
-            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4">
+            html += `<div class="home-card py-1 px-2 mb-2 mx-md-0 px-md-4 identify1">
                         <div class="d-flex align-items-center justify-content-between ">
                             <div class="d-flex flex-column">
-                                <span class="fw-bold text-dark text-md-nowrap text-wrap edit_user_btn" data-id="${value.id}" style="cursor:pointer;" title="Edit User">
+                                <span class="fw-bold text-dark text-md-nowrap text-wrap edit_user_btn grid-p-searchby1" data-id="${value.id}" style="cursor:pointer;" title="Edit User">
                                     ${value.username} (${value.company_name})
                                 </span>
-                                <span class="text-dark">
+                                <span class="text-dark grid-p-searchby1">
                                 ${value.name}
                                 </span>
-                                <span class="text-dark d-flex align-items-center utr-code-bg px-1">
+                                <span class="text-dark d-flex align-items-center utr-code-bg px-1 grid-p-searchby1">
                                     Available Balance: ₹${value.balance}
                                 </span>
                             </div>
@@ -451,12 +452,13 @@ function editUserResponse(response) {
         $("#user_challan_amount").val(user_detail['challan_rate']);
         $("#upload_option").val(user_detail['upload_option']);
         $('#user_profile_img').attr('src', user_detail['profile_picture']);
-        if($('#user_id').val() == ''){
-            $('.adhar-eye').show();
-        }
-        else{
-            $('.adhar-eye').hide();
-        }
+        $('#user_adhar_img').attr('src', user_detail['aadhar']);
+        // if($('#user_id').val() == ''){
+            // $('.adhar-eye').show();
+        // }
+        // else{
+            // $('.adhar-eye').hide();
+        // }
         var puc_rates = user_detail['puc_rates'];
         if(puc_rates.length > 0){
             $.each(puc_rates, function(index, value) {
@@ -659,6 +661,10 @@ document.getElementById('aadharUploadIcon').addEventListener('click', function()
         document.getElementById('upload_aadhar').click();
         
     }
+    else{
+        $("#viewadharModal").modal('show');
+
+    }
 });
 
 document.getElementById('upload_aadhar').addEventListener('change', function() {
@@ -681,6 +687,26 @@ $('#searchInListing').on("keyup", function (e)  {
         var val = $.trim(this.value).toLowerCase();
         el = tr.filter(function() {
             return $(this).find('.grid-p-searchby').text().toLowerCase().match(val);
+        });
+        if (el.length >= 1) {
+            noElem = false;
+        }
+        tr.not(el).hide().addClass("d-none").removeClass("d-flex");
+		el.fadeIn().addClass("d-flex").removeClass("d-none");
+	} else {
+		tr.fadeIn().addClass("d-flex").removeClass("d-none");
+    }
+});
+
+$('#searchInListing1').on("keyup", function (e)  {     
+    var tr = $('.identify1');
+    console.log('zaod');
+    
+    if ($(this).val().length >= 1) {//character limit in search box.
+        var noElem = true;
+        var val = $.trim(this.value).toLowerCase();
+        el = tr.filter(function() {
+            return $(this).find('.grid-p-searchby1').text().toLowerCase().match(val);
         });
         if (el.length >= 1) {
             noElem = false;

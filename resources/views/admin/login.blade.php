@@ -27,7 +27,7 @@
 				<form class="row g-3 pt-md-0" method="POST" action="{{ route('admin.loginSubmit') }}">
 					@csrf
 					<div class="form-floating p-0">
-						<input id="email" type="email" name="email" value="{{ old('email') }}" class="form-control" placeholder="name@example.com"  required autofocus/>
+						<input id="email" type="text" name="email" value="{{ old('email') }}" class="form-control" placeholder="name@example.com"  required autofocus/>
 						<label class="ps-4" for="email">Email</label>
 					</div>
 					<div class="form-floating p-0">

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\States;
+use App\Models\ApiSettings;
+use App\Models\Settings;
 use App\Http\Controllers\PaytmController;
 
 class RegistrationController extends Controller
@@ -37,6 +39,8 @@ class RegistrationController extends Controller
     public function register(Request $request)
     {
         $data['states'] = States::where('status', '1')->get();
+        $admin_settings = Settings::first();
+        $retailer_rate = $admin_settings->retailer_rate;
 
         do {
             $username_auto = 'PUCZ' . mt_rand(100000, 999999);
@@ -44,6 +48,7 @@ class RegistrationController extends Controller
         } while ($existing_number);
 
         $data['username_auto'] = $username_auto;
+        $data['retailer_rate'] = $retailer_rate;
 
         return view('user/registration')->with($data);
     }
@@ -62,8 +67,8 @@ class RegistrationController extends Controller
             'user_state' => 'required',
             'user_city' => 'required',
             'user_area' => 'required',
-            'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-            'upload_aadhar' => 'required|max:4096',
+            'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
+            'upload_aadhar' => 'required|max:400|image|mimes:jpeg,png,jpg,JPEG,PNG,JPG|max:400',
         ]);
 
         // Process form submission if validation passes
@@ -177,6 +182,7 @@ class RegistrationController extends Controller
         $data['username_auto'] = $username_auto;
         $data['userData'] = $Users;
         $data['formData'] = $request->all();
+        $data['payment_gateway_settings'] = ApiSettings::first()->value('status');
 
         //Handle Registeration Payment
         return response()->json(['status' => 200, 'message' => "User Created Successfully, Now set password and then login!", 'data' => $data]);

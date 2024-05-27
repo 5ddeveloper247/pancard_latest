@@ -148,16 +148,19 @@ function registerUserResponse(response) {
         $("#filename").text('Upload Aadhar');
         const userData = response.data.userData;
         const formData = response.data.formData;
+        const payment_settings = response.data.payment_gateway_settings;
+        
         const dataObj = {
             uData: userData,
             fData: formData
         }
         const datax = JSON.stringify(dataObj);
+        if(payment_settings == 'on'){
         setTimeout(function () {
-
             toDoPayment(datax);
-            // tologin();
         }, 3000);
+    }
+
 
     } else {
 
@@ -193,9 +196,27 @@ document.getElementById('cameraIcon').addEventListener('click', function () {
 document.getElementById('upload_picture').addEventListener('change', function () {
     if (this.files.length > 0) {
         // Get the filename of the selected file
-        var filename = this.files[0].name;
-        // Update the content of the <span> element with the filename
-        document.getElementById('picturename').innerText = filename;
+        var fileSize = this.files[0].size; // Size in bytes
+        var maxSize = 400 * 1024; // 400 KB in bytes
+
+        if (fileSize > maxSize) {
+            $("#upload_picture").val('');
+            document.getElementById('picturename').innerText = 'Upload Picture';
+            toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
+                timeOut: 3000
+            });
+          
+        }
+        else{
+
+            var filename = this.files[0].name;
+    
+            // Update the content of the <span> element with the filename
+            document.getElementById('picturename').innerText = filename;
+            toastr.success('Uploaded', '', {
+                timeOut: 3000
+            });
+        }
     } else {
         // No file selected, reset the content of the <span> element
         document.getElementById('picturename').innerText = 'Upload Picture';
@@ -209,9 +230,26 @@ document.getElementById('aadharUploadIcon').addEventListener('click', function (
 document.getElementById('upload_aadhar').addEventListener('change', function () {
     if (this.files.length > 0) {
         // Get the filename of the selected file
-        var filename = this.files[0].name;
-        // Update the content of the <span> element with the filename
-        document.getElementById('filename').innerText = filename;
+        var fileSize = this.files[0].size; // Size in bytes
+        var maxSize = 400 * 1024; // 400 KB in bytes
+
+        if (fileSize > maxSize) {
+            document.getElementById('filename').innerText = 'Upload Aadhar';
+            toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
+                timeOut: 3000
+            });
+          
+        }
+        else{
+
+            var filename = this.files[0].name;
+    
+            // Update the content of the <span> element with the filename
+            document.getElementById('filename').innerText = filename;
+            toastr.success('Uploaded', '', {
+                timeOut: 3000
+            });
+        }
     } else {
         // No file selected, reset the content of the <span> element
         document.getElementById('filename').innerText = 'Upload Aadhar';

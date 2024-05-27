@@ -20,6 +20,8 @@ use App\Models\PucUserRates;
 use App\Models\Puc;
 use App\Models\Banks;
 use App\Models\Transactions;
+use App\Models\ApiSettings;
+use Carbon\Carbon;
 
 
 
@@ -186,6 +188,7 @@ class FrontEndController extends Controller
         $data['page'] = 'wallet';
         $data['banks'] = Banks::where('enable',1)->orderBy('created_at', 'desc')->get();
         $data['user'] = User::where('id', session('user')->id)->first();
+        $data['payment_gateway_settings'] = ApiSettings::first()->value('status');
         return view('user/wallet')->with($data);
     }
 
@@ -204,6 +207,15 @@ class FrontEndController extends Controller
            
         ],
         ['selected_bank_id.required' => 'Select bank from dropdown first']);
+
+        $utr = $request->utr_no;
+        $utr_check = Transactions::where('transaction_number',$utr)->where('status', 3)->first();
+        if(isset($utr_check->id)){
+            return response()->json(['status' => 402,'message' => "Utr number already used!"]);  
+        }
+        
+       
+       
        
         $transaction = new Transactions;
         $transaction->type = '1'; // 1=>credit, 2=>debit
@@ -470,8 +482,8 @@ class FrontEndController extends Controller
                 // 'challan' => 'required',
                 'chassis_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
                 'engine_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
-                'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-                'upload_challan' => $request->challan != '' ? 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
+                'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
+                'upload_challan' => $request->challan != '' ? 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400' : 'nullable|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
             ]);
             
             $userBalance = $previous_image = User::where('id', $user_id)->value('balance');
@@ -709,4 +721,32 @@ class FrontEndController extends Controller
        
     //     echo 'test success';
     // }
+
+public function updatepucdates(Request $request){
+
+    $validatedData = $request->validate([
+        'end_puc_date' => 'required|date',
+        'start_puc_date' => 'required|date',
+    ]);
+    
+    $puc = Puc::where('id',$request->puc_id)->first();
+   
+    $puc->start_date = $request->start_puc_date;
+    $puc->end_date = $request->end_puc_date;
+    $puc->save();
+    return response()->json(['status' => 200,'message' => "Dates Updated Successfully"]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

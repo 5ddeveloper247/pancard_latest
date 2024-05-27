@@ -290,6 +290,22 @@
                     </div>
 
                     <div class="row gy-2 gx-0 gap-2 pe-2">
+                        @if(@empty($user->challan_rate))
+                        <div class="d-none col-2 challan ms-2 px-2 pb-2 {{@$disableChallan == true ? 'd-none' : 'd-block'}}">
+                            <label for="challan">
+                                Challan
+                            </label>
+                            <div class="form-floating">
+                                <select id="Challan-form" class="form-select" name="challan">
+                                    <option value="">choose</option>
+                                   @for($i=1;$i<=20;$i++)
+                                   <option value="{{$i}}">{{$i}}</option>
+                                   @endfor
+                                </select>
+                            </div>
+                        </div>
+                        
+                        @else
                         <div class="col-md-2 col-3 challan ms-2 px-2 pb-2 {{@$disableChallan == true ? 'd-none' : 'd-block'}}">
                             <label for="challan">
                                 Challan
@@ -303,6 +319,7 @@
                                 </select>
                             </div>
                         </div>
+                        @endif
 
                         <div class="form-floating col challan_opt_div" style="display:none;">
                             <input type="number" class="form-control" id="chassis_number" name="chassis_number" maxlength="5" placeholder="name@example.com" />
@@ -319,7 +336,7 @@
                     <div class="form-floating col-8 challan_opt_div" style="display:none;">
                         <div id="challanIcon" class="upload px-4 d-flex align-items-center justify-content-between">
                         <span id="challanName" style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload challan Screenshot</span>
-                            <input type="file" accept="image/*" capture="camera" id="upload_challan" name="upload_challan" multiple="false" style="display: none;">
+                            <input type="file" accept="image/*"  id="upload_challan" name="upload_challan" multiple="false" style="display: none;">
                             <svg width="19" height="18" viewBox="0 0 19 18" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9.49995 11.4V1M9.49995 1L12.05 3.8M9.49995 1L6.94995 3.8" stroke="#515C6F"

@@ -18,12 +18,19 @@ function getPucPageDataResponse(response) {
     makePucList(puc_list);
 
 }
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
 
 function makePucList(puc_list) {
     var html = '';
     if (puc_list.length > 0) {
         $.each(puc_list, function (index, value) {
             var status_txt = '';
+        if(value.certificate_pdf == null && value.start_date ==null && value.end_date ==null){
             if (value.status == '1') { // pending
                 status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-2 grid-p-searchby">
                                 <svg width="12" height="11" viewBox="0 0 12 11" fill="none"
@@ -52,30 +59,106 @@ function makePucList(puc_list) {
                                 Reason: ${value.rejection_reason}
                             </span>`;
             } else if (value.status == '4') { // complete
-                status_txt = `<span class="text-end bg-g ms-2 ms-sm-5 px-3 grid-p-searchby">
+                status_txt = `<span class="text-end bg-g ms-2 ms-sm-5 pe-3 grid-p-searchby">
                                     Completed
                                 </span>`;
             }
+        }
+        else if(value.certificate_pdf == null && value.start_date !=null && value.end_date !=null){
+            if (value.status == '1') { // pending
+                status_txt = `<span class="text-end bg-o ms-2 ms-sm-5 pe-2 grid-p-searchby">
+                                <svg width="12" height="11" viewBox="0 0 12 11" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.5"
+                                        d="M6 10.25C8.76142 10.25 11 8.17932 11 5.625C11 3.07068 8.76142 1 6 1C3.23858 1 1 3.07068 1 5.625C1 8.17932 3.23858 10.25 6 10.25Z"
+                                        stroke="#F45D08" stroke-width="1.5" />
+                                    <path d="M6 3.77502V5.62502L7.25 6.78127" stroke="#F45D08" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                Processing
+                            </span>`;
+            } else if (value.status == '3') { // reject
+                status_txt = `<span class="text-end bg-r ms-2 ms-sm-5 pe-2 grid-p-searchby">
+                                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_887_44)">
+                                        <path opacity="0.5" d="M9.56963 1.08337H3.43038C3.26246 1.08337 3.17904 1.08337 3.10862 1.08987C2.32321 1.16192 1.70029 1.81571 1.63096 2.63958C1.625 2.71379 1.625 2.80208 1.625 2.97758V10.9742C1.625 11.4465 2.19863 11.6475 2.46892 11.2689C2.51082 11.2082 2.56682 11.1586 2.6321 11.1244C2.69739 11.0901 2.77002 11.0722 2.84375 11.0722C2.91748 11.0722 2.99011 11.0901 3.0554 11.1244C3.12069 11.1586 3.17668 11.2082 3.21858 11.2689L3.45313 11.5971C3.52122 11.6958 3.61226 11.7764 3.7184 11.8321C3.82454 11.8878 3.94263 11.9169 4.0625 11.9169C4.18237 11.9169 4.30046 11.8878 4.4066 11.8321C4.51274 11.7764 4.60378 11.6958 4.67188 11.5971C4.73997 11.4985 4.83101 11.4178 4.93715 11.3621C5.04329 11.3064 5.16138 11.2773 5.28125 11.2773C5.40112 11.2773 5.51921 11.3064 5.62535 11.3621C5.73149 11.4178 5.82253 11.4985 5.89063 11.5971C5.95872 11.6958 6.04976 11.7764 6.1559 11.8321C6.26204 11.8878 6.38013 11.9169 6.5 11.9169C6.61987 11.9169 6.73796 11.8878 6.8441 11.8321C6.95024 11.7764 7.04128 11.6958 7.10938 11.5971C7.17747 11.4985 7.26851 11.4178 7.37465 11.3621C7.48079 11.3064 7.59888 11.2773 7.71875 11.2773C7.83862 11.2773 7.95671 11.3064 8.06285 11.3621C8.16899 11.4178 8.26003 11.4985 8.32813 11.5971C8.39622 11.6958 8.48726 11.7764 8.5934 11.8321C8.69954 11.8878 8.81763 11.9169 8.9375 11.9169C9.05737 11.9169 9.17546 11.8878 9.2816 11.8321C9.38774 11.7764 9.47878 11.6958 9.54688 11.5971L9.78142 11.2694C9.82332 11.2087 9.87932 11.1592 9.9446 11.1249C10.0099 11.0906 10.0825 11.0728 10.1563 11.0728C10.23 11.0728 10.3026 11.0906 10.3679 11.1249C10.4332 11.1592 10.4892 11.2087 10.5311 11.2694C10.8019 11.6475 11.375 11.4465 11.375 10.9742V2.97758C11.375 2.80208 11.375 2.71379 11.369 2.63958C11.3003 1.81571 10.6773 1.16192 9.89192 1.08987C9.82042 1.08337 9.737 1.08337 9.56963 1.08337Z" stroke="#FF0000" stroke-width="1.5"></path>
+                                        <path d="M4.0625 8.39587H8.9375M7.58333 4.33337L5.41667 6.50004M5.41667 4.33337L7.58333 6.50004" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round"></path>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_887_44">
+                                            <rect width="13" height="13" fill="white"></rect>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                                Reason: ${value.rejection_reason}
+                            </span>`;
+            } else if (value.status == '4') { // complete
+                status_txt = `<span class="text-end bg-g ms-2 ms-sm-5 pe-3 grid-p-searchby">
+                                    Completed
+                                </span>`;
+            } 
+        }else if(value.certificate_pdf != null && value.start_date !=null && value.end_date !=null){
+            if(value.start_date !=null && value.end_date != null){
+                var remainingDaysText = '';
+            if(value.end_date != null){
+                var startDate = moment(value.start_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                var endDate = moment(value.end_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                var daysRemaining = moment(value.end_date).diff(moment(), 'days');
+                
+                if (daysRemaining > 0) {
+                    remainingDaysText = daysRemaining + ' days remaining';
+                    var remainingdayshtml =  `<span class="remainingdaysdiv_${value.id} ">${remainingDaysText}</span>`;
+                } else if (daysRemaining === 0) {
+                    remainingDaysText = 'Today is the end date';
+                    var remainingdayshtml =  `<span class="remainingdaysdiv_${value.id} ">${remainingDaysText}</span>`;
+                } else {
+                    remainingDaysText = 'Expired';
+                    var remainingdayshtml =  `<span class="remainingdaysdiv_${value.id} ">${remainingDaysText}</span>`;
+                }
+
+            }
+            var updatedatesbtn = `<button class="puc_date_update_btn d-none make-new-btn d-flex align-items-center justify-content-center "style="width: 200px;font-weight: 400;margin-left:84px;margin-top:15px;"id="puc_date_update_btn_${value.id}"data-puc-id="${value.id}">Update</button>`;
+            }
+            
+        }
+        else{
+            
+                updatedatesbtn = `<button class="puc_date_update_btn make-new-btn d-flex align-items-center justify-content-center "style="width: 200px;font-weight: 400;margin-left:84px;margin-top:15px;"id="puc_date_update_btn"data-puc-id="${value.id}">Update</button>`;
+               
+        }
+
             html += `<div class="home-card d-flex align-items-center justify-content-between py-3 px-3 mb-4 mx-md-5 px-md-4 identify">
+            <div>
                         <div class="d-flex flex-column editPuc_btn" data-id="${value.id}" title="Edit PUC" style="cursor:pointer;">
+                        
                             <span class="fw-bold text-dark grid-p-searchby">
-                                ${value.name}
+                                ${value.name}   
                             </span>
-                            <span class="text-dark d-flex grid-p-searchby">${value.puc_type != null ? value.puc_type.name: ''}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
+                            <span class="text-dark d-flex grid-p-searchby">${value.puc_type != null ? value.puc_type.name : ''}&nbsp;-&nbsp;<b>${value.registration_number} </b></span>
                             <span class="text-dark grid-p-searchby">
                                 ${value.model}&nbsp;-&nbsp;${value.phone_number}
                             </span>
                             <span class="text-dark grid-p-searchby">
-                                Challan (${value.challan !=null?value.challan:'0'}) - 
-                                ${value.engine_number!=null?value.engine_number:'N/A'}, 
-                                ${value.chasis_number!=null?value.chasis_number:'N/A'}
+                                Challan (${value.challan != null ? value.challan : '0'}) - 
+                                ${value.engine_number != null ? value.engine_number : 'N/A'}, 
+                                ${value.chasis_number != null ? value.chasis_number : 'N/A'}
                             </span>
-                            <span class="diff-bg px-2 my-1 grid-p-searchby">
-                                ${value.start_date != null ? value.start_date + ' to ' : ''}${value.end_date != null ? value.end_date : ''}   
+                            </div>
+                            <span class="diff-bg px-2 my-1 grid-p-searchby daterangecalculated"title="Change Date" data-id="${value.id}">
+                                ${value.start_date != null ? formatDate(value.start_date) + ' to ' : ''}${value.end_date != null ? formatDate(value.end_date) : ''}   
                             </span>
+                            ${value.certificate_pdf != null  && value.start_date ==null && value.end_date == null ? `
+                            <div class="d-flex puc_dates_container_${value.id}" id="puc_dates_container_${value.id}">
+                                <input type="text" id="start_puc_date" class="form-control me-2"  maxlength="10" name="start_puc_date" placeholder="Start Date (dd/mm/yyyy)" value="${value.start_date != null ? formatDate(value.start_date) : ''}" />
+                                <input type="text" name="end_puc_date" id="end_puc_date" class="form-control" maxlength="10" placeholder="End Date (yyyy/mm/dd)" value="${value.end_date != null ? formatDate(value.end_date):''}" />
+                            </div>
+                        ` : `<div class="d-flex d-none puc_dates_container_${value.id}" id="puc_dates_container_${value.id}">
+                        <input type="text" id="start_puc_date" class="form-control me-2"  maxlength="10" name="start_puc_date" placeholder="Start Date (dd/mm/yyyy)" value="${value.start_date != null ? formatDate(value.start_date) : ''}" />
+                        <input type="text" name="end_puc_date" id="end_puc_date" class="form-control" maxlength="10" placeholder="End Date (yyyy/mm/dd)" value="${value.end_date != null ? formatDate(value.end_date):''}" />
+                    </div>`}
                         </div>
 
-                        <div class="d-flex flex-column align-items-center">
+                        <div class="d-flex flex-column">
                             <div class="d-flex align-items-center justify-content-end">
                                 
                                 <button type="button" class="modal-btn ${value.status != '4' ? 'd-none' : ''}">
@@ -182,8 +265,9 @@ function makePucList(puc_list) {
                                     </defs>
                                 </svg></a>
                             </div>
-
-                            ${status_txt}
+                            ${status_txt ? status_txt:''}
+                             ${ updatedatesbtn ? updatedatesbtn:''}
+                            ${remainingdayshtml? remainingdayshtml:''}
                         </div>
                     </div>`;
         });
@@ -557,41 +641,132 @@ document.getElementById('upload_challan').addEventListener('change', function ()
     }
 });
 
-$('#searchInListing').on("keyup", function (e)  {     
+$('#searchInListing').on("keyup", function (e) {
     var tr = $('.identify');
-    
+
     if ($(this).val().length >= 1) {//character limit in search box.
         var noElem = true;
         var val = $.trim(this.value).toLowerCase();
-        el = tr.filter(function() {
+        el = tr.filter(function () {
             return $(this).find('.grid-p-searchby').text().toLowerCase().match(val);
         });
         if (el.length >= 1) {
             noElem = false;
         }
         tr.not(el).hide().addClass("d-none").removeClass("d-flex");
-		el.fadeIn().addClass("d-flex").removeClass("d-none");
-	} else {
-		tr.fadeIn().addClass("d-flex").removeClass("d-none");
+        el.fadeIn().addClass("d-flex").removeClass("d-none");
+    } else {
+        tr.fadeIn().addClass("d-flex").removeClass("d-none");
     }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const uploadsModal = new bootstrap.Modal(document.getElementById('uploadsModal'));
-    const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
-    const modalImage = document.getElementById('modalImage');
 
-    document.querySelectorAll('.clickable-img').forEach(img => {
-        img.addEventListener('click', function () {
-            const imgSrc = this.getAttribute('src');
-            modalImage.setAttribute('src', imgSrc);
-            uploadsModal.hide();
-            imageModal.show();
-        });
-    });
+$(document).on('input', '#start_puc_date', function (e) {
+    let value = e.target.value;
 
-    // Reopen the first modal when the second modal is closed
-    document.getElementById('imageModal').addEventListener('hidden.bs.modal', function () {
-        uploadsModal.show();
-    });
+    // Remove all non-numeric characters
+    value = value.replace(/\D/g, '');
+
+    // Add '/' after the first two digits and the next two digits
+    if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+    if (value.length > 5) {
+        value = value.substring(0, 5) + '/' + value.substring(5);
+    }
+
+    // Update the input field value
+    e.target.value = value;
 });
+$(document).on('input', '#end_puc_date', function (e) {
+    let value = e.target.value;
+
+    // Remove all non-numeric characters
+    value = value.replace(/\D/g, '');
+
+    // Add '/' after the first two digits and the next two digits
+    if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+    if (value.length > 5) {
+        value = value.substring(0, 5) + '/' + value.substring(5);
+    }
+
+    // Update the input field value
+    e.target.value = value;
+});
+
+function convertToOriginalFormat(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('/');
+    if (parts.length !== 3) return dateStr;
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+}
+$(document).on('click', '.puc_date_update_btn', function(e){
+    let type = 'POST';
+    let url = '/updatepucdates';
+    var end_puc_date = $('#end_puc_date').val();
+    var start_puc_date = $('#start_puc_date').val();
+    var puc_id = $(this).attr('data-puc-id');
+    let data = new FormData();
+    
+    data.append("end_puc_date", convertToOriginalFormat(end_puc_date));
+    data.append("start_puc_date", convertToOriginalFormat(start_puc_date));
+    data.append("puc_id", puc_id);
+
+    // PASSING DATA TO FUNCTION
+    SendAjaxRequestToServer(type, url, data, '', updatePucDatesResponse, '', '.puc_date_update_btn');
+});
+
+
+function updatePucDatesResponse(response){
+    console.log(response);
+    if (response.status == 200 || response.status == '200') {
+
+        toastr.success(response.message, '', {
+            timeOut: 3000
+        });
+
+        getPucPageData();
+
+    } else {
+
+        if(response.status == 402){
+            
+            error = response.message;
+
+        }else{
+            
+            error = response.responseJSON.message;
+            var is_invalid = response.responseJSON.errors;
+        
+            $.each(is_invalid, function(key) {
+                // Assuming 'key' corresponds to the form field name
+                // var inputField = $('[name="' + key + '"]');
+                // var selectField = $('[name="' + key + '"]');
+                // // Add the 'is-invalid' class to the input field's parent or any desired container
+                // inputField.closest('.form-control').addClass('is-invalid');
+                // selectField.closest('.form-select').addClass('is-invalid');
+            });
+        }
+    	
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+
+
+        
+    }
+    
+}
+
+
+
+$(document).on('click', '.daterangecalculated', function(e) {
+    var id = $(this).attr('data-id');
+    $(this).hide();
+    $('#puc_dates_container_' + id).removeClass('d-none');
+    $('.remainingdaysdiv_'+  id).addClass('d-none');
+    $('#puc_date_update_btn_'+  id).removeClass('d-none');
+});
+
