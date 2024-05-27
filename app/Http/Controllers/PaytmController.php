@@ -111,7 +111,23 @@ class PaytmController extends Controller
         $data = $request->json()->all();
 
         // Debugging: dump and die to see the data structure
-        dd($data);
+        dd($_REQUEST);
+
+        // array:13 [▼ // app\Http\Controllers\PaytmController.php:114
+        //             "BANKTXNID" => "414635568633"
+        //             "CHECKSUMHASH" => "ho85vpqlgXCBsWfzALDDULHBXbIKCYQ4LWMCC0rareKn7uVZFM2V/+V4OUJNs/fAdzujmrtf+ZyZszg7pEoopdkIz/W12L9TkiKO0cH4zl4="
+        //             "CURRENCY" => "INR"
+        //             "GATEWAYNAME" => "PPBL"
+        //             "MID" => "HVRMQv69972580638511"
+        //             "ORDERID" => "42232176"
+        //             "PAYMENTMODE" => "UPI"
+        //             "RESPCODE" => "01"
+        //             "RESPMSG" => "Txn Success"
+        //             "STATUS" => "TXN_SUCCESS"
+        //             "TXNAMOUNT" => "1.00"
+        //             "TXNDATE" => "2024-05-25 13:02:13.0"
+        //             "TXNID" => "20240525210600000001112136305272339"
+        //         ]
 
         // Extract the necessary information from the data
         $responseTimestamp = $data['head']['responseTimestamp'];
