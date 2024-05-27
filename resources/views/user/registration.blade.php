@@ -53,7 +53,7 @@
 
                 <div class="form-floating col-6 col-md-4">
                     <input type="number" class="form-control" id="user_phone" name="user_phone" placeholder="123"
-                        maxlength="15" />
+                        maxlength="10" />
                     <label class="ms-2" for="user_phone">Mobile No</label>
                 </div>
 
@@ -129,7 +129,7 @@
                             style="max-width: 88% !important; overflow: hidden; text-overflow: ellipsis;">Upload
                             Aadhar</span>
                         <input type="file" id="upload_aadhar" name="upload_aadhar" multiple="false"
-                            style="display: none;">
+                            style="display: none;" accept="image/*">
                         <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z"
@@ -144,9 +144,11 @@
 
                 <div class="row g-0 gap-3 px-2">
                     <div id="retailer" class="form-floating col-12 col-md-6 my-3">
+                    <!-- Retailer (₹499) -->
                         <input type="email" readonly class="form-control-plaintext fw-bolder"
-                            id="floatingPlaintextInput" placeholder="Retailer (₹499)" value="Retailer (₹499)">
-                        <label class="ms-2" for="floatingPlaintextInput">User Type</label>
+                            id="floatingPlaintextInput" placeholder="Retailer (₹499)" value="{{$retailer_rate}}">
+                        <!-- <label class="ms-2" for="floatingPlaintextInput">User Type</label> -->
+                        <label class="ps-4" for="floatingPlaintextInput">Retailer Rate(₹)</label>
                     </div>
 
                     <div class="col d-none d-md-block py-3">

@@ -148,16 +148,19 @@ function registerUserResponse(response) {
         $("#filename").text('Upload Aadhar');
         const userData = response.data.userData;
         const formData = response.data.formData;
+        const payment_settings = response.data.payment_gateway_settings;
+        
         const dataObj = {
             uData: userData,
             fData: formData
         }
         const datax = JSON.stringify(dataObj);
+        if(payment_settings == 'on'){
         setTimeout(function () {
-
             toDoPayment(datax);
-            // tologin();
         }, 3000);
+    }
+
 
     } else {
 

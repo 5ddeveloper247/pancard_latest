@@ -20,6 +20,7 @@ $('#transaction_amount').on('input', function () {
     }
     $('.add_transaction_btn').text('Add ₹' + transaction_amount + ' to your wallet');
     $('.addWalletOnlinebtn').text('Add ₹' + transaction_amount + ' to your wallet');
+    $('.paymentdisabledalert').text('Add ₹' + transaction_amount + ' to your wallet');
 
 });
 
@@ -101,18 +102,40 @@ function addTransactionResponse(response) {
         $('.add_transaction_btn').text('Add to your wallet');
     }
     else {
-        error = response.responseJSON.message;
-        var is_invalid = response.responseJSON.errors;
+        if(response.status == 402){
+            
+            error = response.message;
 
-        $.each(is_invalid, function (key) {
-            // Assuming 'key' corresponds to the form field name
-            var inputField = $('[name="' + key + '"]');
-            // Add the 'is-invalid' class to the input field's parent or any desired container
-            inputField.closest('.form-control').addClass('is-invalid');
-        });
+        }else{
+            
+            error = response.responseJSON.message;
+            var is_invalid = response.responseJSON.errors;
+        
+            $.each(is_invalid, function(key) {
+                // Assuming 'key' corresponds to the form field name
+                var inputField = $('[name="' + key + '"]');
+                var selectField = $('[name="' + key + '"]');
+                // Add the 'is-invalid' class to the input field's parent or any desired container
+                inputField.closest('.form-control').addClass('is-invalid');
+                selectField.closest('.form-select').addClass('is-invalid');
+            });
+        }
+    	
         toastr.error(error, '', {
             timeOut: 3000
         });
+        // error = response.responseJSON.message;
+        // var is_invalid = response.responseJSON.errors;
+
+        // $.each(is_invalid, function (key) {
+        //     // Assuming 'key' corresponds to the form field name
+        //     var inputField = $('[name="' + key + '"]');
+        //     // Add the 'is-invalid' class to the input field's parent or any desired container
+        //     inputField.closest('.form-control').addClass('is-invalid');
+        // });
+        // toastr.error(error, '', {
+        //     timeOut: 3000
+        // });
     }
 }
 
@@ -205,6 +228,11 @@ function transactionHistoryResponse(response) {
     $('#transactionhistorydiv').html(html);
 }
 
+$('.paymentdisabledalert').click(function(){
+    toastr.error('Can not perform online transactions at the time', '', {
+        timeOut: 3000
+    });
+})
 
 
 $('.addWalletOnlinebtn').on('click', function () {

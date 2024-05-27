@@ -543,8 +543,8 @@ class AdminController extends Controller
 
     public function getUsersPageData(Request $request)
     {
-        $data['pending_users'] = User::whereIn('status', ['inactive','blocked'])->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
-        $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
+        $data['pending_users'] = User::whereIn('status', ['inactive'])->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
+        $data['active_users'] = User::whereIn('status', ['active', 'approved','blocked'])->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
 
         return response()->json(['status' => 200, 'data' => $data]);
     }
@@ -643,10 +643,10 @@ class AdminController extends Controller
                 'user_state' => 'required',
                 'user_city' => 'required',
                 'user_area' => 'required',
-                'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-                'upload_aadhar' => 'required|max:4096',
+                'upload_picture' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
+                'upload_aadhar' => 'required|image|mimes:jpeg,png,jpg,JPEG,PNG,JPG|max:400',
                 'user_type' => 'required',
-                'challan_amount' => 'required|max:10',
+                // 'challan_amount' => 'required|max:10',
                 'puc_type_rate' => ['nullable', 'array', function ($attribute, $value, $fail) {
                     // Check if at least one value exists in the array
                     if (!collect($value)->filter()->count()) {
@@ -669,9 +669,9 @@ class AdminController extends Controller
                 'user_city' => 'required',
                 'user_area' => 'required',
                 'upload_picture' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:2048',
-                'upload_aadhar' => 'max:4096',
+                'upload_aadhar' => 'image|mimes:jpeg,png,jpg,JPEG,PNG,JPG|max:400',
                 'user_type' => 'required',
-                'challan_amount' => 'required|max:10',
+                // 'challan_amount' => 'required|max:10',
                 'puc_type_rate' => ['nullable', 'array', function ($attribute, $value, $fail) {
                     // Check if at least one value exists in the array
                     if (!collect($value)->filter()->count()) {
@@ -852,14 +852,14 @@ class AdminController extends Controller
         $param2 = $request->param2;
 
         if ($filterFlag == '1' || $filterFlag == '2') {
-            $Users = User::whereIn('status', ['active', 'approved'])
+            $Users = User::whereIn('status', ['active', 'approved','blocked'])
                 ->where('type', 'user')
                 ->whereDate('created_at', '=', $param1)         // for today  & yesterday
                 ->with(['state', 'city', 'area'])
                 ->orderBy('created_at', 'desc')->get();
         } else if ($filterFlag == '3') {
 
-            $Users = User::whereIn('status', ['active', 'approved'])
+            $Users = User::whereIn('status', ['active', 'approved','blocked'])
                 ->where('type', 'user')
                 ->whereYear('created_at', date('Y'))
                 ->whereMonth('created_at', $param1)             // for month
@@ -867,7 +867,7 @@ class AdminController extends Controller
                 ->orderBy('created_at', 'desc')->get();
         } else if ($filterFlag == '4') {
 
-            $Users = User::whereIn('status', ['active', 'approved'])
+            $Users = User::whereIn('status', ['active', 'approved','blocked'])
                 ->where('type', 'user')
                 ->whereDate('created_at', '>=', $param1)    // for start date
                 ->whereDate('created_at', '<=', $param2)    // for end date
@@ -901,10 +901,15 @@ class AdminController extends Controller
 
         // dd($userDetail);
         if ($status_flag == '4') {
+            if(!isset($pucDetail->certificate_pdf) || $pucDetail->certificate_pdf == null ){
+                return response()->json(['status' => 402, 'message' => "Please Upload pdf file first!"]);
+            }
+            else{
             Puc::where('id', $puc_id)->update([
                 'status' => '4', // completed status
             ]);
             $emailTitle = 'PUC Completed';
+        }
         } else if ($status_flag == '3') {
 
             Puc::where('id', $puc_id)->update([
@@ -914,6 +919,8 @@ class AdminController extends Controller
 
             $rejected_puc = Puc::where('id', $puc_id)->first();
             $rejected_puc->vehicle_image = Null;
+            $rejected_puc->certificate_pdf = Null;
+            $rejected_puc->file_view_flag = Null;
             $rejected_puc->save();
 
             if ($userDetail != null) {
@@ -996,7 +1003,7 @@ class AdminController extends Controller
     public function uploadPucPdfFile(Request $request)
     {
         $validatedData = $request->validate([
-            'uploadFile' => 'required|mimes:pdf,PDF|max:2048'
+            'uploadFile' => 'required|mimes:pdf,PDF|max:400'
         ]);
 
         // extract start and end date from pdf file 
@@ -1005,34 +1012,34 @@ class AdminController extends Controller
         $pdfFilePath = $uploadedFile->storeAs('temp', $uploadedFile->getClientOriginalName());
 
         // Extract text from the PDF file
-        if (config('app.env') == 'local') {
-            $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
-            $text = Pdf::getText($request->file('uploadFile'), $binpath);
-        } else { // on dev or prod
-            $binpath = storage_path('/pdftotext');
-            $text = Pdf::getText(storage_path('app/' . $pdfFilePath), $binpath);
-        }
+        // if (config('app.env') == 'local') {
+            // $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
+            // $text = Pdf::getText($request->file('uploadFile'), $binpath);
+        // } else { // on dev or prod
+            // $binpath = storage_path('/pdftotext');
+            // $text = Pdf::getText(storage_path('app/' . $pdfFilePath), $binpath);
+        // }
         // Delete the temporary PDF file
         unlink(storage_path('app/' . $pdfFilePath));
 
-        $pattern = '/\b(\d{2})\/(\d{2})\/(\d{4})\b/'; // Regex pattern for DD/MM/YYYY format
-        preg_match_all($pattern, $text, $matches);
+        // $pattern = '/\b(\d{2})\/(\d{2})\/(\d{4})\b/'; // Regex pattern for DD/MM/YYYY format
+        // preg_match_all($pattern, $text, $matches);
 
         // Extracted dates
-        $dates = $matches[0];
+        // $dates = $matches[0];
 
-        foreach ($dates as $key => $date) {
-            $dateString = Carbon::createFromFormat('d/m/Y', $date);
+        // foreach ($dates as $key => $date) {
+            // $dateString = Carbon::createFromFormat('d/m/Y', $date);
             // Extract the time portion
-            $dateFormated = $dateString->format('Y-m-d');
-            if ($key == 0) {
-                $startDate = $dateFormated;
-            } elseif ($key == 1) {
-                $endDate = $dateFormated;
-            }
-        }
+            // $dateFormated = $dateString->format('Y-m-d');
+            // if ($key == 0) {
+                // $startDate = $dateFormated;
+            // } elseif ($key == 1) {
+                // $endDate = $dateFormated;
+            // }
+        // }
 
-        if ((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != '') {
+        // if ((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != '') {
 
             $req_file = 'uploadFile';
             $path = '/assets/uploads/puc/pdf_files';
@@ -1053,24 +1060,24 @@ class AdminController extends Controller
             }
 
             Puc::where('id', $request->puc_id)->update([
-                'start_date' => $startDate,
-                'end_date' => $endDate,
+                'start_date' => null,
+                'end_date' => null,
                 'certificate_pdf' => $full_path,
-                'status' => '4',
+                // 'status' => '4',
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
 
             return response()->json(['status' => 200, 'message' => "File uploaded successfully!"]);
-        } else {
-            return response()->json(['status' => 402, 'message' => "PDF file not have proper dates try another file"]);
-        }
+        // } else {
+        //     return response()->json(['status' => 402, 'message' => "PDF file not have proper dates try another file"]);
+        // }
     }
 
     public function uploadExcelFrom(Request $request)
     {
-
+        
         $validatedData = $request->validate([
-            'uploadFile.*' => 'required|mimes:pdf,PDF',
+            'uploadFile.*' => 'required|mimes:pdf,PDF|max:400',
             'uploadFile' => 'max:10|min:1',
         ], [
             'uploadFile.max' => 'You can upload a maximum of :max files at a time.',
@@ -1095,33 +1102,33 @@ class AdminController extends Controller
                 $pdfFilePath = $uploadedFile->storeAs('temp', $uploadedFile->getClientOriginalName());
 
                 // Extract text from the PDF file
-                $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
-                if (config('app.env') == 'local') {
-                    $text = Pdf::getText($file, $binpath);
-                } else { // on dev or prod
-                    $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
-                }
+                // $binpath = 'C:/Program Files/Git/mingw64/bin/pdftotext';
+                // if (config('app.env') == 'local') {
+                    // $text = Pdf::getText($file, $binpath);
+                // } else { // on dev or prod
+                    // $text = Pdf::getText(storage_path('app/' . $pdfFilePath));
+                // }
                 // Delete the temporary PDF file
                 unlink(storage_path('app/' . $pdfFilePath));
 
-                $pattern = '/\b(\d{2})\/(\d{2})\/(\d{4})\b/'; // Regex pattern for DD/MM/YYYY format
-                preg_match_all($pattern, $text, $matches);
+                // $pattern = '/\b(\d{2})\/(\d{2})\/(\d{4})\b/'; // Regex pattern for DD/MM/YYYY format
+                // preg_match_all($pattern, $text, $matches);
 
                 // Extracted dates
-                $dates = $matches[0];
+                // $dates = $matches[0];
 
-                foreach ($dates as $key => $date) {
-                    $dateString = Carbon::createFromFormat('d/m/Y', $date);
+                // foreach ($dates as $key => $date) {
+                    // $dateString = Carbon::createFromFormat('d/m/Y', $date);
                     // Extract the time portion
-                    $dateFormated = $dateString->format('Y-m-d');
-                    if ($key == 0) {
-                        $startDate = $dateFormated;
-                    } elseif ($key == 1) {
-                        $endDate = $dateFormated;
-                    }
-                }
+                    // $dateFormated = $dateString->format('Y-m-d');
+                    // if ($key == 0) {
+                        // $startDate = $dateFormated;
+                    // } elseif ($key == 1) {
+                        // $endDate = $dateFormated;
+                    // }
+                // }
 
-                if ((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != '') {
+                // if ((isset($startDate) && $startDate != '') && isset($endDate) && $endDate != '') {
 
 
                     $existPuc = Puc::where('registration_number', $filenameWithoutExtension)->first();
@@ -1143,8 +1150,8 @@ class AdminController extends Controller
 
                         Puc::where('id', $existPuc->id)->update([
                             'status' => '4',
-                            'start_date' => $startDate,
-                            'end_date' => $endDate,
+                            'start_date' => null,
+                            'end_date' => null,
                             'certificate_pdf' => $full_path,
                             'updated_at' => date('Y-m-d H:i:s'),
                         ]);
@@ -1155,10 +1162,10 @@ class AdminController extends Controller
                         $tempArray['error'] = '402';
                         $tempArray['msg'] = 'Not Found';
                     }
-                } else {
-                    $tempArray['error'] = '402';
-                    $tempArray['msg'] = "PDF file not have proper dates try another file";
-                }
+                // } else {
+                //     $tempArray['error'] = '402';
+                //     $tempArray['msg'] = "PDF file not have proper dates try another file";
+                // }
                 $dataArray[] = $tempArray;
                 $tempArray = [];
             }
@@ -1373,4 +1380,8 @@ class AdminController extends Controller
     //         }
     //         return true;
     //     }
+
+       
+
+
 }

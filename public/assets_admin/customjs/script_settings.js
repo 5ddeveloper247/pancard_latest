@@ -469,6 +469,10 @@ $(document).ready(function () {
         placeholder: 'Search User ID',
         allowClear: true // Optionally allow clearing the selection
     });
+    $('#pucType').select2({
+        placeholder: 'Search PUC Type',
+        allowClear: true // Optionally allow clearing the selection
+    });
     
 });
  

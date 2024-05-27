@@ -1,6 +1,11 @@
 @extends('layouts.master.admin_template.master')
 
 @section('content')
+<style>
+    .copy-icon{
+        cursor: pointer;
+    }
+</style>
     <!-- =====WALLET-TAB====== -->
     <section>
         <ul class="nav nav-pills d-flex flex-nowrap align-items-center justify-content-between gap-0 gap-md-1 my-3 tab-padding"
@@ -408,6 +413,118 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+
+    <!-- user detail modal  -->
+
+    <div class="modal fade" id="userDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg h-75 d-flex align-items-center justify-content-center">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between">
+                    <h2 class="modal-title fs-4 text-dark fw-bolder" id="staticBackdropLabel">User Details</h2>
+                    <div class="d-flex">
+                        <button type="button" class="border-0 mx-1" data-bs-dismiss="modal" aria-label="Close"><svg
+                                width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect x="0.5" y="0.5" width="29" height="29" rx="4.5" fill="#EC1C34" fill-opacity="0.1"
+                                    stroke="#EC1C34" />
+                                <path d="M6.85718 22.2857L22.2857 6.85712M6.85718 6.85712L22.2857 22.2857"
+                                    stroke="#EC1C34" stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-2 col-4">
+                            <label><b>Name:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_name"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>Username:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="username"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>Company Name:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="company_name"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>Email:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_email"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>Phone Number:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_phone"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>State:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_state"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>Balance:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_balance"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>Area:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_area"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>Landmark:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_landmark"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>City:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_city"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>User Type:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_usertype"></span>
+                        </div>
+
+                        <div class="col-sm-2 col-4">
+                            <label><b>Status:</b></label>
+                        </div>
+                        <div class="col-sm-4 col-8">
+                            <span id="user_status"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
