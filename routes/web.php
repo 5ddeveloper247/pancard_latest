@@ -153,4 +153,8 @@ Route::post('/payment/status', [PaytmController::class, 'paymentCallback'])->nam
 Route::post('/payment/status/addwallet', [PaytmController::class, 'paymentCallbackAddWallet'])->name('status.online.addwallet');
 Route::get('/register/doPayment/{id}', [PaytmController::class, 'doPayment'])->name('register.doPayment');
 Route::get('/user/addwallet/online/pay/{amount}', [PaytmController::class, 'addWalletOnline'])->name('user.addwallet.online.pay');
+
+Route::get('/payment_success/{id}', [PaytmController::class, 'payment_success'])->name('payment_success');
+Route::get('/payment_fail/{id}', [PaytmController::class, 'payment_failed'])->name('payment_fail');
+
 //----------------------------------------Paytm GP Routes ends-----------------------------------------------------

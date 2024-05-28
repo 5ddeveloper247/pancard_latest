@@ -55,16 +55,9 @@ class PaytmController extends Controller
         $paramList["VERIFIED_BY"] = "EMAIL";
         $paramList["IS_USER_VERIFIED"] = "YES";
         // dd($paramList, env('PAYTM_MERCHANT_ID'));
-        $checkSum = $paymentEncode->getChecksumFromArray($paramList, 'BvzNBxT3#&%&L@vO');
+        $checkSum = $paymentEncode->getChecksumFromArray($paramList, isset($settings->merchant_key) ? $settings->merchant_key : '');
         return view('paytm.paytm', ['paramList' => $paramList, 'checkSum' => $checkSum]);
     }
-
-
-
-
-
-
-
 
     // Handle the payment request 
     public function pay($userId)
@@ -94,15 +87,11 @@ class PaytmController extends Controller
         $paramList["VERIFIED_BY"] = "EMAIL";
         $paramList["IS_USER_VERIFIED"] = "YES";
         // dd($paramList, env('PAYTM_MERCHANT_ID'));
-        $checkSum = $paymentEncode->getChecksumFromArray($paramList, 'BvzNBxT3#&%&L@vO');
+        $checkSum = $paymentEncode->getChecksumFromArray($paramList, isset($settings->merchant_key) ? $settings->merchant_key : '');
         return view('paytm.paytm', ['paramList' => $paramList, 'checkSum' => $checkSum]);
         //dd($checkSum); 
 
     }
-
-
-
-
 
     // Handle the payment callback for registeration
     public function paymentCallback(Request $request)
@@ -212,144 +201,185 @@ class PaytmController extends Controller
         return redirect()->to('login');
     }
 
-
-
-
-
-    /////////////////////////////////////////////////////////////
-
+    // online paymment wallet
     function addWalletOnline($amount)
     {
-
-        $settings = ApiSettings::first();
-        // dd(Auth::user()->id);
-        $createdUserData = User::find(Auth::user()->id);
+        if(isset(Auth::user()->id)){
+            $settings = ApiSettings::first();
         
-        $transaction = new Transactions;
-        $transaction->type = '1'; // 1=>credit, 2=>debit
-        $transaction->transaction_type = '1'; // 1=>online, 2=>manual
-        $transaction->user_id = Auth::user()->id;
-        $transaction->bank_id = null;
-        $transaction->puc_id = null;
-        $transaction->amount = $amount;
-        $transaction->transaction_number = null;
-        $transaction->transaction_remarks = 'Added by user';
-        $transaction->status = '1'; //  1=>pending, 2=>rejected , 3=>approved
-        $transaction->transaction_status = '1'; //  1=>pending, 2=>rejected , 3=>approved
-        $transaction->transaction_checksum = null;
-        $transaction->transaction_response = null;
-        $transaction->date = date('Y-m-d');
-        $transaction->save();
+            $createdUserData = User::find(Auth::user()->id);
+            
+            $transaction = new Transactions;
+            $transaction->type = '1'; // 1=>credit, 2=>debit
+            $transaction->transaction_type = '1'; // 1=>online, 2=>manual
+            $transaction->user_id = Auth::user()->id;
+            $transaction->bank_id = null;
+            $transaction->puc_id = null;
+            $transaction->amount = $amount;
+            $transaction->transaction_number = null;
+            $transaction->transaction_remarks = 'Added by user';
+            $transaction->status = '1'; //  1=>pending, 2=>rejected , 3=>approved
+            $transaction->transaction_status = '1'; //  1=>pending, 2=>rejected , 3=>approved
+            $transaction->transaction_checksum = null;
+            $transaction->transaction_response = null;
+            $transaction->date = date('Y-m-d');
+            $transaction->save();
 
-        $paymentEncode = new PaymentEncode();
-        $paramList = array();
-        $MSISDN = $createdUserData->phone_number;
-        $EMAIL = $createdUserData->email;
-        // Generate unique values
+            $paymentEncode = new PaymentEncode();
+            $paramList = array();
+            $MSISDN = $createdUserData->phone_number;
+            $EMAIL = $createdUserData->email;
+            // Generate unique values
 
-        $ORDER_ID = isset($transaction->id) ? $transaction->id : strval(rand(10000, 99999999));
-        $CUST_ID = "CUST" . $createdUserData->id;
-        // Required parameters for Paytm
-        $paramList["MID"] = isset($settings->merchant_id) ? $settings->merchant_id : '';//env('PAYTM_MERCHANT_ID');
-        $paramList["ORDER_ID"] = $ORDER_ID;
-        $paramList["CUST_ID"] = $CUST_ID;
-        $paramList["INDUSTRY_TYPE_ID"] = "Retail";
-        $paramList["CHANNEL_ID"] = "WEB";
-        $paramList["TXN_AMOUNT"] = $amount;
-        $paramList["WEBSITE"] = "DEFAULT";
-        $paramList["CALLBACK_URL"] = route('status.online.addwallet');
-        $paramList["MSISDN"] = $MSISDN; // Mobile number of customer 
-        $paramList["VERIFIED_BY"] = "EMAIL";
-        $paramList["IS_USER_VERIFIED"] = "YES";
-        // dd($paramList, env('PAYTM_MERCHANT_ID'));
-        $checkSum = $paymentEncode->getChecksumFromArray($paramList, 'BvzNBxT3#&%&L@vO');
+            $ORDER_ID = isset($transaction->id) ? $transaction->id : strval(rand(10000, 99999999));
+            $CUST_ID = "CUST" . $createdUserData->id;
+            // Required parameters for Paytm
+            $paramList["MID"] = isset($settings->merchant_id) ? $settings->merchant_id : '';//env('PAYTM_MERCHANT_ID');
+            $paramList["ORDER_ID"] = $ORDER_ID;
+            $paramList["CUST_ID"] = $CUST_ID;
+            $paramList["INDUSTRY_TYPE_ID"] = "Retail";
+            $paramList["CHANNEL_ID"] = "WEB";
+            $paramList["TXN_AMOUNT"] = $amount;
+            $paramList["WEBSITE"] = "DEFAULT";
+            $paramList["CALLBACK_URL"] = route('status.online.addwallet');
+            $paramList["MSISDN"] = $MSISDN; // Mobile number of customer 
+            $paramList["VERIFIED_BY"] = "EMAIL";
+            $paramList["IS_USER_VERIFIED"] = "YES";
+            // dd($paramList, env('PAYTM_MERCHANT_ID'));
+            $checkSum = $paymentEncode->getChecksumFromArray($paramList, isset($settings->merchant_key) ? $settings->merchant_key : '');
 
-        Transactions::where('id', $transaction->id)->update([
-            'transaction_checksum' => $checkSum,
-        ]);
+            Transactions::where('id', $transaction->id)->update([
+                'transaction_checksum' => $checkSum,
+            ]);
 
-        return view('paytm.paytm', ['paramList' => $paramList, 'checkSum' => $checkSum]);
+            return view('paytm.paytm', ['paramList' => $paramList, 'checkSum' => $checkSum]);
+        }else{
+            return redirect('login');
+        }
+        
     }
-
-
-
-
-
 
     public function paymentCallbackAddWallet(Request $request)
     {
-        // Decode the JSON data from the request
-        $data = $request->json()->all();
-
+        $settings = ApiSettings::first();
+        $merchant_id = isset($settings->merchant_id) ? $settings->merchant_id : '';
+        
         // Debugging: dump and die to see the data structure
-        dd($_REQUEST);
+        
+        $responseData = $_REQUEST;
+        $paytmChecksum = isset($_REQUEST["CHECKSUMHASH"]) ? $_REQUEST["CHECKSUMHASH"] : ""; //Sent by Paytm pg
+        $verify = $this->verifychecksum_e($responseData, $merchant_id, $paytmChecksum);
+
+        // array:13 [▼ // app\Http\Controllers\PaytmController.php:114
+        //             "BANKTXNID" => "414635568633"
+        //             "CHECKSUMHASH" => "ho85vpqlgXCBsWfzALDDULHBXbIKCYQ4LWMCC0rareKn7uVZFM2V/+V4OUJNs/fAdzujmrtf+ZyZszg7pEoopdkIz/W12L9TkiKO0cH4zl4="
+        //             "CURRENCY" => "INR"
+        //             "GATEWAYNAME" => "PPBL"
+        //             "MID" => "HVRMQv69972580638511"
+        //             "ORDERID" => "42232176"
+        //             "PAYMENTMODE" => "UPI"
+        //             "RESPCODE" => "01"
+        //             "RESPMSG" => "Txn Success"
+        //             "STATUS" => "TXN_SUCCESS"
+        //             "TXNAMOUNT" => "1.00"
+        //             "TXNDATE" => "2024-05-25 13:02:13.0"
+        //             "TXNID" => "20240525210600000001112136305272339"
+        //         ]
+
+        // dd(json_encode($responseData, true));
 
         // Extract the necessary information from the data
-        $responseTimestamp = $data['head']['responseTimestamp'];
-        $version = $data['head']['version'];
-        $clientId = $data['head']['clientId'];
-        $signature = $data['head']['signature'];
+        $bankTrxId = isset($responseData['BANKTXNID']) ? $responseData['BANKTXNID'] : '';
+        $checksum = isset($responseData['CHECKSUMHASH']) ? $responseData['CHECKSUMHASH'] : '';
+        $currency = isset($responseData['CURRENCY']) ? $responseData['CURRENCY'] : '';
+        $gatewayName = isset($responseData['GATEWAYNAME']) ? $responseData['GATEWAYNAME'] : '';
+        $mid = isset($responseData['MID']) ? $responseData['MID'] : '';
+        $orderId = isset($responseData['ORDERID']) ? $responseData['ORDERID'] : '';
+        $payMode = isset($responseData['PAYMENTMODE']) ? $responseData['PAYMENTMODE'] : '';
+        $respCode = isset($responseData['RESPCODE']) ? $responseData['RESPCODE'] : '';
+        $respMsg = isset($responseData['RESPMSG']) ? $responseData['RESPMSG'] : '';
+        $trxStatus = isset($responseData['STATUS']) ? $responseData['STATUS'] : '';
+        $trxAmount = isset($responseData['TXNAMOUNT']) ? $responseData['TXNAMOUNT'] : '';
+        $trxDate = isset($responseData['TXNDATE']) ? $responseData['TXNDATE'] : '';
+        $trxId = isset($responseData['TXNID']) ? $responseData['TXNID'] : '';
 
-        $resultStatus = $data['body']['resultInfo']['resultStatus'];
-        $resultCode = $data['body']['resultInfo']['resultCode'];
-        $resultMsg = $data['body']['resultInfo']['resultMsg'];
-
-        $txnId = $data['body']['txnId'];
-        $bankTxnId = $data['body']['bankTxnId'];
-        $orderId = $data['body']['orderId'];
-        $txnAmount = $data['body']['txnAmount'];
-        $txnType = $data['body']['txnType'];
-        $gatewayName = $data['body']['gatewayName'];
-        $bankName = $data['body']['bankName'];
-        $mid = $data['body']['mid'];
-        $paymentMode = $data['body']['paymentMode'];
-        $refundAmt = $data['body']['refundAmt'];
-        $txnDate = $data['body']['txnDate'];
-        $authRefId = $data['body']['authRefId'];
 
         // Process the payment information as needed
-        // For example, update the order status in the database
-        // Order::where('order_id', $orderId)->update(['status' => $resultStatus]);
-        if($resultStatus == 'TXN_SUCCESS'){
-            $newTransaction = Transactions::create([
-                'type'=>'2',
-                'transaction_type'=>'1',
-                'user_id' => $clientId,
-                'bank_id' => $bankName,
-                'puc_id' => $orderId,
-                'amount' => $txnAmount,
-                'transaction_number' => $txnId,
-                'transaction_remarks' =>'Added by User',
-                'status' => 3,
-                'transaction_status' => 3,
-                'date' => date('Y-m-d'),
+        if($trxStatus == 'TXN_SUCCESS'){
+            
+            // success response
+            $transaction = Transactions::where('id', $orderId)->with(['createdByUser'])->first();
 
-            ]);
+            if(isset($transaction->id)){
+                $transaction->transaction_number = $trxId;
+                $transaction->status = 3;
+                $transaction->transaction_status = 3;
+                $transaction->transaction_response = json_encode($responseData, true);
+                $transaction->save();
 
-            //activate the status of the user here 
-            $user = User::find($clientId);
+                $userDetail = $transaction->createdByUser;
+                $newBalance = $transaction->amount + $userDetail['balance'];
+                User::where('id', $userDetail['id'])->update([
+                    'balance' => $newBalance,
+                ]);
+            }
 
-           
+            $encodedId = base64_encode($transaction->id);
+            $url = route('payment_success', ['id' => $encodedId]);
+            return redirect($url);
 
-            // Return a success response
+        } else {
 
-         }
-          else {
+            // failed response
+            $transaction = Transactions::find($orderId);
 
-            $newTransaction = Transactions::create([
-                'user_id' => $clientId,
-                'bank_id' => $bankName,
-                'puc_id' => $orderId,
-                'amount' =>0,
-                'transaction_number' => $txnId,
-                'status' => 2,
-                'transaction_status' => $resultStatus,
-                'date' => date('Y-m-d'),
-
-            ]);
+            if(isset($transaction->id)){
+                $transaction->transaction_number = $trxId;
+                $transaction->status = 2;
+                $transaction->transaction_status = 2;
+                $transaction->transaction_response = json_encode($responseData, true);
+                $transaction->save();
+            }
+            $encodedId = base64_encode($transaction->id);
+            $url = route('payment_fail', ['id' => $encodedId]);
+            return redirect($url);
         }
-        // Return a response if needed
-        return redirect()->to('wallet');
+    }
+
+    public function payment_success($encodedId){
+        
+        // Decode the base64 encoded ID
+        $decodedId = base64_decode($encodedId);
+
+        // Fetch the model using the decoded ID
+        $transaction = Transactions::where('id', $decodedId)->with(['createdByUser','createdByUser.state','createdByUser.city','createdByUser.area'])->first();
+
+        // dd($transaction);
+        if(isset($transaction->id)){
+            $data['transaction'] = $transaction;
+            // Return a view with the model data
+            return view('user/payment_success')->with($data);
+        }else{
+            echo 'Invalid URL!';
+        }
+    }
+
+    public function payment_failed($encodedId){
+        
+        // Decode the base64 encoded ID
+        $decodedId = base64_decode($encodedId);
+
+        // Fetch the model using the decoded ID
+        $transaction = Transactions::where('id', $decodedId)->with(['createdByUser','createdByUser.state','createdByUser.city','createdByUser.area'])->first();
+
+        // dd($transaction);
+        if(isset($transaction->id)){
+            $data['transaction'] = $transaction;
+            // Return a view with the model data
+            return view('user/payment_failed')->with($data);
+        }else{
+            echo 'Invalid URL!';
+        }
     }
 
 
@@ -426,7 +456,7 @@ class PaytmController extends Controller
     {
         $arrayList = $this->removeCheckSumParam($arrayList);
         ksort($arrayList);
-        $str = $this->__callgetArray2StrForVerify($arrayList);
+        $str = $this->getArray2StrForVerify($arrayList);
         $paytm_hash = $this->decrypt_e($checksumvalue, $key);
         $salt = substr($paytm_hash, -4);
 
@@ -442,6 +472,22 @@ class PaytmController extends Controller
             $validFlag = "FALSE";
         }
         return $validFlag;
+    }
+
+    
+    function getArray2StrForVerify($arrayList)
+    {
+        $paramStr = "";
+        $flag = 1;
+        foreach ($arrayList as $key => $value) {
+            if ($flag) {
+                $paramStr .= $this->checkString_e($value);
+                $flag = 0;
+            } else {
+                $paramStr .= "|" . $this->checkString_e($value);
+            }
+        }
+        return $paramStr;
     }
 
     function verifychecksum_eFromStr($str, $key, $checksumvalue)
@@ -486,20 +532,7 @@ class PaytmController extends Controller
         return $paramStr;
     }
 
-    function getArray2StrForVerify($arrayList)
-    {
-        $paramStr = "";
-        $flag = 1;
-        foreach ($arrayList as $key => $value) {
-            if ($flag) {
-                $paramStr .= $this->checkString_e($value);
-                $flag = 0;
-            } else {
-                $paramStr .= "|" . $this->checkString_e($value);
-            }
-        }
-        return $paramStr;
-    }
+    
 
     function redirect2PG($paramList, $key)
     {

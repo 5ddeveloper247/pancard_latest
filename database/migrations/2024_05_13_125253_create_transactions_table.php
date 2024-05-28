@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('transaction_number',100)->nullable();
             $table->string('transaction_remarks',100)->nullable();
             $table->integer('status')->comment('1=>pending, 2=>rejected, 3=>approved, manual transactions')->nullable();
-            $table->integer('transaction_status')->comment('1=>pending, 2=>rejected, 3=>approved, online transactions')->nullable();
+            $table->integer('transaction_status')->comment('1=>pending, 2=>failed, 3=>completed, online transactions')->nullable();
             $table->text('transaction_checksum')->nullable();
             $table->longText('transaction_response')->nullable();
             $table->date('date');
