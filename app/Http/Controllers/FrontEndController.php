@@ -21,6 +21,7 @@ use App\Models\Puc;
 use App\Models\Banks;
 use App\Models\Transactions;
 use App\Models\ApiSettings;
+use Carbon\Carbon;
 
 
 
@@ -720,4 +721,32 @@ class FrontEndController extends Controller
        
     //     echo 'test success';
     // }
+
+public function updatepucdates(Request $request){
+
+    $validatedData = $request->validate([
+        'end_puc_date' => 'required|date',
+        'start_puc_date' => 'required|date',
+    ]);
+    
+    $puc = Puc::where('id',$request->puc_id)->first();
+   
+    $puc->start_date = $request->start_puc_date;
+    $puc->end_date = $request->end_puc_date;
+    $puc->save();
+    return response()->json(['status' => 200,'message' => "Dates Updated Successfully"]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

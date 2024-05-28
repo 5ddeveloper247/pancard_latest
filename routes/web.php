@@ -134,6 +134,7 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/getPucPageData', [FrontEndController::class, 'getPucPageData'])->name('getPucPageData');
         Route::post('/getPucFilteredData', [FrontEndController::class, 'getPucFilteredData'])->name('getPucFilteredData');
         Route::post('/editSpecificPuc', [FrontEndController::class, 'editSpecificPuc'])->name('editSpecificPuc');
+        Route::post('/updatepucdates', [FrontEndController::class, 'updatepucdates'])->name('updatepucdates');
 
         Route::post('getBankDetails', [FrontEndController::class, 'getBankDetails']);
         Route::post('addTransaction', [FrontEndController::class, 'addTransaction']);
