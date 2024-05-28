@@ -66,7 +66,7 @@
                 </button>
 
 
-                <button type="submit" class="reg-btn w-75 d-flex align-items-center justify-content-center gap-3 mx-auto mt-2 mt-md-3 py-3 py-lg-2">
+                {{-- <button type="submit" class="reg-btn w-75 d-flex align-items-center justify-content-center gap-3 mx-auto mt-2 mt-md-3 py-3 py-lg-2">
                     <a href="{{route('register')}}">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7.5 2.4624H3C2.46957 2.4624 1.96086 2.67312 1.58579 3.04819C1.21071 3.42326 1 3.93197 1 4.4624V13.4624C1 13.9928 1.21071 14.5015 1.58579 14.8766C1.96086 15.2517 2.46957 15.4624 3 15.4624H13C13.5304 15.4624 14.0391 15.2517 14.4142 14.8766C14.7893 14.5015 15 13.9928 15 13.4624V8.9624" stroke="#003EDE" stroke-linecap="round" stroke-linejoin="round" />
@@ -74,7 +74,7 @@
                         </svg>
                         Register Now
                     </a>
-                </button>
+                </button> --}}
 
 
                 <div class="login-btn-hidden d-block d-md-none py-3">

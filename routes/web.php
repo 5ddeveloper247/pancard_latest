@@ -103,7 +103,7 @@ Route::group(['prefix' => '/'], function () {
     Route::post('/loginSubmit', [FrontEndController::class, 'loginSubmit'])->name('loginSubmit');
     Route::get('/logout', [FrontEndController::class, 'logout'])->name('logout');
     Route::get('/forget', [FrontEndController::class, 'forget'])->name('forget');
-    Route::get('/register', [RegistrationController::class, 'register'])->name('register');
+    // Route::get('/register', [RegistrationController::class, 'register'])->name('register');
 
     /************** AJAX ROUTES ******************/
     Route::post('/getCitiesLovData', [FrontEndController::class, 'getCitiesLovData'])->name('getCitiesLovData');

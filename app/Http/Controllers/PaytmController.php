@@ -317,11 +317,13 @@ class PaytmController extends Controller
                 $transaction->transaction_response = json_encode($responseData, true);
                 $transaction->save();
 
-                $userDetail = $transaction->createdByUser;
-                $newBalance = $transaction->amount + $userDetail['balance'];
-                User::where('id', $userDetail['id'])->update([
+                $user = $transaction->createdByUser;
+                $newBalance = $transaction->amount + $user['balance'];
+                User::where('id', $user['id'])->update([
                     'balance' => $newBalance,
                 ]);
+                Auth::login($user);
+                $request->session()->put('user', $user);
             }
 
             $encodedId = base64_encode($transaction->id);
@@ -331,7 +333,7 @@ class PaytmController extends Controller
         } else {
 
             // failed response
-            $transaction = Transactions::find($orderId);
+            $transaction = Transactions::where('id', $orderId)->with(['createdByUser'])->first();
 
             if(isset($transaction->id)){
                 $transaction->transaction_number = $trxId;
@@ -339,7 +341,12 @@ class PaytmController extends Controller
                 $transaction->transaction_status = 2;
                 $transaction->transaction_response = json_encode($responseData, true);
                 $transaction->save();
+
+                $user = $transaction->createdByUser;
+                Auth::login($user);
+                $request->session()->put('user', $user);
             }
+            
             $encodedId = base64_encode($transaction->id);
             $url = route('payment_fail', ['id' => $encodedId]);
             return redirect($url);
