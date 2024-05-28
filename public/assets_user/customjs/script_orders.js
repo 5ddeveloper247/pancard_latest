@@ -161,7 +161,7 @@ function makePucList(puc_list) {
                         <div class="d-flex flex-column">
                             <div class="d-flex align-items-center justify-content-end">
                                 
-                                <button type="button" class="modal-btn ${value.status != '4' ? 'd-none' : ''}">
+                            <button type="button" onclick="sharePucData('${value.vehicle_image}', '${value.registration_number}')" class="modal-btn ${value.status != '4' ? 'd-none' : ''}">
                                     <svg width="74" height="71" viewBox="0 0 74 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g filter="url(#filter0_d_954_149)">
                                             <rect x="5" y="3" width="63.0769" height="61" rx="5" fill="white"></rect>
