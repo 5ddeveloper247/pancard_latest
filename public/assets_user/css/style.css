@@ -696,3 +696,7 @@ header>img {
 .dropdown-item:hover{
     background-color: #80808038;
 }
+
+.pucc .form-control{
+    font-size: clamp(12px, 2vw, 16px) !important;
+}
