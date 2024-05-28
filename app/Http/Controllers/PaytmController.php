@@ -225,13 +225,29 @@ class PaytmController extends Controller
         // dd(Auth::user()->id);
         $createdUserData = User::find(Auth::user()->id);
         
+        $transaction = new Transactions;
+        $transaction->type = '1'; // 1=>credit, 2=>debit
+        $transaction->transaction_type = '1'; // 1=>online, 2=>manual
+        $transaction->user_id = Auth::user()->id;
+        $transaction->bank_id = null;
+        $transaction->puc_id = null;
+        $transaction->amount = $amount;
+        $transaction->transaction_number = null;
+        $transaction->transaction_remarks = 'Added by user';
+        $transaction->status = '1'; //  1=>pending, 2=>rejected , 3=>approved
+        $transaction->transaction_status = '1'; //  1=>pending, 2=>rejected , 3=>approved
+        $transaction->transaction_checksum = null;
+        $transaction->transaction_response = null;
+        $transaction->date = date('Y-m-d');
+        $transaction->save();
+
         $paymentEncode = new PaymentEncode();
         $paramList = array();
         $MSISDN = $createdUserData->phone_number;
         $EMAIL = $createdUserData->email;
         // Generate unique values
 
-        $ORDER_ID = strval(rand(10000, 99999999));
+        $ORDER_ID = isset($transaction->id) ? $transaction->id : strval(rand(10000, 99999999));
         $CUST_ID = "CUST" . $createdUserData->id;
         // Required parameters for Paytm
         $paramList["MID"] = isset($settings->merchant_id) ? $settings->merchant_id : '';//env('PAYTM_MERCHANT_ID');
@@ -247,6 +263,11 @@ class PaytmController extends Controller
         $paramList["IS_USER_VERIFIED"] = "YES";
         // dd($paramList, env('PAYTM_MERCHANT_ID'));
         $checkSum = $paymentEncode->getChecksumFromArray($paramList, 'BvzNBxT3#&%&L@vO');
+
+        Transactions::where('id', $transaction->id)->update([
+            'transaction_checksum' => $checkSum,
+        ]);
+
         return view('paytm.paytm', ['paramList' => $paramList, 'checkSum' => $checkSum]);
     }
 
@@ -261,7 +282,7 @@ class PaytmController extends Controller
         $data = $request->json()->all();
 
         // Debugging: dump and die to see the data structure
-        dd($data);
+        dd($_REQUEST);
 
         // Extract the necessary information from the data
         $responseTimestamp = $data['head']['responseTimestamp'];
