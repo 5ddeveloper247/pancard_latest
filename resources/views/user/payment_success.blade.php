@@ -59,6 +59,9 @@
                 </span>
             </div>
         </div>
+        <div class="pt-4 text-center">
+            <a href="{{route('wallet')}}" class="btn btn-success">Go to wallet</a>
+        </div>
     </div>
 
     <script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}" crossorigin="anonymous"></script>
