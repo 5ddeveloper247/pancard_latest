@@ -177,6 +177,6 @@ async function sharePucData(vehicle_no) {
     var labelledData = 'Vehicle Registration Number: '+ vehicle_no; 
     const encodedText = encodeURIComponent(labelledData);
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
-    window.location.href = whatsappUrl;
-    
+    // window.location.href = whatsappUrl;
+    window.open(whatsappUrl, '_blank');
 }
