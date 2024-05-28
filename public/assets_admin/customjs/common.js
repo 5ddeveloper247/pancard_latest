@@ -147,7 +147,10 @@ async function sharePucData(url, vehicle_no) {
         }
         
         let blob = await response.blob();
-        let file = new File([blob], 'vehicle.jpg', { type: 'image/jpeg' });
+        if (blob.type !== 'image/jpeg' && blob.type !== 'image/png') {
+            throw new Error('Unsupported file format');
+        }
+        let file = new File([blob], 'vehicle.jpg', { type: blob.type });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({
@@ -162,8 +165,8 @@ async function sharePucData(url, vehicle_no) {
         }
     } catch (error) {
         console.error('Error sharing data:', error);
-        toastr.error('Cannot share data at the moment', '', {
-            timeOut: 3000
-        });
+        // toastr.error('Cannot share data at the moment', '', {
+        //     timeOut: 3000
+        // });
     }
 }
