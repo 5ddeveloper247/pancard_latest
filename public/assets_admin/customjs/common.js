@@ -139,34 +139,44 @@ function SendAjaxRequestToServer(
 
 
 
-async function sharePucData(url, vehicle_no) {
-    try {
-        let response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Failed to fetch image');
-        }
+// async function sharePucData(url, vehicle_no) {
+//     try {
+//         let response = await fetch(url);
+//         if (!response.ok) {
+//             throw new Error('Failed to fetch image');
+//         }
         
-        let blob = await response.blob();
-        if (blob.type !== 'image/jpeg' && blob.type !== 'image/png') {
-            throw new Error('Unsupported file format');
-        }
-        let file = new File([blob], 'vehicle.jpg', { type: blob.type });
+//         let blob = await response.blob();
+//         if (blob.type !== 'image/jpeg' && blob.type !== 'image/png') {
+//             throw new Error('Unsupported file format');
+//         }
+//         let file = new File([blob], 'vehicle.jpg', { type: blob.type });
 
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-                title: 'Vehicle Data',
-                text: vehicle_no,
-                files: [file]
-            });
-        } else {
-            // toastr.error('Cannot share data at the moment', '', {
-            //     timeOut: 3000
-            // });
-        }
-    } catch (error) {
-        console.error('Error sharing data:', error);
-        // toastr.error('Cannot share data at the moment', '', {
-        //     timeOut: 3000
-        // });
-    }
+//         if (navigator.canShare && navigator.canShare({ files: [file] })) {
+//             await navigator.share({
+//                 title: 'Vehicle Data',
+//                 text: vehicle_no,
+//                 files: [file]
+//             });
+//         } else {
+//             // toastr.error('Cannot share data at the moment', '', {
+//             //     timeOut: 3000
+//             // });
+//         }
+//     } catch (error) {
+//         console.error('Error sharing data:', error);
+//         // toastr.error('Cannot share data at the moment', '', {
+//         //     timeOut: 3000
+//         // });
+//     }
+// }
+
+
+
+async function sharePucData(vehicle_no) {
+    var labelledData = 'Vehicle Registration Number: '+ vehicle_no; 
+    const encodedText = encodeURIComponent(labelledData);
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+    window.location.href = whatsappUrl;
+    
 }
