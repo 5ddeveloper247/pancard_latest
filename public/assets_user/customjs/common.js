@@ -138,3 +138,35 @@ function SendAjaxRequestToServer(
 //         });
 //     }
 // }
+
+
+
+
+async function sharePucData(url, vehicle_no) {
+    try {
+        let response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Failed to fetch image');
+        }
+        
+        let blob = await response.blob();
+        let file = new File([blob], 'vehicle.jpg', { type: 'image/jpeg' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                title: 'Vehicle Data',
+                text: vehicle_no,
+                files: [file]
+            });
+        } else {
+            // toastr.error('Cannot share data at the moment', '', {
+            //     timeOut: 3000
+            // });
+        }
+    } catch (error) {
+        console.error('Error sharing data:', error);
+        toastr.error('Cannot share data at the moment', '', {
+            timeOut: 3000
+        });
+    }
+}
