@@ -117,13 +117,13 @@ function makePucList(puc_list) {
                 }
 
             }
-            var updatedatesbtn = `<button class="puc_date_update_btn d-none make-new-btn d-flex align-items-center justify-content-center "style="width: 200px;font-weight: 400;margin-left:84px;margin-top:15px;"id="puc_date_update_btn_${value.id}"data-puc-id="${value.id}">Update</button>`;
+            var updatedatesbtn = `<button class="puc_date_update_btn d-none make-new-btn d-flex align-items-center justify-content-center fs-6 px-4 py-1" style="width: fit-content;font-weight: 400;"id="puc_date_update_btn_${value.id}"data-puc-id="${value.id}">Update</button>`;
             }
             
         }
         else{
             
-                updatedatesbtn = `<button class="puc_date_update_btn make-new-btn d-flex align-items-center justify-content-center "style="width: 200px;font-weight: 400;margin-left:84px;margin-top:15px;"id="puc_date_update_btn"data-puc-id="${value.id}">Update</button>`;
+                updatedatesbtn = `<button class="puc_date_update_btn make-new-btn d-flex align-items-center justify-content-center "style="width: fit-content;font-weight: 400;"id="puc_date_update_btn"data-puc-id="${value.id}">Update</button>`;
                
         }
 
@@ -148,17 +148,17 @@ function makePucList(puc_list) {
                                 ${value.start_date != null ? formatDate(value.start_date) + ' to ' : ''}${value.end_date != null ? formatDate(value.end_date) : ''}   
                             </span>
                             ${value.certificate_pdf != null  && value.start_date ==null && value.end_date == null ? `
-                            <div class="d-flex puc_dates_container_${value.id}" id="puc_dates_container_${value.id}">
+                            <div class="d-flex pucc puc_dates_container_${value.id}" id="puc_dates_container_${value.id}">
                                 <input type="text" id="start_puc_date" class="form-control me-2"  maxlength="10" name="start_puc_date" placeholder="Start Date (dd/mm/yyyy)" value="${value.start_date != null ? formatDate(value.start_date) : ''}" />
                                 <input type="text" name="end_puc_date" id="end_puc_date" class="form-control" maxlength="10" placeholder="End Date (yyyy/mm/dd)" value="${value.end_date != null ? formatDate(value.end_date):''}" />
                             </div>
-                        ` : `<div class="d-flex d-none puc_dates_container_${value.id}" id="puc_dates_container_${value.id}">
+                        ` : `<div class="d-flex d-none pucc puc_dates_container_${value.id}" id="puc_dates_container_${value.id}">
                         <input type="text" id="start_puc_date" class="form-control me-2"  maxlength="10" name="start_puc_date" placeholder="Start Date (dd/mm/yyyy)" value="${value.start_date != null ? formatDate(value.start_date) : ''}" />
                         <input type="text" name="end_puc_date" id="end_puc_date" class="form-control" maxlength="10" placeholder="End Date (yyyy/mm/dd)" value="${value.end_date != null ? formatDate(value.end_date):''}" />
                     </div>`}
                         </div>
 
-                        <div class="d-flex flex-column">
+                        <div class="d-flex flex-column align-items-center">
                             <div class="d-flex align-items-center justify-content-end">
                                 
                                 <button type="button" class="modal-btn ${value.status != '4' ? 'd-none' : ''}">
