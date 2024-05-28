@@ -25,7 +25,7 @@
                 <li class="nav-item" role="presentation">
                     <form id="add_transaction_form">
                         <input type="hidden" name="selected_bank_id" id="selected_bank_id">
-                   <input type="number" class="form-control transaction_amount" name="transaction_amount" maxlength="6" id="transaction_amount" style="width:160px; height:52px;" placeholder="₹ 500" required >
+                   <input type="number" class="form-control transaction_amount" name="transaction_amount" maxlength="6" id="transaction_amount" style="width:160px; height:52px; font-size:15px; font-weight:800;" placeholder="₹ 500" required >
                    
                 </li>
                 <li class="nav-item" role="presentation">

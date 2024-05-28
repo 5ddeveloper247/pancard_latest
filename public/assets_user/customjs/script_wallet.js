@@ -253,7 +253,7 @@ $('.addWalletOnlinebtn').on('click', function () {
     
     } else {
         window.location.href = base_url+"/user/addwallet/online/pay/" + walletAmount;
-    }
+    } 
 });
 
 document.addEventListener('DOMContentLoaded', function () {

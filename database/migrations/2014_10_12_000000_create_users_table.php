@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('aadhar')->nullable();
             $table->smallInteger('upload_option')->default('1');
             $table->double('balance', 8, 2)->default(0);
-            $table->double('challan_rate', 8, 2)->default(0);
+            $table->double('challan_rate', 8, 2)->nullable();
             $table->string('status', 20);
             $table->rememberToken();
             $table->timestamps();

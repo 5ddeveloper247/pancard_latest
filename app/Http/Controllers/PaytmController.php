@@ -222,13 +222,9 @@ class PaytmController extends Controller
     {
 
         $settings = ApiSettings::first();
-        // $registerFormData = $user_data->fData;
-        // $createdUserData = $user_data->uData;
-        //dd($registerFormData, $createdUserData);
-        // dd(json_decode($user_id));
-        // $this->pay($user_id);
+        // dd(Auth::user()->id);
         $createdUserData = User::find(Auth::user()->id);
-        // dd($createdUserData, $registerFormData);
+        
         $paymentEncode = new PaymentEncode();
         $paramList = array();
         $MSISDN = $createdUserData->phone_number;
