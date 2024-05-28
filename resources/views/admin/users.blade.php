@@ -13,7 +13,7 @@
             id="pills-tab" role="tablist">
             <li class="nav-item px-1 my-1" role="presentation">
                 <button id="nav-sub-links"
-                    class="user-pending sub-tabs-user nav-link text-nowrap px-2 px-md-3 active d-flex flex-column align-items-center justify-content-center"
+                    class="user-pending sub-tabs-user nav-link text-nowrap px-1 px-sm-2 px-md-3 active d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="pill" data-bs-target="#pills-user-pending" type="button"
                     role="tab" aria-controls="pills-user-pending" aria-selected="true">
                     Pending
@@ -21,7 +21,7 @@
             </li>
             <li class="nav-item px-1 my-1" role="presentation">
                 <button id="nav-sub-links" 
-                    class="user-list sub-tabs-user nav-link text-nowrap px-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
+                    class="user-list sub-tabs-user nav-link text-nowrap px-1 px-sm-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="pill" data-bs-target="#pills-user-list" type="button"
                     role="tab" aria-controls="pills-user-list" aria-selected="false">
                     Users List
@@ -29,7 +29,7 @@
             </li>
             <li class="nav-item px-1 my-1" role="presentation">
                 <button id="nav-sub-links"
-                    class="create-user sub-tabs-user nav-link text-nowrap px-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
+                    class="create-user sub-tabs-user nav-link text-nowrap px-1 px-sm-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="pill" data-bs-target="#pills-user-list" type="button"
                     role="tab" aria-controls="pills-user-list" aria-selected="false">
                     Create Users
@@ -37,7 +37,7 @@
             </li>
             <li class="nav-item px-1 my-1" role="presentation">
                 <button id="nav-sub-links"
-                    class="transfer-user sub-tabs-user nav-link text-nowrap px-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
+                    class="transfer-user sub-tabs-user nav-link text-nowrap px-1 px-sm-2 px-md-3  d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="pill" data-bs-target="#pills-transfer-user"
                     type="button" role="tab" aria-controls="pills-transfer-user" aria-selected="false">
                     Transfer Users
