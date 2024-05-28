@@ -42,26 +42,26 @@
                     Your Details
                 </h4>
 
-                <span> {{$transaction->createdByUser->name}} </span>
+                <span> {{@$transaction->createdByUser->name}} </span>
 
-                <span> {{$transaction->createdByUser->phone_number}} </span>
+                <span> {{@$transaction->createdByUser->phone_number}} </span>
 
-                <span> {{$transaction->createdByUser->email}} </span>
+                <span> {{@$transaction->createdByUser->email}} </span>
 
-                <span> {{$transaction->createdByUser->pin_code}} </span>
+                <span> {{@$transaction->createdByUser->pin_code}} </span>
 
-                <span>{{$transaction->createdByUser->state->name}} </span>
+                <span>{{@$transaction->createdByUser->state->name}} </span>
 
-                <span>{{$transaction->createdByUser->city->name}} </span>
+                <span>{{@$transaction->createdByUser->city->name}} </span>
 
-                <span>{{$transaction->createdByUser->area->name}} </span>
+                <span>{{@$transaction->createdByUser->area->name}} </span>
             </div>
 
             <div class="payment-detail d-flex flex-column text-center">
                 <h4>Payment Details</h4>
 
                 <span>
-                    Total Ammount <br> ₹<span>{{$transaction->amount}} </span>
+                    Total Ammount <br> ₹<span>{{@$transaction->amount}} </span>
                 </span>
             </div>
         </div>
