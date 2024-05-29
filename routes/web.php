@@ -103,7 +103,7 @@ Route::group(['prefix' => '/'], function () {
     Route::post('/loginSubmit', [FrontEndController::class, 'loginSubmit'])->name('loginSubmit');
     Route::get('/logout', [FrontEndController::class, 'logout'])->name('logout');
     Route::get('/forget', [FrontEndController::class, 'forget'])->name('forget');
-    // Route::get('/register', [RegistrationController::class, 'register'])->name('register');
+    Route::get('/register', [RegistrationController::class, 'register'])->name('register');
 
     /************** AJAX ROUTES ******************/
     Route::post('/getCitiesLovData', [FrontEndController::class, 'getCitiesLovData'])->name('getCitiesLovData');
@@ -155,6 +155,5 @@ Route::get('/register/doPayment/{id}', [PaytmController::class, 'doPayment'])->n
 Route::get('/user/addwallet/online/pay/{amount}', [PaytmController::class, 'addWalletOnline'])->name('user.addwallet.online.pay');
 
 Route::get('/payment_success/{id}', [PaytmController::class, 'payment_success'])->name('payment_success');
-Route::get('/payment_fail/{id}', [PaytmController::class, 'payment_failed'])->name('payment_fail');
-
+Route::get('/payment_fail/{id?}', [PaytmController::class, 'payment_failed'])->name('payment_fail');
 //----------------------------------------Paytm GP Routes ends-----------------------------------------------------

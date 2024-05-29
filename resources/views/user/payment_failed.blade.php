@@ -35,39 +35,40 @@
                 Payment Failed. Please try again.
             </p>
         </div>
+        @if(isset($transaction))
+            <div class="payment-bottom d-flex justify-content-between mt-5 p-4">
+                <div class="your-detail d-flex flex-column">
+                    <h4>
+                        Your Details
+                    </h4>
 
-        <div class="payment-bottom d-flex justify-content-between mt-5 p-4">
-            <div class="your-detail d-flex flex-column">
-                <h4>
-                    Your Details
-                </h4>
+                    <span> {{@$transaction->createdByUser->name}} </span>
 
-                <span> {{@$transaction->createdByUser->name}} </span>
+                    <span> {{@$transaction->createdByUser->phone_number}} </span>
 
-                <span> {{@$transaction->createdByUser->phone_number}} </span>
+                    <span> {{@$transaction->createdByUser->email}} </span>
 
-                <span> {{@$transaction->createdByUser->email}} </span>
+                    <span> {{@$transaction->createdByUser->pin_code}} </span>
 
-                <span> {{@$transaction->createdByUser->pin_code}} </span>
+                    <span>{{@$transaction->createdByUser->state->name}} </span>
 
-                <span>{{@$transaction->createdByUser->state->name}} </span>
+                    <span>{{@$transaction->createdByUser->city->name}} </span>
 
-                <span>{{@$transaction->createdByUser->city->name}} </span>
+                    <span>{{@$transaction->createdByUser->area->name}} </span>
+                </div>
 
-                <span>{{@$transaction->createdByUser->area->name}} </span>
+                <div class="payment-detail d-flex flex-column text-center">
+                    <h4>Payment Details</h4>
+
+                    <span>
+                        Total Ammount <br> ₹<span>{{@$transaction->amount}} </span>
+                    </span>
+                </div>
             </div>
-
-            <div class="payment-detail d-flex flex-column text-center">
-                <h4>Payment Details</h4>
-
-                <span>
-                    Total Ammount <br> ₹<span>{{@$transaction->amount}} </span>
-                </span>
+            <div class="pt-4 text-center">
+                <a href="{{route('wallet')}}" class="btn btn-danger">Go to wallet</a>
             </div>
-        </div>
-        <div class="pt-4 text-center">
-            <a href="{{route('wallet')}}" class="btn btn-danger">Go to wallet</a>
-        </div>
+        @endif
     </div>
 
     <script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}" crossorigin="anonymous"></script>

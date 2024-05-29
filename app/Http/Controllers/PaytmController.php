@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use Anand\LaravelPaytmWallet\Facades\PaytmWallet;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\TempUsers;
 use App\Models\Transactions;
 use paytm\paytmchecksum\PaytmChecksum;
 use App\Lib\PaymentEncode;
 use App\Models\ApiSettings;
+use App\Models\Settings;
 
 class PaytmController extends Controller
 {
@@ -26,21 +28,20 @@ class PaytmController extends Controller
 
         $user_id = $id;
 
+        
+        $sysSettings = Settings::first();
         $settings = ApiSettings::first();
-        // $registerFormData = $user_data->fData;
-        // $createdUserData = $user_data->uData;
-        //dd($registerFormData, $createdUserData);
-        // dd(json_decode($user_id));
-        // $this->pay($user_id);
-        $createdUserData = User::find($user_id);
-        // dd($createdUserData, $registerFormData);
+      
+        $createdUserData = TempUsers::find($user_id);
+        
         $paymentEncode = new PaymentEncode();
         $paramList = array();
         $MSISDN = $createdUserData->phone_number;
         $EMAIL = $createdUserData->email;
         // Generate unique values
 
-        $ORDER_ID = strval(rand(10000, 99999999));
+        $ORDER_ID = $user_id != '' ? $user_id : strval(rand(10000, 99999999));
+        
         $CUST_ID = "CUST" . $createdUserData->id;
         // Required parameters for Paytm
         $paramList["MID"] = isset($settings->merchant_id) ? $settings->merchant_id : '';//env('PAYTM_MERCHANT_ID')
@@ -48,7 +49,7 @@ class PaytmController extends Controller
         $paramList["CUST_ID"] = $CUST_ID;
         $paramList["INDUSTRY_TYPE_ID"] = "Retail";
         $paramList["CHANNEL_ID"] = "WEB";
-        $paramList["TXN_AMOUNT"] = 1;
+        $paramList["TXN_AMOUNT"] = isset($sysSettings->retailer_rate) ? $sysSettings->retailer_rate : 1;
         $paramList["WEBSITE"] = "DEFAULT";
         $paramList["CALLBACK_URL"] = route('status');
         $paramList["MSISDN"] = $MSISDN; // Mobile number of customer 
@@ -96,106 +97,82 @@ class PaytmController extends Controller
     // Handle the payment callback for registeration
     public function paymentCallback(Request $request)
     {
-        // Decode the JSON data from the request
-        $data = $request->json()->all();
-
+        $settings = ApiSettings::first();
+        $merchant_id = isset($settings->merchant_id) ? $settings->merchant_id : '';
+        
         // Debugging: dump and die to see the data structure
-        dd($_REQUEST);
-
-        // array:13 [▼ // app\Http\Controllers\PaytmController.php:114
-        //             "BANKTXNID" => "414635568633"
-        //             "CHECKSUMHASH" => "ho85vpqlgXCBsWfzALDDULHBXbIKCYQ4LWMCC0rareKn7uVZFM2V/+V4OUJNs/fAdzujmrtf+ZyZszg7pEoopdkIz/W12L9TkiKO0cH4zl4="
-        //             "CURRENCY" => "INR"
-        //             "GATEWAYNAME" => "PPBL"
-        //             "MID" => "HVRMQv69972580638511"
-        //             "ORDERID" => "42232176"
-        //             "PAYMENTMODE" => "UPI"
-        //             "RESPCODE" => "01"
-        //             "RESPMSG" => "Txn Success"
-        //             "STATUS" => "TXN_SUCCESS"
-        //             "TXNAMOUNT" => "1.00"
-        //             "TXNDATE" => "2024-05-25 13:02:13.0"
-        //             "TXNID" => "20240525210600000001112136305272339"
-        //         ]
+        
+        $responseData = $_REQUEST;
+        $paytmChecksum = isset($_REQUEST["CHECKSUMHASH"]) ? $_REQUEST["CHECKSUMHASH"] : ""; //Sent by Paytm pg
+        $verify = $this->verifychecksum_e($responseData, $merchant_id, $paytmChecksum);
 
         // Extract the necessary information from the data
-        $responseTimestamp = $data['head']['responseTimestamp'];
-        $version = $data['head']['version'];
-        $clientId = $data['head']['clientId'];
-        $signature = $data['head']['signature'];
+        $bankTrxId = isset($responseData['BANKTXNID']) ? $responseData['BANKTXNID'] : '';
+        $checksum = isset($responseData['CHECKSUMHASH']) ? $responseData['CHECKSUMHASH'] : '';
+        $currency = isset($responseData['CURRENCY']) ? $responseData['CURRENCY'] : '';
+        $gatewayName = isset($responseData['GATEWAYNAME']) ? $responseData['GATEWAYNAME'] : '';
+        $mid = isset($responseData['MID']) ? $responseData['MID'] : '';
+        $orderId = isset($responseData['ORDERID']) ? $responseData['ORDERID'] : '';
+        $payMode = isset($responseData['PAYMENTMODE']) ? $responseData['PAYMENTMODE'] : '';
+        $respCode = isset($responseData['RESPCODE']) ? $responseData['RESPCODE'] : '';
+        $respMsg = isset($responseData['RESPMSG']) ? $responseData['RESPMSG'] : '';
+        $trxStatus = isset($responseData['STATUS']) ? $responseData['STATUS'] : '';
+        $trxAmount = isset($responseData['TXNAMOUNT']) ? $responseData['TXNAMOUNT'] : '';
+        $trxDate = isset($responseData['TXNDATE']) ? $responseData['TXNDATE'] : '';
+        $trxId = isset($responseData['TXNID']) ? $responseData['TXNID'] : '';
 
-        $resultStatus = $data['body']['resultInfo']['resultStatus'];
-        $resultCode = $data['body']['resultInfo']['resultCode'];
-        $resultMsg = $data['body']['resultInfo']['resultMsg'];
+        if ($responseData == 'TXN_SUCCESS') {
 
-        $txnId = $data['body']['txnId'];
-        $bankTxnId = $data['body']['bankTxnId'];
-        $orderId = $data['body']['orderId'];
-        $txnAmount = $data['body']['txnAmount'];
-        $txnType = $data['body']['txnType'];
-        $gatewayName = $data['body']['gatewayName'];
-        $bankName = $data['body']['bankName'];
-        $mid = $data['body']['mid'];
-        $paymentMode = $data['body']['paymentMode'];
-        $refundAmt = $data['body']['refundAmt'];
-        $txnDate = $data['body']['txnDate'];
-        $authRefId = $data['body']['authRefId'];
+            // Fetch the data from temp_user table by the specific ID
+            $tempUser = TempUsers::where('id', $orderId)->first();
+            
+            $userData = $tempUser->toArray();
 
-        // Process the payment information as needed
-        // For example, update the order status in the database
-        // Order::where('order_id', $orderId)->update(['status' => $resultStatus]);
-        if ($resultStatus == 'TXN_SUCCESS') {
+            // Remove the id and timestamps from the data
+            unset($userData['id'], $userData['created_at'], $userData['updated_at']);
 
- 
-            $newTransaction = Transactions::create([
+            // Add or modify specific attributes
+            $userData['status'] = 'active';
 
-                'user_id' => $clientId,
-                'bank_id' => $bankName,
-                'puc_id' => $orderId,
-                'amount' => $txnAmount,
-                'transaction_number' => $txnId,
-                'status' => 1,
-                'transaction_status' => $resultStatus,
-                'date' => date('Y-m-d'),
+            // Create a new User instance and fill it with the data
+            $user = new User();
+            $user->fill($userData);
+            // Save the new user record
+            $user->save();
+            
+            TempUsers::where('id', $orderId)->delete();
 
-            ]);
+            $transaction = new Transactions;
+            $transaction->type = '1'; // 1=>credit, 2=>debit
+            $transaction->transaction_type = '1'; // 1=>online, 2=>manual
+            $transaction->user_id = $user->id;
+            $transaction->bank_id = null;
+            $transaction->puc_id = null;
+            $transaction->amount = $trxAmount;
+            $transaction->transaction_number = $trxId;
+            $transaction->transaction_remarks = 'User Register';
+            $transaction->status = '3'; //  1=>pending, 2=>rejected , 3=>approved
+            $transaction->transaction_status = '3'; //  1=>pending, 2=>rejected , 3=>approved
+            $transaction->transaction_checksum = $checksum;
+            $transaction->transaction_response = json_encode($responseData, true);
+            $transaction->date = date('Y-m-d');
+            $transaction->save();
 
-            //activate the status of the user here 
-            $user = User::find($clientId);
+            // send email code
+            $body = view('emails.registration', $user);
+            $userEmailsSend[] = $user->email;
+            // to username, to email, from username, subject, body html
+            $response = sendMail($user->name, $userEmailsSend, 'PANCARD', 'Registration', $body);
 
-            if ($user) {
-                $user->status = 'active';
-                $user->save();
-            }
-
-            // Return a success response
-
-        } elseif ($resultStatus == 'TXN_FAILURE') {
-            $newTransaction = Transactions::create([
-
-                'user_id' => $clientId,
-                'bank_id' => $bankName,
-                'puc_id' => $orderId,
-                'amount' => $txnAmount,
-                'transaction_number' => $txnId,
-                'status' => 2,
-                'transaction_status' => $resultStatus,
-                'date' => date('Y-m-d'),
-
-            ]);
+            $encodedId = base64_encode($transaction->id);
+            $url = route('payment_success', ['id' => $encodedId]);
+            return redirect($url);
+            
         } else {
 
-            $newTransaction = Transactions::create([
-                'user_id' => $clientId,
-                'bank_id' => $bankName,
-                'puc_id' => $orderId,
-                'amount' => $txnAmount,
-                'transaction_number' => $txnId,
-                'status' => 2,
-                'transaction_status' => $resultStatus,
-                'date' => date('Y-m-d'),
-
-            ]);
+            $url = route('payment_fail');
+            return redirect($url);
+        
         }
         // Return a response if needed
         return redirect()->to('login');
@@ -256,7 +233,6 @@ class PaytmController extends Controller
         }else{
             return redirect('login');
         }
-        
     }
 
     public function paymentCallbackAddWallet(Request $request)
@@ -269,24 +245,6 @@ class PaytmController extends Controller
         $responseData = $_REQUEST;
         $paytmChecksum = isset($_REQUEST["CHECKSUMHASH"]) ? $_REQUEST["CHECKSUMHASH"] : ""; //Sent by Paytm pg
         $verify = $this->verifychecksum_e($responseData, $merchant_id, $paytmChecksum);
-
-        // array:13 [▼ // app\Http\Controllers\PaytmController.php:114
-        //             "BANKTXNID" => "414635568633"
-        //             "CHECKSUMHASH" => "ho85vpqlgXCBsWfzALDDULHBXbIKCYQ4LWMCC0rareKn7uVZFM2V/+V4OUJNs/fAdzujmrtf+ZyZszg7pEoopdkIz/W12L9TkiKO0cH4zl4="
-        //             "CURRENCY" => "INR"
-        //             "GATEWAYNAME" => "PPBL"
-        //             "MID" => "HVRMQv69972580638511"
-        //             "ORDERID" => "42232176"
-        //             "PAYMENTMODE" => "UPI"
-        //             "RESPCODE" => "01"
-        //             "RESPMSG" => "Txn Success"
-        //             "STATUS" => "TXN_SUCCESS"
-        //             "TXNAMOUNT" => "1.00"
-        //             "TXNDATE" => "2024-05-25 13:02:13.0"
-        //             "TXNID" => "20240525210600000001112136305272339"
-        //         ]
-
-        // dd(json_encode($responseData, true));
 
         // Extract the necessary information from the data
         $bankTrxId = isset($responseData['BANKTXNID']) ? $responseData['BANKTXNID'] : '';
@@ -371,23 +329,29 @@ class PaytmController extends Controller
         }
     }
 
-    public function payment_failed($encodedId){
+    public function payment_failed($encodedId=''){
         
-        // Decode the base64 encoded ID
-        $decodedId = base64_decode($encodedId);
+        if($encodedId != ''){
+            // Decode the base64 encoded ID
+            $decodedId = base64_decode($encodedId);
 
-        // Fetch the model using the decoded ID
-        $transaction = Transactions::where('id', $decodedId)->with(['createdByUser','createdByUser.state','createdByUser.city','createdByUser.area'])->first();
+            // Fetch the model using the decoded ID
+            $transaction = Transactions::where('id', $decodedId)->with(['createdByUser','createdByUser.state','createdByUser.city','createdByUser.area'])->first();
 
-        // dd($transaction);
-        if(isset($transaction->id)){
-            $data['transaction'] = $transaction;
-            // Return a view with the model data
-            return view('user/payment_failed')->with($data);
+            // dd($transaction);
+            if(isset($transaction->id)){
+                $data['transaction'] = $transaction;
+                // Return a view with the model data
+                return view('user/payment_failed')->with($data);
+            }else{
+                echo 'Invalid URL!';
+            }
         }else{
-            echo 'Invalid URL!';
+            return view('user/payment_failed');
         }
+        
     }
+    
 
 
 
@@ -677,4 +641,21 @@ class PaytmController extends Controller
         $responseParamList = json_decode($jsonResponse, true);
         return $responseParamList;
     }
+
+    // paytm payment response
+//     array:13 [▼ // app\Http\Controllers\PaytmController.php:114
+//     "BANKTXNID" => "414635568633"
+//     "CHECKSUMHASH" => "ho85vpqlgXCBsWfzALDDULHBXbIKCYQ4LWMCC0rareKn7uVZFM2V/+V4OUJNs/fAdzujmrtf+ZyZszg7pEoopdkIz/W12L9TkiKO0cH4zl4="
+//     "CURRENCY" => "INR"
+//     "GATEWAYNAME" => "PPBL"
+//     "MID" => "HVRMQv69972580638511"
+//     "ORDERID" => "42232176"
+//     "PAYMENTMODE" => "UPI"
+//     "RESPCODE" => "01"
+//     "RESPMSG" => "Txn Success"
+//     "STATUS" => "TXN_SUCCESS"
+//     "TXNAMOUNT" => "1.00"
+//     "TXNDATE" => "2024-05-25 13:02:13.0"
+//     "TXNID" => "20240525210600000001112136305272339"
+// ]
 }

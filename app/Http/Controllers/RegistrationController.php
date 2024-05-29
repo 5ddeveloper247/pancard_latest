@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
+use App\Models\TempUsers;
 use App\Models\States;
 use App\Models\ApiSettings;
 use App\Models\Settings;
@@ -55,8 +56,6 @@ class RegistrationController extends Controller
 
     public function registerUser(Request $request)
     {
-
-
         $validatedData = $request->validate([
             'user_name' => 'required|max:100',
             'username_auto' => 'required|max:100',
@@ -78,8 +77,20 @@ class RegistrationController extends Controller
             return response()->json(['status' => 401, 'message' => "Username is already exist, try another time!"]);
         }
 
-        $Users = new User();
+        // check payment settings status is on/off
+        $apisettings = ApiSettings::first();
+        if(isset($apisettings->status) && $apisettings->status == 'on'){
+            $paymentStatus = 'on';
+        }else{
+            $paymentStatus = 'off';
+        }
 
+        if($paymentStatus == 'on'){
+            $Users = new TempUsers();
+        }else{
+            $Users = new User();
+        }
+        
         // Update the settings with the new values
         $Users->type = 'user';
         $Users->name = $request->user_name;
@@ -123,56 +134,10 @@ class RegistrationController extends Controller
         $Users->save();
 
         // send email code
-        $body = view('emails.registration', $Users);
-        $userEmailsSend[] = $Users->email;
-        // to username, to email, from username, subject, body html
-        //  $response = sendMail($Users->name, $userEmailsSend, 'PANCARD', 'Registration', $body); // send_to_name, send_to_email, email_from_name, subject, body
-
-
-
-
-
-
-
-
-        ///////////////////////////////////////////////////////////////////
-
-        // if ($response == true) {
-        //     // Email sent successfully
-        //     do {
-        //         $username_auto = 'PUCZ' . mt_rand(100000, 999999);
-        //         $existing_number = User::where('username', $username_auto)->first();
-        //     } while ($existing_number);
-
-        //     $data = array();
-        //     $data['username_auto'] = $username_auto;
-        //     $data['userData'] = $request->all();
-
-        //     return response()->json([
-        //         'status' => 200,
-        //         'message' => "User Created Successfully, Now set password and then login!",
-        //         'data' => $data
-        //     ]);
-        // } else {
-        //     // Email sending failed
-        //     do {
-        //         $username_auto = 'PUCZ' . mt_rand(100000, 999999);
-        //         $existing_number = User::where('username', $username_auto)->first();
-        //     } while ($existing_number);
-
-        //     $data = array();
-        //     $data['username_auto'] = $username_auto;
-        //     $data['userData'] = $request->all();
-
-        //     return response()->json([
-        //         'status' => 500,
-        //         'message' => "User Created, but failed to send the registration email. Please try again.",
-        //         'data' => $data
-        //     ]);
-        // }
-
-
-        ///////////////////////////////////////////////////////////////
+        // $body = view('emails.registration', $Users);
+        // $userEmailsSend[] = $Users->email;
+        // // to username, to email, from username, subject, body html
+        // $response = sendMail($Users->name, $userEmailsSend, 'PANCARD', 'Registration', $body);
 
         do {
             $username_auto = 'PUCZ' . mt_rand(100000, 999999);
@@ -182,7 +147,7 @@ class RegistrationController extends Controller
         $data['username_auto'] = $username_auto;
         $data['userData'] = $Users;
         $data['formData'] = $request->all();
-        $data['payment_gateway_settings'] = ApiSettings::first()->value('status');
+        $data['payment_gateway_settings'] = $paymentStatus;
 
         //Handle Registeration Payment
         return response()->json(['status' => 200, 'message' => "User Created Successfully, Now set password and then login!", 'data' => $data]);

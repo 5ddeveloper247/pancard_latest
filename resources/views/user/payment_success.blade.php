@@ -24,10 +24,16 @@
             </svg>
 
             <h1>Payment Successful</h1>
-
+            @if(@$transaction->transaction_remarks == 'User Register')
+                <p class="px-3">Thank you for registeration. Upon verification, if all details are accurate, our
+                    administration will approve your account. Additionally, you will receive a notification via the provided
+                    email.</p>
+            @else
             <p class="px-3">Thank you for submitting your data successfully. Upon verification, if all details are accurate, our
                 administration will approve your account. Additionally, you will receive a notification via the provided
                 email.</p>
+            @endif
+            
         </div>
 
         <div class="payment-bottom d-flex justify-content-between mt-5 p-4">
@@ -60,7 +66,12 @@
             </div>
         </div>
         <div class="pt-4 text-center">
-            <a href="{{route('wallet')}}" class="btn btn-success">Go to wallet</a>
+            @if(@$transaction->transaction_remarks == 'User Register')
+                <a href="{{route('login')}}" class="btn btn-success">Go to login</a>
+            @else
+                <a href="{{route('wallet')}}" class="btn btn-success">Go to wallet</a>
+            @endif
+            
         </div>
     </div>
 

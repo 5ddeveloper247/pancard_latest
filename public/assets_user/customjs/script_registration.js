@@ -156,10 +156,10 @@ function registerUserResponse(response) {
         }
         const datax = JSON.stringify(dataObj);
         if(payment_settings == 'on'){
-        setTimeout(function () {
-            toDoPayment(datax);
-        }, 3000);
-    }
+            setTimeout(function () {
+                toDoPayment(datax);
+            }, 3000);
+        }
 
 
     } else {
