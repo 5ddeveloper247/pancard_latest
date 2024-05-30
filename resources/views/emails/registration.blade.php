@@ -5,26 +5,26 @@
         <tr style="min-height: 22.5pt;">
             <td style="width: 418.5pt; background: #003ede;" colspan="4" valign="top" width="743"><strong><span
                         style="font-size: 15.0pt; font-family: Calibri,sans-serif; color: white; padding-left: 10px; float: left;">&nbsp;
-                        PANCARD NOTIFICATION</span></strong>
+                        PUCZONE NOTIFICATION</span></strong>
                 <p>&nbsp;</p>
             </td>
         </tr>
         <tr style="min-height: 22.5pt;">
             <td style="border: solid #DFE0E2 1.0pt; padding: 0in 0in 0in 0in; min-height: 22.5pt;" colspan="4">
                 <p class="yiv7050401279MsoNormal" style="margin-bottom: 12.0pt;"><span style="font-size: 10.0pt;">
-                        <strong>Subject: </strong>Welcome to PANCARD! Activate Your Account</span>
+                        <strong>Subject: </strong>Welcome to PUCZONE! Activate Your Account</span>
                 </p>
                 <p class="yiv7050401279MsoNormal" style="margin-bottom: 12.0pt;"><span style="font-size: 10.0pt;">
                         <strong>Hello {{@$name}},</strong></span>
                 </p>
                 <p class="yiv7050401279MsoNormal" style="margin-bottom: 12.0pt;">
                     <span style="font-size: 10.0pt;">
-                        Thank you for registering with PANCARD! We're excited to have you on board.
+                        Thank you for registering with PUCZONE! We're excited to have you on board.
                     </span>
                 </p>
                 <p class="yiv7050401279MsoNormal" style="margin-bottom: 12.0pt;">
                     <span style="font-size: 10.0pt;">
-                    Once your account is activated, you'll be able to access all the features and benefits of PANCARD.
+                    Once your account is activated, you'll be able to access all the features and benefits of PUCZONE.
                     </span>
                 </p>
                 <p class="yiv7050401279MsoNormal" style="margin-bottom: 12.0pt;"><span style="font-size: 10.0pt;">
@@ -106,7 +106,7 @@
             <tr>
                 <td style="width: 445.5pt; background: #F2F2F2; padding: 0in 5.4pt 0in 5.4pt;" colspan="8" valign="top"
                     width="743">
-                    <p align="center">Copyright (c) {{date('Y')}}, PANCARD. All rights reserved.</p>
+                    <p align="center">Copyright (c) {{date('Y')}}, PUCZONE. All rights reserved.</p>
                 </td>
             </tr>
 

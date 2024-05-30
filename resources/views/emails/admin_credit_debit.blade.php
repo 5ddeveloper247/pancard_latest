@@ -102,7 +102,7 @@
             <tr>
                 <td style="width: 445.5pt; background: #F2F2F2; padding: 0in 5.4pt 0in 5.4pt;" colspan="8" valign="top"
                     width="743">
-                    <p align="center">Copyright (c) {{date('Y')}}, PANCARD. All rights reserved.</p>
+                    <p align="center">Copyright (c) {{date('Y')}}, PUCZONE. All rights reserved.</p>
                 </td>
             </tr>
 

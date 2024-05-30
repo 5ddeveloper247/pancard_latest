@@ -137,7 +137,7 @@ class RegistrationController extends Controller
         // $body = view('emails.registration', $Users);
         // $userEmailsSend[] = $Users->email;
         // // to username, to email, from username, subject, body html
-        // $response = sendMail($Users->name, $userEmailsSend, 'PANCARD', 'Registration', $body);
+        // $response = sendMail($Users->name, $userEmailsSend, 'PUCZONE', 'Registration', $body);
 
         do {
             $username_auto = 'PUCZ' . mt_rand(100000, 999999);
@@ -182,7 +182,7 @@ class RegistrationController extends Controller
         $body = view('emails.forget_password', $userDetail);
         $userEmailsSend[] = $userDetail->email;
         // to username, to email, from username, subject, body html
-        sendMail($userDetail->name, $userEmailsSend, 'PANCARD', 'Forget Password OTP', $body); // send_to_name, send_to_email, email_from_name, subject, body
+        sendMail($userDetail->name, $userEmailsSend, 'PUCZONE', 'Forget Password OTP', $body); // send_to_name, send_to_email, email_from_name, subject, body
 
         return response()->json(['status' => 200, 'message' => "OTP (One Time Password) is sent to user email adderess. Kindly enter OTP then change password!"]);
     }

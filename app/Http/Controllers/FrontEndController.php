@@ -239,7 +239,7 @@ class FrontEndController extends Controller
         $body = view('emails.transaction', $mailData);
         $userEmailsSend[] = Auth::user()->email;
         // to username, to email, from username, subject, body html
-        sendMail($userName, $userEmailsSend, 'PANCARD', 'Transaction Made', $body); // send_to_name, send_to_email, email_from_name, subject, body
+        sendMail($userName, $userEmailsSend, 'PUCZONE', 'Transaction Made', $body); // send_to_name, send_to_email, email_from_name, subject, body
         return response()->json(['status' => 200,'message' => "Transaction Added Successfully"]);
 
     }
@@ -606,7 +606,7 @@ class FrontEndController extends Controller
             $body = view('emails.puc_order', $pucDetail);
             $userEmailsSend[] = $pucDetail->user->email;
             // to username, to email, from username, subject, body html
-            sendMail($pucDetail->user->name, $userEmailsSend, 'PANCARD', 'PUC Create', $body); // send_to_name, send_to_email, email_from_name, subject, body
+            sendMail($pucDetail->user->name, $userEmailsSend, 'PUCZONE', 'PUC Create', $body); // send_to_name, send_to_email, email_from_name, subject, body
 
             return response()->json(['status' => 200,'message' => "PUC Created Successfully!"]);
         }else{
@@ -718,7 +718,7 @@ class FrontEndController extends Controller
     //     $userEmailsSend[] = 'hamza@5dsolutions.ae';
 
     //     // to username, to email, from username, subject, body html
-    //     sendMail('hamza waheed', $userEmailsSend, 'PANCARD', 'Test email', $body);
+    //     sendMail('hamza waheed', $userEmailsSend, 'PUCZONE', 'Test email', $body);
        
     //     echo 'test success';
     // }

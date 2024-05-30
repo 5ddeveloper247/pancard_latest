@@ -280,7 +280,7 @@ class AdminController extends Controller
         $body = view('emails.transaction', $mailData);
         $userEmailsSend[] = $userData->email;
         // to username, to email, from username, subject, body html
-        sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Transaction Rejected', $body); // send_to_name, send_to_email, email_from_name, subject, body
+        sendMail($userData->name, $userEmailsSend, 'PUCZONE', 'Transaction Rejected', $body); // send_to_name, send_to_email, email_from_name, subject, body
         return response()->json(['status' => 200, 'message' => "Transaction Rejected Successfully!"]);
     }
 
@@ -601,10 +601,10 @@ class AdminController extends Controller
             $userEmailsSend[] = $userData->email;
             // to username, to email, from username, subject, body html
             if ($transaction_updated->type == 1) {
-                sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Balance Added', $body); // send_to_name, send_to_email, email_from_name, subject, body
+                sendMail($userData->name, $userEmailsSend, 'PUCZONE', 'Balance Added', $body); // send_to_name, send_to_email, email_from_name, subject, body
             }
             if ($transaction_updated->type == 2) {
-                sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Balance Deducted', $body); // send_to_name, send_to_email, email_from_name, subject, body
+                sendMail($userData->name, $userEmailsSend, 'PUCZONE', 'Balance Deducted', $body); // send_to_name, send_to_email, email_from_name, subject, body
             }
 
             $data['active_users'] = User::whereIn('status', ['active', 'approved'])->where('type', 'user')->with(['state', 'city', 'area'])->orderBy('created_at', 'desc')->get();
@@ -954,7 +954,7 @@ class AdminController extends Controller
         $body = view('emails.puc_order', $pucDetail);
         $userEmailsSend[] = $pucDetail->user->email;
         // to username, to email, from username, subject, body html
-        sendMail($pucDetail->user->name, $userEmailsSend, 'PANCARD', $emailTitle, $body); // send_to_name, send_to_email, email_from_name, subject, body
+        sendMail($pucDetail->user->name, $userEmailsSend, 'PUCZONE', $emailTitle, $body); // send_to_name, send_to_email, email_from_name, subject, body
 
         return response()->json(['status' => 200, 'message' => "PUC Status Updated Successfully!"]);
     }

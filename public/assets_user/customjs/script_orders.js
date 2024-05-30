@@ -123,7 +123,7 @@ function makePucList(puc_list) {
         }
         else{
             
-                updatedatesbtn = `<button class="puc_date_update_btn make-new-btn d-flex align-items-center justify-content-center "style="width: fit-content;font-weight: 400;"id="puc_date_update_btn"data-puc-id="${value.id}">Update</button>`;
+                updatedatesbtn = `<button class="puc_date_update_btn make-new-btn d-flex align-items-center justify-content-center fs-6 px-4 py-1"style="width: fit-content;font-weight: 400;"id="puc_date_update_btn"data-puc-id="${value.id}">Update</button>`;
                
         }
 
@@ -144,7 +144,7 @@ function makePucList(puc_list) {
                                 ${value.chasis_number != null ? value.chasis_number : 'N/A'}
                             </span>
                             </div>
-                            <span class="diff-bg px-2 my-1 grid-p-searchby daterangecalculated"title="Change Date" data-id="${value.id}">
+                            <span class="diff-bg px-2 my-1 grid-p-searchby daterangecalculated"title="Change Date" data-id="${value.id}" style="${value.start_date != null ? '' : 'display:none;'}">
                                 ${value.start_date != null ? formatDate(value.start_date) + ' to ' : ''}${value.end_date != null ? formatDate(value.end_date) : ''}   
                             </span>
                             ${value.certificate_pdf != null  && value.start_date ==null && value.end_date == null ? `
@@ -667,6 +667,18 @@ $(document).ready(function () {
     });
 
     $("#filter_dateRange").val('');
+
+    $(document).on('change', '#Challan-form', function (e) {
+
+        var challan_val = $(this).val();
+
+        if(challan_val != ''){
+            $(".challan_opt_div").show();
+        }else{
+            $(".challan_opt_div").hide();
+        }
+        
+    });
 });
 
 

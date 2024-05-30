@@ -424,7 +424,8 @@ function changePucStatus(statusFlag, param1=''){
     }
 }
 function changePucStatusResponse(response){
-    if(response.status = 402){
+    
+    if(response.status == 402){
         toastr.error(response.message, '', {
             timeOut: 3000
         });

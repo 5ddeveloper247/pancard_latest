@@ -162,7 +162,7 @@ class PaytmController extends Controller
             $body = view('emails.registration', $user);
             $userEmailsSend[] = $user->email;
             // to username, to email, from username, subject, body html
-            $response = sendMail($user->name, $userEmailsSend, 'PANCARD', 'Registration', $body);
+            $response = sendMail($user->name, $userEmailsSend, 'PUCZONE', 'Registration', $body);
 
             $encodedId = base64_encode($transaction->id);
             $url = route('payment_success', ['id' => $encodedId]);
