@@ -27,7 +27,6 @@ class PaytmController extends Controller
     {
 
         $user_id = $id;
-
         
         $sysSettings = Settings::first();
         $settings = ApiSettings::first();
@@ -103,6 +102,7 @@ class PaytmController extends Controller
         // Debugging: dump and die to see the data structure
         
         $responseData = $_REQUEST;
+        // dd($responseData);
         $paytmChecksum = isset($_REQUEST["CHECKSUMHASH"]) ? $_REQUEST["CHECKSUMHASH"] : ""; //Sent by Paytm pg
         $verify = $this->verifychecksum_e($responseData, $merchant_id, $paytmChecksum);
 

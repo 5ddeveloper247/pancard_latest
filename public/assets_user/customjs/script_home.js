@@ -42,16 +42,30 @@ $(document).on('change', '#Challan-form', function (e) {
 $(document).on('click', '#puc_create_submit', function (e) {
 
 	e.preventDefault();
-	let type = 'POST';
+    let type = 'POST';
 	let url = '/createPucUser';
 	let message = '';
-	let form = $('#puc_create_form');
-	let data = new FormData(form[0]);
-    data.append('puc_id', '');
-	// PASSING DATA TO FUNCTION
-	$('[name]').removeClass('is-invalid');
-	SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '#puc_create_submit');
-	
+    let form = $('#puc_create_form');
+    let data = new FormData(form[0]);
+    
+    // this code is for compress image to 400 kB
+    if(upload_option == '0'){
+        let file = document.getElementById('upload_vehicle').files[0];
+        if (file) {
+             compressImage(file, 400, function(compressedBlob) {
+                data.append('upload_vehicle', compressedBlob, file.name);
+                data.append('puc_id', '');
+                // PASSING DATA TO FUNCTION
+                $('[name]').removeClass('is-invalid');
+                SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '#puc_create_submit');
+            });
+        }
+    }else{
+        data.append('puc_id', '');
+        // PASSING DATA TO FUNCTION
+        $('[name]').removeClass('is-invalid');
+        SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '#puc_create_submit');
+    }
 });
 
 function resetPasswordProfileResponse(response) {
@@ -96,7 +110,87 @@ function resetPasswordProfileResponse(response) {
     }
 }
 
+function compressImage(file, maxSizeKB, callback) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
 
+            // Set maximum dimensions
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            let quality = 0.9; // Start with high quality
+            function tryCompress() {
+                canvas.toBlob(function(blob) {
+                    if (blob.size <= maxSizeKB * 1024 || quality <= 0.1) {
+                        callback(blob);
+                    } else {
+                        quality -= 0.1; // Reduce quality in smaller steps
+                        tryCompress();
+                    }
+                }, 'image/jpeg', quality);
+            }
+            tryCompress();
+        }
+    }
+}
+
+
+
+$(document).ready(function() {
+    // $('#uploadForm').on('submit', function(e) {
+    //     e.preventDefault();
+
+    //     let file = document.getElementById('image').files[0];
+    //     if (file) {
+    //         compressImage(file, 400, function(compressedBlob) {
+    //             let formData = new FormData();
+    //             formData.append('image', compressedBlob, file.name);
+
+    //             $.ajax({
+    //                 url: '/your/upload/endpoint', // Change this to your upload endpoint
+    //                 type: 'POST',
+    //                 data: formData,
+    //                 processData: false,
+    //                 contentType: false,
+    //                 success: function(response) {
+    //                     alert('Image uploaded and compressed successfully!');
+    //                     console.log(response);
+    //                 },
+    //                 error: function(xhr, status, error) {
+    //                     alert('Image upload failed.');
+    //                     console.log(error);
+    //                 }
+    //             });
+    //         });
+    //     }
+    // });
+
+    
+});
 
 $(document).ready(function () {
     
@@ -170,23 +264,24 @@ document.getElementById('cameraIcon').addEventListener('click', function() {
 });
 document.getElementById('upload_vehicle').addEventListener('change', function() {
     if (this.files.length > 0) {
-        // Get the filename of the selected file
-       
-
         var fileSize = this.files[0].size; // Size in bytes
         var maxSize = 400 * 1024; // 400 KB in bytes
 
         if (fileSize > maxSize) {
-            document.getElementById('picturename').innerText = 'Upload Vehicle Photo';
-            toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
-                timeOut: 3000
-            });
-          
-        }
-        else{
+            if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                var filename = this.files[0].name;
+                // Update the content of the <span> element with the filename
+                document.getElementById('picturename').innerText = filename;
+            }else{
+                $('#upload_vehicle').val('');
+                document.getElementById('picturename').innerText = 'Upload Vehicle Photo';
+                toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
+                    timeOut: 3000
+                });
+            }
+        }else{
 
             var filename = this.files[0].name;
-    
             // Update the content of the <span> element with the filename
             document.getElementById('picturename').innerText = filename;
             toastr.success('Uploaded', '', {
@@ -211,6 +306,7 @@ document.getElementById('upload_challan').addEventListener('change', function() 
         var maxSize = 400 * 1024; // 400 KB in bytes
 
         if (fileSize > maxSize) {
+            $('#upload_challan').val('');
             document.getElementById('challanName').innerText = 'Upload Challan Screenshot';
             toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
                 timeOut: 3000

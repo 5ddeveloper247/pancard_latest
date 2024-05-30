@@ -234,6 +234,7 @@ document.getElementById('upload_aadhar').addEventListener('change', function () 
         var maxSize = 400 * 1024; // 400 KB in bytes
 
         if (fileSize > maxSize) {
+            $('#upload_aadhar').val('');
             document.getElementById('filename').innerText = 'Upload Aadhar';
             toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
                 timeOut: 3000
