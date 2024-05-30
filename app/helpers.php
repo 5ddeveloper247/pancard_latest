@@ -82,7 +82,7 @@ if (!function_exists('sendMail')) {
             $mail_val = [
                 'send_to_name' => $send_to_name,
                 'send_to' => $send_to_email,
-                'email_from' => 'noreply@pancard.com',
+                'email_from' => 'noreply@puczone.com',
                 'email_from_name' => $email_from_name,
                 'subject' => $subject,
             ];

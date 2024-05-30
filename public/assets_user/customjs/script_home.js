@@ -47,28 +47,26 @@ $(document).on('click', '#puc_create_submit', function (e) {
 	let message = '';
     let form = $('#puc_create_form');
     let data = new FormData(form[0]);
-    
+    data.append('puc_id', '');
+
+    $('[name]').removeClass('is-invalid');
     // this code is for compress image to 400 kB
     if(upload_option == '0'){
         let file = document.getElementById('upload_vehicle').files[0];
         if (file) {
              compressImage(file, 400, function(compressedBlob) {
                 data.append('upload_vehicle', compressedBlob, file.name);
-                data.append('puc_id', '');
-                // PASSING DATA TO FUNCTION
-                $('[name]').removeClass('is-invalid');
-                SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '#puc_create_submit');
+                SendAjaxRequestToServer(type, url, data, '', pucCreateUserResponse, '', '#puc_create_submit');
             });
+        }else{
+            SendAjaxRequestToServer(type, url, data, '', pucCreateUserResponse, '', '#puc_create_submit');
         }
     }else{
-        data.append('puc_id', '');
-        // PASSING DATA TO FUNCTION
-        $('[name]').removeClass('is-invalid');
-        SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '#puc_create_submit');
+        SendAjaxRequestToServer(type, url, data, '', pucCreateUserResponse, '', '#puc_create_submit');
     }
 });
 
-function resetPasswordProfileResponse(response) {
+function pucCreateUserResponse(response) {
 
     // SHOWING MESSAGE ACCORDING TO RESPONSE
     if (response.status == 200 || response.status == '200') {

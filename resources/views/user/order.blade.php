@@ -729,5 +729,8 @@
 @push('script')
     
     <script src="{{ asset('assets_user/customjs/script_orders.js') }}"></script>
-	
+	<script>
+        var upload_option = '{{@$user->upload_option}}';
+        var user_balance = '{{@$user->balance}}';
+    </script>
 @endpush

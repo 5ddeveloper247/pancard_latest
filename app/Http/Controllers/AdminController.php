@@ -257,7 +257,7 @@ class AdminController extends Controller
         $body = view('emails.transaction', $mailData);
         $userEmailsSend[] = $userData->email;
         // to username, to email, from username, subject, body html
-        sendMail($userData->name, $userEmailsSend, 'PANCARD', 'Transaction Approved', $body); // send_to_name, send_to_email, email_from_name, subject, body
+        sendMail($userData->name, $userEmailsSend, 'PUCZONE', 'Transaction Approved', $body); // send_to_name, send_to_email, email_from_name, subject, body
 
         return response()->json(['status' => 200, 'message' => "Transaction Completed Successfully!"]);
     }

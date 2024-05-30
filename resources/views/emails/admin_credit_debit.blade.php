@@ -5,7 +5,7 @@
         <tr style="min-height: 22.5pt;">
             <td style="width: 418.5pt; background: #003ede;" colspan="4" valign="top" width="743"><strong><span
                         style="font-size: 15.0pt; font-family: Calibri,sans-serif; color: white; padding-left: 10px; float: left;">&nbsp;
-                        PANCARD NOTIFICATION</span></strong>
+                        PUCZONE NOTIFICATION</span></strong>
                 <p>&nbsp;</p>
             </td>
         </tr>

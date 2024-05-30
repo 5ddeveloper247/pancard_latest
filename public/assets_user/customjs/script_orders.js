@@ -538,11 +538,24 @@ $(document).on('click', '#puc_create_submit', function (e) {
 
     // PASSING DATA TO FUNCTION
     $('[name]').removeClass('is-invalid');
-    SendAjaxRequestToServer(type, url, data, '', resetPasswordProfileResponse, '', '.reset_pass_submit');
+    // this code is for compress image to 400 kB
+    if(upload_option == '0'){
+        let file = document.getElementById('upload_vehicle').files[0];
+        if (file) {
+             compressImage(file, 400, function(compressedBlob) {
+                data.append('upload_vehicle', compressedBlob, file.name);
+                SendAjaxRequestToServer(type, url, data, '', pucCreateUserResponse, '', '#puc_create_submit');
+            });
+        }else{
+            SendAjaxRequestToServer(type, url, data, '', pucCreateUserResponse, '', '#puc_create_submit');
+        }
+    }else{
+        SendAjaxRequestToServer(type, url, data, '', pucCreateUserResponse, '', '#puc_create_submit');
+    }
 
 });
 
-function resetPasswordProfileResponse(response) {
+function pucCreateUserResponse(response) {
 
     // SHOWING MESSAGE ACCORDING TO RESPONSE
     if (response.status == 200 || response.status == '200') {
@@ -585,6 +598,54 @@ function resetPasswordProfileResponse(response) {
     }
 }
 
+function compressImage(file, maxSizeKB, callback) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set maximum dimensions
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            let quality = 0.9; // Start with high quality
+            function tryCompress() {
+                canvas.toBlob(function(blob) {
+                    if (blob.size <= maxSizeKB * 1024 || quality <= 0.1) {
+                        callback(blob);
+                    } else {
+                        quality -= 0.1; // Reduce quality in smaller steps
+                        tryCompress();
+                    }
+                }, 'image/jpeg', quality);
+            }
+            tryCompress();
+        }
+    }
+}
+
 $(document).on('click', '#backToMainPage', function (e) {
 
     $("#main_section").show();
@@ -610,8 +671,18 @@ $(document).ready(function () {
 
 
 document.getElementById('cameraIcon').addEventListener('click', function () {
-    // Trigger click event on the input field
-    document.getElementById('upload_vehicle').click();
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        // Trigger click event on the input field
+        document.getElementById('upload_vehicle').click();
+    } else {
+        if(upload_option == '1'){
+            document.getElementById('upload_vehicle').click();
+        }else{
+            toastr.error('Not allowed to upload!', '', {
+                timeOut: 3000
+            });
+        }
+    }
 });
 document.getElementById('upload_vehicle').addEventListener('change', function () {
     if (this.files.length > 0) {
@@ -619,12 +690,19 @@ document.getElementById('upload_vehicle').addEventListener('change', function ()
         var maxSize = 400 * 1024; // 400 KB in bytes
 
         if (fileSize > maxSize) {
-            $('#upload_vehicle').val('');
-            document.getElementById('picturename').innerText = 'Upload Vehicle Photo';
-            toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
-                timeOut: 3000
-            });
+            if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                var filename = this.files[0].name;
+                // Update the content of the <span> element with the filename
+                document.getElementById('picturename').innerText = filename;
+            }else{
+                $('#upload_vehicle').val('');
+                document.getElementById('picturename').innerText = 'Upload Vehicle Photo';
+                toastr.error('File size exceeds 400 KB. Please choose a smaller file.', '', {
+                    timeOut: 3000
+                });
+            }
         }else{
+
             var filename = this.files[0].name;
             // Update the content of the <span> element with the filename
             document.getElementById('picturename').innerText = filename;
@@ -632,6 +710,7 @@ document.getElementById('upload_vehicle').addEventListener('change', function ()
                 timeOut: 3000
             });
         }
+
     } else {
         // No file selected, reset the content of the <span> element
         document.getElementById('picturename').innerText = 'Upload Vehicle Photo';
