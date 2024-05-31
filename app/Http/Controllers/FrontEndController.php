@@ -92,7 +92,7 @@ class FrontEndController extends Controller
                 
                 if (Auth::attempt($credentials)) {
                     
-                    if ($user->status != 'inactive') {
+                    if ($user->status == 'active') {
                         // User is active, proceed with login
                         $user = Auth::user(); 
                         $request->session()->put('user', $user);
@@ -100,8 +100,14 @@ class FrontEndController extends Controller
                         return redirect()->intended('/home');
                     } else {
                         // User is not active, log them out and show an error message
-                        $request->session()->flash('error', 'Your account is inactive. Please contact the administrator.');
-                        return redirect('login');
+                        
+                        if($user->status == 'inactive'){
+                            $request->session()->flash('error', 'Your account is inactive. Please contact the administrator.');
+                            return redirect('login');
+                        }else if($user->status == 'blocked'){
+                            $request->session()->flash('error', 'Your account is blocked by admin. Please contact the administrator.');
+                            return redirect('login');
+                        }
                     }
                 }
                 $request->session()->flash('error', 'The provided credentials do not match our records.');
