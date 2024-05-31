@@ -506,7 +506,16 @@ function updateWalletHistoryList(walletHistoryList){
                     
                 }
                 if(walletHistory.status == '2'){
+                    if(walletHistory.transaction_status == '2'){
+
+                        var status = ` <span class="fw-bold text-danger">Failed</span>`;
+                    }
+
+                else{
+
                     var status = ` <span class="fw-bold text-danger">Rejected</span>`;
+                }
+                    // var status = ` <span class="fw-bold text-danger">Rejected</span>`;
                     var amount_txt = `<span class="fw-bolder text-danger"> &plus; &#8377;${walletHistory.amount}</span>`;
                     
                 }

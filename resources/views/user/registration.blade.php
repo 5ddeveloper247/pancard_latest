@@ -22,7 +22,7 @@
         </div>
     </div>
     
-    <div class="d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center justify-content-center mt-5">
         <div class="container py-3 py-md-0">
             <div class="register-heading d-md-grid align-items-center justify-content-center">
                 <h1>Register</h1>

@@ -219,7 +219,8 @@ function makePucOrderHistoryListing(puc_list){
 
                             <div class="d-flex flex-column">
                                 <div class="d-flex align-items-center justify-content-end">
-                                    <button type="button" class="${value.download_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} py-1 px-2 updateViewFlag_btn" data-id="${value.id}" data-flag-type="4">
+                                    <a type="button" class="${value.download_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} py-1 px-2 " data-id="${value.id}" data-flag-type="4" href="${value.certificate_pdf != null ? value.certificate_pdf : 'javascript:;'}"
+                                    ${value.certificate_pdf != null ? 'target="_blank" download' : ''}>
                                         <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M11 7.82864L11 19.7144M11 19.7144L8.08567 16.5144M11 19.7144L13.9142 16.5144"
@@ -234,7 +235,7 @@ function makePucOrderHistoryListing(puc_list){
                                                 d="M3.56667 6.13333L5.76667 7.96667L8.7 4.3M6.13333 11.2667C5.45921 11.2667 4.7917 11.1339 4.16889 10.8759C3.54609 10.6179 2.98019 10.2398 2.50352 9.76315C2.02684 9.28647 1.64873 8.72058 1.39075 8.09777C1.13278 7.47497 1 6.80745 1 6.13333C1 5.45921 1.13278 4.7917 1.39075 4.16889C1.64873 3.54609 2.02684 2.98019 2.50352 2.50352C2.98019 2.02684 3.54609 1.64873 4.16889 1.39075C4.7917 1.13278 5.45921 1 6.13333 1C7.49478 1 8.80046 1.54083 9.76315 2.50352C10.7258 3.46621 11.2667 4.77189 11.2667 6.13333C11.2667 7.49478 10.7258 8.80046 9.76315 9.76315C8.80046 10.7258 7.49478 11.2667 6.13333 11.2667Z"
                                                 stroke="#0D9E00" />
                                         </svg>
-                                    </button>
+                                    </a>
                                     <button type="button" onclick="sharePucData('${value.registration_number}')" class="${value.share_view_flag == '1' ? 'modal-btn-completed' : 'modal-btn-neutral'} py-1 px-2 ms-1 updateViewFlag_btn" data-id="${value.id}" data-flag-type="3">
                                         <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path

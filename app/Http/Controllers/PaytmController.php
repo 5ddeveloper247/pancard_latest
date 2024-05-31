@@ -39,7 +39,7 @@ class PaytmController extends Controller
         $EMAIL = $createdUserData->email;
         // Generate unique values
 
-        $ORDER_ID = $user_id != '' ? $user_id : strval(rand(10000, 99999999));
+        $ORDER_ID = $user_id != '' ? $user_id.'_'.time() : strval(rand(10000, 99999999));
         
         $CUST_ID = "CUST" . $createdUserData->id;
         // Required parameters for Paytm
@@ -120,7 +120,8 @@ class PaytmController extends Controller
         $trxAmount = isset($responseData['TXNAMOUNT']) ? $responseData['TXNAMOUNT'] : '';
         $trxDate = isset($responseData['TXNDATE']) ? $responseData['TXNDATE'] : '';
         $trxId = isset($responseData['TXNID']) ? $responseData['TXNID'] : '';
-
+        $tempOrderId = explode('_',$orderId );
+        $orderId = isset($tempOrderId[0]) ? $tempOrderId[0] : '' ;
         if ($trxStatus == 'TXN_SUCCESS') {
 
             // Fetch the data from temp_user table by the specific ID
@@ -208,7 +209,7 @@ class PaytmController extends Controller
             $EMAIL = $createdUserData->email;
             // Generate unique values
 
-            $ORDER_ID = isset($transaction->id) ? $transaction->id : strval(rand(10000, 99999999));
+            $ORDER_ID = isset($transaction->id) ? $transaction->id.'_'.time() : strval(rand(10000, 99999999));
             $CUST_ID = "CUST" . $createdUserData->id;
             // Required parameters for Paytm
             $paramList["MID"] = isset($settings->merchant_id) ? $settings->merchant_id : '';//env('PAYTM_MERCHANT_ID');
@@ -260,7 +261,8 @@ class PaytmController extends Controller
         $trxAmount = isset($responseData['TXNAMOUNT']) ? $responseData['TXNAMOUNT'] : '';
         $trxDate = isset($responseData['TXNDATE']) ? $responseData['TXNDATE'] : '';
         $trxId = isset($responseData['TXNID']) ? $responseData['TXNID'] : '';
-
+        $tempOrderId = explode('_',$orderId );
+        $orderId = isset($tempOrderId[0]) ? $tempOrderId[0] : '' ;
 
         // Process the payment information as needed
         if($trxStatus == 'TXN_SUCCESS'){
