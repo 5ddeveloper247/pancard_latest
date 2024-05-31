@@ -121,7 +121,7 @@ class PaytmController extends Controller
         $trxDate = isset($responseData['TXNDATE']) ? $responseData['TXNDATE'] : '';
         $trxId = isset($responseData['TXNID']) ? $responseData['TXNID'] : '';
 
-        if ($responseData == 'TXN_SUCCESS') {
+        if ($trxStatus == 'TXN_SUCCESS') {
 
             // Fetch the data from temp_user table by the specific ID
             $tempUser = TempUsers::where('id', $orderId)->first();
