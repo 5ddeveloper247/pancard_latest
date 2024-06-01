@@ -187,7 +187,15 @@ function transactionHistoryResponse(response) {
                     name_txt = `<h6>${history.transaction_remarks} </h6>`;
                 }
                 if (history.status == '2') {
+                    if(history.transaction_status == '2'){
+
+                        status_html = `<span class="fw-bold text-danger">Failed</span>`;
+                    }
+
+                else{
+
                     status_html = `<span class="fw-bold text-danger">Rejected</span>`;
+                }
                     amount_txt = `<span class="fw-bolder text-danger"> &plus; &#8377;${history.amount}</span><br>`;
                     name_txt = `<h6>${history.transaction_remarks} </h6>`;
                 }
