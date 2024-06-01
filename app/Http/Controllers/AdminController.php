@@ -193,7 +193,7 @@ class AdminController extends Controller
     public function pendingTransactionsList(Request $request)
     {
 
-        $data['pendingTransactionsList'] = Transactions::where('status', '1')->with(['createdByUser', 'bankName'])->get();
+        $data['pendingTransactionsList'] = Transactions::where('status', '1')->with(['createdByUser', 'bankName'])->orderBy('created_at', 'desc')->get();
         return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
     }
 
