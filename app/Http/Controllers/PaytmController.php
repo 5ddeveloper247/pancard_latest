@@ -133,7 +133,7 @@ class PaytmController extends Controller
             unset($userData['id'], $userData['created_at'], $userData['updated_at']);
 
             // Add or modify specific attributes
-            $userData['status'] = 'active';
+            // $userData['status'] = 'active';
 
             // Create a new User instance and fill it with the data
             $user = new User();
