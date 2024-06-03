@@ -366,6 +366,12 @@ $(document).on('click', '.showUploadsModal_btn', function (e) {
     $("#puc_vehicle_img_down").attr('href', vehicleImg);
     $("#puc_challan_img_down").attr('href', challanImg);
 
+    if(challanImg == 'null'){
+        $("#puc_challan_img_div").hide();
+    }else{
+        $("#puc_challan_img_div").show();
+    }
+
     $("#uploadsModal").modal('show');
 });
 

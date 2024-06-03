@@ -920,7 +920,7 @@ class AdminController extends Controller
             $rejected_puc = Puc::where('id', $puc_id)->first();
             $rejected_puc->vehicle_image = Null;
             $rejected_puc->certificate_pdf = Null;
-            $rejected_puc->file_view_flag = Null;
+            $rejected_puc->file_view_flag = 0;
             $rejected_puc->start_date = Null;
             $rejected_puc->end_date = Null;
             $rejected_puc->save();

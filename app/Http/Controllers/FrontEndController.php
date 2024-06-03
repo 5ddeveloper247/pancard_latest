@@ -215,7 +215,7 @@ class FrontEndController extends Controller
         ['selected_bank_id.required' => 'Select bank from dropdown first']);
 
         $utr = $request->utr_no;
-        $utr_check = Transactions::where('transaction_number',$utr)->where('status', 3)->first();
+        $utr_check = Transactions::where('transaction_number',$utr)->whereIn('status', ['1','3'])->first();
         if(isset($utr_check->id)){
             return response()->json(['status' => 402,'message' => "Utr number already used!"]);  
         }
@@ -509,7 +509,7 @@ class FrontEndController extends Controller
                 // 'challan' => 'required',
                 'chassis_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
                 'engine_number' => $request->challan != '' ? 'required|max:5' : 'nullable|max:5',
-                'upload_vehicle' => 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
+                'upload_vehicle' => 'required|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
                 'upload_challan' => $request->challan != '' ? 'image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400' : 'nullable|image|mimes:jpeg,png,jpg,gif,JPEG,PNG,JPG,GIF|max:400',
             ]);
         }

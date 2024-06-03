@@ -232,16 +232,25 @@ function pendingTransactionsListResponse(response) {
     
     if(transaction_list.length > 0){
         $.each(transaction_list, function (index, list) {
-            var bank_type = list.bank_name.bank_type;
             
-            if (bank_type == '1') {
-                var bank = list.bank_name.upi_id;
-    
+            if(list.transaction_type == 1){
+                var bank_type = list.bank_name != null ? list.bank_name.bank_type : '';
+            
+                if (bank_type == '1') {
+                    var bank = list.bank_name.upi_id;
+        
+                }else
+                if (bank_type == '2') {
+                    var bank = list.bank_name.bank_name;
+        
+                }else{
+                    var bank = '';
+                }
+            }else{
+                var bank = 'Online Payment';
             }
-            if (bank_type == '2') {
-                var bank = list.bank_name.bank_name;
-    
-            }
+                
+            
             var formattedDate = new Date(list.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
             var companyName = list.created_by_user.company_name;
             var truncatedCompanyName = companyName.length > 10 ? companyName.substring(0, 10) + '...' : companyName;
@@ -258,7 +267,7 @@ function pendingTransactionsListResponse(response) {
                                         Bank Account: ${bank}
                                     </span>
                                     <span class="text-dark d-flex align-items-center  utr-code-bg px-1 grid-p-searchby">
-                                        UTR: ${list.transaction_number} 
+                                        UTR: ${list.transaction_number != null ? list.transaction_number : ''} 
                                         <span class="ps-2"> 
                                             <svg width="10" height="11" viewBox="0 0 10 11" class="copy-icon" data-copy="${list.transaction_number}"
                                                 fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -544,6 +553,7 @@ function updateWalletHistoryList(walletHistoryList){
                             <div class="d-flex flex-column grid-p-searchby">
                                 ${name_txt}
                                 <small>${formatDate(walletHistory.created_at)}</small>
+                                <span class="grid-p-searchby d-none">${walletHistory.transaction_number}</span>
                                 <span class="diff-bg px-2 py-1 mr-1 my-1 text-primary text-nowrap grid-p-searchby transaction_username" data-user="${walletHistory.created_by_user.id}">
                                     <b>${walletHistory.created_by_user.username}</b>(${truncatedCompanyName})
                                 </span>

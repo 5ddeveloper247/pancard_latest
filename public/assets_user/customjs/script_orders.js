@@ -150,11 +150,11 @@ function makePucList(puc_list) {
                             ${value.certificate_pdf != null  && value.start_date ==null && value.end_date == null ? `
                             <div class="d-flex pucc puc_dates_container_${value.id}" id="puc_dates_container_${value.id}">
                                 <input type="text" id="start_puc_date" class="form-control me-2"  maxlength="10" name="start_puc_date" placeholder="Start Date (dd/mm/yyyy)" value="${value.start_date != null ? formatDate(value.start_date) : ''}" />
-                                <input type="text" name="end_puc_date" id="end_puc_date" class="form-control" maxlength="10" placeholder="End Date (yyyy/mm/dd)" value="${value.end_date != null ? formatDate(value.end_date):''}" />
+                                <input type="text" name="end_puc_date" id="end_puc_date" class="form-control" maxlength="10" placeholder="End Date (dd/mm/yyyy)" value="${value.end_date != null ? formatDate(value.end_date):''}" />
                             </div>
                         ` : `<div class="d-flex d-none pucc puc_dates_container_${value.id}" id="puc_dates_container_${value.id}">
                         <input type="text" id="start_puc_date" class="form-control me-2"  maxlength="10" name="start_puc_date" placeholder="Start Date (dd/mm/yyyy)" value="${value.start_date != null ? formatDate(value.start_date) : ''}" />
-                        <input type="text" name="end_puc_date" id="end_puc_date" class="form-control" maxlength="10" placeholder="End Date (yyyy/mm/dd)" value="${value.end_date != null ? formatDate(value.end_date):''}" />
+                        <input type="text" name="end_puc_date" id="end_puc_date" class="form-control" maxlength="10" placeholder="End Date (dd/mm/yyyy)" value="${value.end_date != null ? formatDate(value.end_date):''}" />
                     </div>`}
                         </div>
 
@@ -289,8 +289,14 @@ $(document).on('click', '.showUploadsModal_btn', function (e) {
     var challanImg = $(this).attr('data-challan-ss');
 
 
-    $("#puc_vehicle_img").attr('src', vehicleImg)
-    $("#puc_challan_img").attr('src', challanImg)
+    $("#puc_vehicle_img").attr('src', vehicleImg);
+    $("#puc_challan_img").attr('src', challanImg);
+
+    if(challanImg == 'null'){
+        $("#puc_challan_img_div").hide();
+    }else{
+        $("#puc_challan_img_div").show();
+    }
 
     $("#uploadsModal").modal('show');
 });
@@ -488,7 +494,7 @@ function editSpecificPucResponse(response) {
             $("#chassis_number").val(puc_detail.chasis_number);
             $("#engine_number").val(puc_detail.engine_number);
 
-            $("#picturename").text(puc_detail.vehicle_image);
+            $("#picturename").text(puc_detail.vehicle_image != null ? puc_detail.vehicle_image : 'Upload Vehicle Photo');
             $("#challanName").text(puc_detail.challan_image);
 
             $("#puc_charges").html("&#8377; " + puc_detail.puc_charges);

@@ -715,7 +715,7 @@
                         <img id="puc_vehicle_img" class="clickable-img" src="{{ asset('assets_user/images/bike 1.png') }}" alt="">
                     </div>
                 </div>
-                <div class="border rounded-4 w-100 p-2">
+                <div class="border rounded-4 w-100 p-2" id="puc_challan_img_div">
                     <span class="text-start fw-semibold">challan SS</span>
                     <div class="challan-photo d-flex align-items-center justify-content-center">
                         <img id="puc_challan_img" class="clickable-img" src="{{ asset('assets_user/images/bike 1.png') }}" alt="">

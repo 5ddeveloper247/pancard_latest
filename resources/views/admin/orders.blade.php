@@ -275,7 +275,7 @@
                         <img id="puc_vehicle_img" class="clickable-img" src="" alt="">
                     </div>
                 </div>
-                <div class="border rounded-4 w-100 p-2">
+                <div class="border rounded-4 w-100 p-2" id="puc_challan_img_div">
                     <div class="d-flex justify-content-between align-items-center pb-1 px-2">
                         <span class="text-start"><small>challan SS</small></span>
                         <a id="puc_challan_img_down" href="" download>
