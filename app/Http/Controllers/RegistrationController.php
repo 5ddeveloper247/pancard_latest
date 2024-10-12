@@ -113,7 +113,7 @@ class RegistrationController extends Controller
             $uploadedFile = $request->file($req_file);
 
             $savedImage = saveSingleImage($uploadedFile, $path);
-            $Users->profile_picture = url('/') . $savedImage;
+            $Users->profile_picture = url('/public').$savedImage;
         }
 
         $req_file1 = 'upload_aadhar';
@@ -123,7 +123,7 @@ class RegistrationController extends Controller
             $uploadedFile = $request->file($req_file1);
 
             $savedFile = saveSingleImage($uploadedFile, $path1);
-            $Users->aadhar = url('/') . $savedFile;
+            $Users->aadhar = url('/public').$savedFile;
         }
 
         $Users->status = 'inactive';

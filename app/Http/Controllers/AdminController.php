@@ -503,12 +503,12 @@ class AdminController extends Controller
 
         if ($request->hasFile($req_file)) {
             if ($request->tutorial_id != null) {
-                deleteImage(str_replace(url('/'), '', $previous_image));
+                deleteImage(str_replace(url('/public'),"",$previous_image));
             }
             $uploadedFile = $request->file($req_file);
 
             $savedImage = saveSingleImage($uploadedFile, $path);
-            $Tutorials->thumbnail = url('/') . $savedImage;
+            $Tutorials->thumbnail = url('/public').$savedImage;
         } else {  // if file is not update on edit case then assign previous file
             $Tutorials->thumbnail = $previous_image;
         }
@@ -716,12 +716,12 @@ class AdminController extends Controller
 
         if ($request->hasFile($req_file)) {
             if ($request->user_id != null) {
-                deleteImage($previous_image);
+                deleteImage(str_replace(url('/public'),"",$previous_image));
             }
             $uploadedFile = $request->file($req_file);
 
             $savedImage = saveSingleImage($uploadedFile, $path);
-            $Users->profile_picture = url('/') . $savedImage;
+            $Users->profile_picture = url('/public').$savedImage;
         } else {  // if file is not update on edit case then assign previous file
             $Users->profile_picture = $previous_image;
         }
@@ -732,12 +732,12 @@ class AdminController extends Controller
 
         if ($request->hasFile($req_file1)) {
             if ($request->user_id != null) {
-                deleteImage($previous_image1);
+                deleteImage(str_replace(url('/public'),"",$previous_image1));
             }
             $uploadedFile = $request->file($req_file1);
 
             $savedFile = saveSingleImage($uploadedFile, $path1);
-            $Users->aadhar = url('/') . $savedFile;
+            $Users->aadhar = url('/public').$savedFile;
         } else {  // if file is not update on edit case then assign previous file
             $Users->aadhar = $previous_image1;
         }
@@ -1050,13 +1050,13 @@ class AdminController extends Controller
             // dd($previous_file);
             if ($request->hasFile($req_file)) {
                 if ($previous_file) {
-                    deleteImage($previous_file);
+                    deleteImage(str_replace(url('/public'),"",$previous_file));
                 }
 
                 $uploadedFile = $request->file($req_file);
 
                 $savedFile = saveSingleImage($uploadedFile, $path);
-                $full_path = url('/') . $savedFile;
+                $full_path = url('/public').$savedFile;
             } else {  // if file is not update on edit case then assign previous file
                 $full_path = $previous_file;
             }
@@ -1141,14 +1141,14 @@ class AdminController extends Controller
                         $previous_file = Puc::where('id', $existPuc->id)->value('certificate_pdf');
 
                         if ($previous_file) {
-                            deleteImage(str_replace(url('/'), '', $previous_file));
+                            deleteImage(str_replace(url('/public'), '', $previous_file));
                         }
 
                         // dd($previous_file);
                         $uploadedFile = $file;
 
                         $savedFile = saveSingleImage($uploadedFile, $path);
-                        $full_path = url('/') . $savedFile;
+                        $full_path = url('/public').$savedFile;
 
                         Puc::where('id', $existPuc->id)->update([
                             'status' => '4',

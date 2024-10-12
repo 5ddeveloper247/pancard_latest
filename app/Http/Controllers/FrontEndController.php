@@ -360,12 +360,12 @@ class FrontEndController extends Controller
         
         if ($request->hasFile($req_file)) {
             
-            deleteImage(str_replace(url('/'), '', $previous_image));
+            deleteImage(str_replace(url('/public'),"",$previous_image));
             
             $uploadedFile = $request->file($req_file);
 
             $savedImage = saveSingleImage($uploadedFile, $path);
-            $Users->profile_picture = url('/').$savedImage;
+            $Users->profile_picture = url('/public').$savedImage;
         }else{  // if file is not update on edit case then assign previous file
             $Users->profile_picture = $previous_image;
         }
@@ -376,12 +376,12 @@ class FrontEndController extends Controller
 
         if ($request->hasFile($req_file1)) {
             
-            deleteImage(str_replace(url('/'), '', $previous_image1));
+            deleteImage(str_replace(url('/public'),"",$previous_image1));
             
             $uploadedFile = $request->file($req_file1);
 
             $savedFile = saveSingleImage($uploadedFile, $path1);
-            $Users->aadhar = url('/').$savedFile;
+            $Users->aadhar = url('/public').$savedFile;
         }else{  // if file is not update on edit case then assign previous file
             $Users->aadhar = $previous_image1;
         }
@@ -545,17 +545,17 @@ class FrontEndController extends Controller
         $req_file = 'upload_vehicle';
         $path = '/assets/uploads/puc';
         $previous_image = Puc::where('user_id', $user_id)->where('id', $request->puc_id)->value('vehicle_image');
-
+        
         if ($request->hasFile($req_file)) {
            
             if($previous_image){
-                deleteImage(str_replace(url('/'), '', $previous_image));
+                deleteImage(str_replace(url('/public'),"",$previous_image));
             }  
 
             $uploadedFile = $request->file($req_file);
 
             $savedImage = saveSingleImage($uploadedFile, $path);
-            $Puc->vehicle_image = url('/').$savedImage;
+            $Puc->vehicle_image = url('/public').$savedImage;
         }else{  // if file is not update on edit case then assign previous file
             $Puc->vehicle_image = $previous_image;
         }
@@ -567,12 +567,12 @@ class FrontEndController extends Controller
         if ($request->hasFile($req_file1)) {
            
             if($previous_image1){
-                deleteImage(str_replace(url('/'), '', $previous_image1));
+                deleteImage(str_replace(url('/public'),"",$previous_image1));
             }  
             $uploadedFile1 = $request->file($req_file1);
 
             $savedImage1 = saveSingleImage($uploadedFile1, $path1);
-            $Puc->challan_image = url('/').$savedImage1;
+            $Puc->challan_image = url('/public').$savedImage1;
         }else{  // if file is not update on edit case then assign previous file
             $Puc->challan_image = $previous_image1;
         }
